@@ -204,7 +204,10 @@ Har bir controller klassiga `@Tag(name = "…", description = "…")` qo‘yilad
 
 ### 6.4. API konvensiyalari
 
-- Prefiks: `/api/v1`. Ochiq endpointlar: `GET` katalog, `/auth/**`, `/score/calculate`.
+- Prefiks: `/api/v1`. Ochiq endpointlar: `GET` katalog, `/auth/register|login`, `/score/calculate`.
+- **Katalog prefikslari** (`/universities/**`, `/directions/**`, `/programs/**`) GET uchun **to‘liq ochiq**. Shaxsiy ma’lumot qaytaradigan endpointlar ular ostida yozilmaydi, o‘z prefikslarida (`/profile`, `/recommendations`, `/favorites`, `/admin`) bo‘ladi. Ochiq so‘rovlarda `Authorization` sarlavhasi e’tiborga olinmaydi (eskirgan token 401 bermaydi).
+- Sahifalashda tartib doim yagona bo‘lishi kerak: `Pageables.withIdTiebreaker` (`id` qo‘shiladi) yoki so‘rovda `ORDER BY ..., id`. Ichki ro‘yxatlar (`/{id}/programs`) ham sahifalanadi.
+- Qidiruv faqat `Specs.containsIgnoreCase` orqali bajariladi (`%` va `_` escape qilinadi).
 - Status kodlari: `200` o‘qish/yangilash, `201` yaratish, `204` o‘chirish, `400` validatsiya, `401` autentifikatsiya yo‘q, `403` ruxsat yo‘q, `404` topilmadi, `409` konflikt.
 - Ro‘yxatlar sahifalanadi va `PageResponse<T> { content, page, size, totalElements, totalPages }` ko‘rinishida qaytariladi.
 - Xatolar faqat `GlobalExceptionHandler` orqali, yagona `ApiError` formatida qaytariladi (TZ 8-bo‘lim).
