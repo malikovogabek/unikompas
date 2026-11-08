@@ -17,7 +17,7 @@ Kod yozishdan oldin uni o‘qing. Biror qoida bilan kelishmasangiz, avval shu fa
 
 | Qism | Stek |
 |---|---|
-| Frontend | React 19, TypeScript (strict), Vite, Tailwind CSS 4, React Router 7, TanStack Query 5, Zustand, React Hook Form + Zod, Axios, Recharts, lucide-react |
+| Frontend | React 19, TypeScript (strict), Vite, Tailwind CSS 4, React Router 7, TanStack Query 5, Zustand, React Hook Form + Zod, Axios, Recharts, lucide-react, **react-i18next** (uz/ru/en) |
 | Backend | Java 21, Spring Boot 4.0, Spring Web, Spring Security + JWT (jjwt), Spring Data JPA, Bean Validation, Flyway, springdoc-openapi, Lombok (cheklangan) |
 | Ma’lumotlar bazasi | PostgreSQL 17 (lokal) |
 | Testlar | JUnit 5, Mockito, MockMvc; Vitest |
@@ -83,6 +83,9 @@ frontend/
     ├── main.tsx             # providerlar: QueryClient, Router
     ├── router.tsx           # barcha marshrutlar, ProtectedRoute
     ├── styles/index.css     # Tailwind + dizayn tokenlari (CSS o‘zgaruvchilari)
+    ├── i18n/
+    │   ├── index.ts         # i18next sozlamasi, til aniqlash, Intl formatlash
+    │   └── locales/         # uz.json (standart), ru.json, en.json
     ├── api/                 # client.ts (axios) + har bir domen uchun fayl: auth.ts, universities.ts, ...
     ├── types/               # backend DTO’lariga mos TS tiplar (api.ts)
     ├── store/               # authStore.ts (Zustand)
@@ -107,8 +110,14 @@ Qoida: komponent faqat **bitta sahifada** ishlatilsa, o‘sha sahifa papkasida t
 
 Talablar: **JDK 21+**, **Node.js 20+**, **PostgreSQL 17**.
 
+> **Ushbu ish kompyuterida** (Homebrew’siz) vositalar `~/.local` ga o‘rnatilgan:
+> `export PATH="$HOME/.local/bin:$PATH"` — node, npm, gh, psql, pg_ctl.
+> PostgreSQL klasteri: `~/.local/var/pg17`, port 5432.
+> Ishga tushirish: `pg_ctl -D ~/.local/var/pg17 -l ~/.local/var/pg17.log -o "-k /tmp" start`.
+> DB: `unikompas`, user/parol: `unikompas` / `unikompas` (faqat lokal muhit uchun).
+
 ```bash
-# 1. Ma’lumotlar bazasi
+# 1. Ma’lumotlar bazasi (boshqa kompyuterda)
 createdb unikompas            # user/parol: application-local.yml ga qarang
 
 # 2. Backend  →  http://localhost:8080  |  Swagger: /swagger-ui.html
@@ -137,7 +146,9 @@ Demo hisoblar (seed, faqat lokal): `admin@unikompas.uz / Admin123!`, `abituriyen
 
 1. **Til siyosati:**
    - Kod, identifikatorlar, kod izohlari, Javadoc va **commit xabarlari** — ingliz tilida (portfolio standarti).
-   - UI matnlari, Swagger’dagi `@Operation` tavsiflari, foydalanuvchiga ko‘rinadigan xato xabarlari va `docs/` — **o‘zbek tilida (lotin)**. Apostroflar: `o‘`, `g‘` (U+2018), tutuq belgisi `’` (U+2019).
+   - UI 3 tilda ishlaydi (uz — standart, ru, en): matnlar **faqat** `src/i18n/locales/*.json` da saqlanadi (7-bo‘lim, 11-band).
+   - Swagger’dagi `@Operation` tavsiflari va `docs/` — **o‘zbek tilida (lotin)**. Apostroflar: `o‘`, `g‘` (U+2018), tutuq belgisi `’` (U+2019).
+   - Backend foydalanuvchiga matn emas, **xato kodi** qaytaradi (`error: "EMAIL_TAKEN"`). `message` maydonida inglizcha texnik izoh bo‘ladi, tarjima frontendda qilinadi.
 2. **Oddiylik birinchi o‘rinda.** Keraksiz abstraksiya, generic “base” klasslar va oldindan “kelajak uchun” kod yozilmaydi.
 3. Har bir o‘zgarish TZ’dagi talabga (FR-x.x) bog‘langan bo‘lishi kerak.
 4. Sirlar (parol, JWT secret) kodga yozilmaydi: environment variable yoki `application-local.yml` orqali beriladi.
@@ -222,6 +233,13 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda) va `@RequiredA
 8. Nomlash: komponentlar `PascalCase.tsx`, hook’lar `useCamelCase.ts`, qolgan fayllar `camelCase.ts`.
 9. Importlarda `@/` aliasi (`src/`) ishlatiladi.
 10. Rang va o‘lchamlar faqat dizayn tokenlari orqali beriladi. Hex qiymatlar komponent ichida yozilmaydi.
+11. **Lokalizatsiya (i18n):**
+    - JSX ichida qattiq yozilgan matn bo‘lmaydi. Hamma matn `const { t } = useTranslation()` → `t('catalog.filters.region')` orqali olinadi.
+    - Kalitlar `bo‘lim.kichikBo‘lim.kalit` (camelCase) formatida yoziladi. Umumiy so‘zlar `common.*` da, xato kodlari `errors.<CODE>` da saqlanadi.
+    - `uz.json` — asosiy fayl. Yangi kalit **bir commit ichida uchala faylga** qo‘shiladi.
+    - Sanalar, raqamlar va so‘m `lib/format.ts` dagi `Intl` asosidagi funksiyalar orqali formatlanadi (joriy til bo‘yicha).
+    - Tanlangan til `localStorage` (`unikompas.lang`) da saqlanadi va `<html lang>` atributi yangilanadi.
+    - Matn uzunligi tillarga qarab farq qiladi (rus tilida ~30% uzunroq), shuning uchun tugma va kartalarda qat’iy kenglik berilmaydi.
 
 ---
 
@@ -260,7 +278,7 @@ Kontrast: barcha matn va fon juftliklari WCAG AA (≥ 4.5:1) talabiga javob beri
 
 ### 8.2. Tipografiya
 
-- Sarlavhalar: **Manrope** (600/700/800). Body: **Inter** (400/500/600). Ikkalasi ham Google Fonts’dan olinadi va `oʻ gʻ` belgilarini to‘liq qo‘llab-quvvatlaydi.
+- Sarlavhalar: **Manrope** (600/700/800). Body: **Inter** (400/500/600). Ikkalasi ham Google Fonts’dan `latin, latin-ext, cyrillic` subsetlari bilan yuklanadi va `oʻ gʻ` belgilarini hamda rus tilini to‘liq qo‘llab-quvvatlaydi.
 - Raqamlar (ballar, narxlar) uchun `font-variant-numeric: tabular-nums` ishlatiladi.
 - Shkala (px): 12 · 14 · 16 (body) · 18 · 20 · 24 · 30 · 36 · 48 (hero).
 
@@ -326,21 +344,28 @@ Refs: FR-5.1, FR-5.2
 
 Qoidalar: bitta commit = bitta mantiqiy o‘zgarish. Commit kompilyatsiya qilinadigan va testlari o‘tadigan holatda bo‘ladi. `WIP`, `fix`, `update` kabi ma’nosiz xabarlar yozilmaydi.
 
+### 9.3. Review → push jarayoni (har bir bosqichda majburiy)
+
+1. Bosqich `feat/<stage-name>` branchida bajariladi.
+2. Build va testlar o‘tadi (`./mvnw verify`, `npm run typecheck && npm run lint && npm run build`).
+3. **Kod review:** `git diff main...HEAD` ko‘rib chiqiladi. To‘g‘rilik, xavfsizlik, CLAUDE.md qoidalariga moslik, i18n (qattiq yozilgan matn yo‘qligi), dizayn tokenlari tekshiriladi. Topilgan kamchiliklar alohida `fix:` yoki `refactor:` commitlar bilan tuzatiladi.
+4. `main` ga `--no-ff` merge qilinadi (bosqich tarixi saqlanadi) va `git push origin main` bajariladi.
+
+Remote: `https://github.com/malikovogabek/unikompas`.
+
 ## 10. Ishlash bosqichlari (yo‘l xaritasi)
 
 Batafsil: TZ 12-bo‘lim. Joriy holat shu yerda belgilanadi.
 
-- [x] **0.** Hujjatlash: TZ, CLAUDE.md, README
-- [ ] **1.** Backend asosi: Spring Boot, PostgreSQL, Flyway V1, xatolar, Swagger
-- [ ] **2.** Autentifikatsiya: JWT, rollar
-- [ ] **3.** Katalog API + demo seed
-- [ ] **4.** Profil, ball kalkulyatori, RIASEC testi
-- [ ] **5.** Tavsiya dvigateli + unit testlar
-- [ ] **6.** Frontend asosi: dizayn tizimi, layout, marshrutlar
-- [ ] **7.** Frontend: auth va katalog
-- [ ] **8.** Frontend: profil, test, tavsiyalar, taqqoslash, saralanganlar
-- [ ] **9.** Admin panel
-- [ ] **10.** Sifat: testlar, a11y, real ma’lumotlar, README skrinshotlari
+- [x] **0.** Hujjatlash: TZ, CLAUDE.md, README, GitHub repozitoriy
+- [ ] **1.** Backend asosi va autentifikatsiya: Spring Boot, PostgreSQL, Flyway V1, xatolar, Swagger, JWT
+- [ ] **2.** Katalog API va demo ma’lumotlar
+- [ ] **3.** Profil, RIASEC testi, tavsiya dvigateli, saralanganlar va unit testlar
+- [ ] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
+- [ ] **5.** Frontend asosi: dizayn tizimi, UI kit, layout, i18n (uz/ru/en), auth sahifalari
+- [ ] **6.** Frontend: bosh sahifa, katalog, dastur sahifasi, ball kalkulyatori
+- [ ] **7.** Frontend: abituriyent kabineti (profil, test, tavsiyalar, taqqoslash, saralanganlar) va admin panel
+- [ ] **8.** Testlash va topshirish: integratsion va frontend testlar, e2e, a11y, README, `v1.0.0` — **loyiha tayyor**
 
 ## 11. Claude uchun ish tartibi
 
@@ -349,3 +374,4 @@ Batafsil: TZ 12-bo‘lim. Joriy holat shu yerda belgilanadi.
 3. Har bir bosqich oxirida: build va testlarni ishga tushiring, shu fayldagi 10-bo‘limdagi checkbox’ni yangilang, commit qiling (9-bo‘lim formatida).
 4. Yangi kutubxona qo‘shishdan oldin sababini ayting. Stekdan tashqaridagi kutubxona faqat kelishuv bilan qo‘shiladi.
 5. Dizayn qarorlari faqat 8-bo‘limga muvofiq qabul qilinadi.
+6. Har bir bosqich 9.3-bo‘limdagi **review → merge → push** jarayoni bilan yakunlanadi.

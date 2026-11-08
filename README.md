@@ -32,6 +32,7 @@ hisobga olib, mos yo‘nalishlar va OTMlarni **Ishonchli / Maqbul / Orzu** toifa
 - O‘tish ballari trendi asosida kirish ehtimolini prognozlash
 - RIASEC kasbiy testi va radar diagramma
 - OTM va yo‘nalishlar katalogi, dasturlarni taqqoslash, saralanganlar
+- Interfeys 3 tilda: o‘zbek, rus, ingliz
 - Admin panel: CRUD, o‘tish ballarini CSV orqali import qilish, algoritm vaznlarini sozlash, statistika
 
 ## Texnologiyalar
@@ -51,4 +52,4 @@ Ishga tushirish bo‘yicha batafsil yo‘riqnoma [CLAUDE.md §4](CLAUDE.md#4-ish
 
 ## Muallif
 
-[F.I.Sh.] — bitiruv malakaviy ishi, [Universitet nomi], 2027.
+**Malikov Og‘abek Sherzod o‘g‘li** — bitiruv malakaviy ishi, [Universitet nomi], 2027 · [GitHub](https://github.com/malikovogabek)
