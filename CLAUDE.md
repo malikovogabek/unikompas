@@ -222,6 +222,7 @@ Har bir controller klassiga `@Tag(name = "…", description = "…")` qo‘yilad
 - **Demo ma’lumotlar** faqat `db/demo/` dagi repeatable migratsiyada saqlanadi (`R__*.sql`, katalogni tozalab qayta yozadi). U `local` va `test` profillarida `spring.flyway.locations` orqali ulanadi va production’ga hech qachon tushmaydi.
 - Idempotent qo‘shish (masalan, saralanganlar) `INSERT ... ON CONFLICT DO NOTHING` orqali bajariladi: "tekshir-keyin-yoz" usuli parallel so‘rovlarda 500 xato beradi.
 - Ko‘p qatorli `saveAll` qilinadigan jadvallar `SEQUENCE` (pooled, allocationSize = 50) va JDBC batch ishlatadi.
+- Biznes qoidasi bitta joyda yoziladi. Agar u JPQL’da ham kerak bo‘lsa, Java metodining yonida konstanta sifatida turadi (masalan, `ApplicantProfile.COMPLETE_JPQL` ↔ `isComplete()`).
 - Ixtiyoriy filtrlar `Specification` orqali yoziladi. Parametr bo‘lmasa `Specification.unrestricted()` qaytariladi (Spring Data 4 `null` qabul qilmaydi).
 - Har bir repozitoriy alohida faylda yoziladi: Spring Data ichki (nested) interfeyslarni topmaydi.
 
@@ -378,7 +379,7 @@ Batafsil: TZ 12-bo‘lim. Joriy holat shu yerda belgilanadi.
 - [x] **1.** Backend asosi va autentifikatsiya: Spring Boot, PostgreSQL, Flyway V1, xatolar, Swagger, JWT
 - [x] **2.** Katalog API va demo ma’lumotlar
 - [x] **3.** Profil, RIASEC testi, tavsiya dvigateli, saralanganlar va unit testlar
-- [ ] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
+- [x] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
 - [ ] **5.** Frontend asosi: dizayn tizimi, UI kit, layout, i18n (uz/ru/en), auth sahifalari
 - [ ] **6.** Frontend: bosh sahifa, katalog, dastur sahifasi, ball kalkulyatori
 - [ ] **7.** Frontend: abituriyent kabineti (profil, test, tavsiyalar, taqqoslash, saralanganlar) va admin panel

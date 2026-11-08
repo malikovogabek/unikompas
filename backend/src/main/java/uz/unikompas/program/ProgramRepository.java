@@ -43,6 +43,26 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     @Query(FETCH + " where d.firstSubject.id = :firstSubjectId and d.secondSubject.id = :secondSubjectId")
     List<Program> findForSubjectPair(Long firstSubjectId, Long secondSubjectId);
 
+    /** Admin list: optional filters, stable order. */
+    @Query(value = FETCH + """
+             where (:universityId is null or u.id = :universityId)
+               and (:directionId is null or d.id = :directionId)
+             order by u.name, d.name, p.language, p.studyForm, p.id""",
+            countQuery = """
+            select count(p) from Program p
+             where (:universityId is null or p.university.id = :universityId)
+               and (:directionId is null or p.direction.id = :directionId)""")
+    Page<Program> findForAdmin(Long universityId, Long directionId, Pageable pageable);
+
+    @Query("""
+            select p from Program p where p.university.id = :universityId and p.direction.id = :directionId
+               and p.language = :language and p.studyForm = :studyForm""")
+    Optional<Program> findOffer(Long universityId, Long directionId, StudyLanguage language, StudyForm studyForm);
+
+    /** All programs with university and direction, for resolving CSV natural keys. */
+    @Query("select p from Program p join fetch p.university join fetch p.direction")
+    List<Program> findAllWithUniversityAndDirection();
+
     long countByUniversityId(Long universityId);
 
     long countByDirectionId(Long directionId);

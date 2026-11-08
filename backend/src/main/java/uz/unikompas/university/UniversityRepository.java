@@ -17,4 +17,6 @@ public interface UniversityRepository extends JpaRepository<University, Long>, J
 
     @EntityGraph(attributePaths = "region")
     Optional<University> findWithRegionById(Long id);
+
+    Optional<University> findByShortNameIgnoreCase(String shortName);
 }

@@ -560,8 +560,8 @@ erDiagram
 | 29–32 | GET/POST/PUT/DELETE | `/admin/universities[/{id}]` | ADMIN | OTM CRUD |
 | 33–36 | GET/POST/PUT/DELETE | `/admin/directions[/{id}]` | ADMIN | Yo‘nalish CRUD |
 | 37–40 | GET/POST/PUT/DELETE | `/admin/programs[/{id}]` | ADMIN | Dastur CRUD |
-| 41 | PUT | `/admin/programs/{id}/passing-scores` | ADMIN | Dastur o‘tish ballarini kiritadi yoki yangilaydi |
-| 42 | POST | `/admin/import/passing-scores` | ADMIN | CSV import (multipart), natija hisobotini qaytaradi |
+| 41 | PUT | `/admin/programs/{id}/passing-scores` | ADMIN | Dasturning ballar tarixini to‘liq almashtiradi (PUT) |
+| 42 | POST | `/admin/import/passing-scores` | ADMIN | CSV import (multipart, ≤ 2 MB). Sarlavha: `university,direction_code,language,study_form,year,grant_score,contract_score`. Vergul yoki nuqtali vergul ajratuvchi, o‘nlik vergul ham qabul qilinadi. Hisobot: `created`, `updated`, `errors[{line, code, value}]` |
 | 43 | GET | `/admin/settings/recommendation-weights` | ADMIN | Algoritm vaznlari |
 | 44 | PUT | `/admin/settings/recommendation-weights` | ADMIN | Vaznlarni yangilaydi (yig‘indi = 1 tekshiriladi) |
 | 45 | GET | `/admin/stats` | ADMIN | Statistika paneli ma’lumotlari |
@@ -794,6 +794,9 @@ Har bir bosqich oxirida loyiha **ishlaydigan holatda** bo‘ladi va kichik, mazm
 - O‘tish ballari o‘tgan yillar ma’lumotlariga asoslanadi va kelgusi yil ballarini **kafolatlamaydi**. Interfeysda bu haqda ogohlantirish beriladi.
 - Ilova davlat qabul tizimi (my.uzbmb.uz) bilan integratsiya qilinmagan, ma’lumotlar admin orqali kiritiladi.
 - Imtiyozlar, xalqaro va milliy sertifikatlar, ijodiy imtihonlar birinchi versiyada hisobga olinmaydi.
+
+- Katalogdan OTM, yo‘nalish yoki dastur o‘chirilsa, ular abituriyentlarning saqlangan tavsiyalaridan ham olib tashlanadi (FK cascade). Tavsiyaning kirish ma’lumotlari va vaznlari snapshot sifatida saqlanib qoladi. Admin panel o‘chirishdan oldin bu haqda ogohlantiradi.
+- CSV import OTMni **qisqa nomi** bo‘yicha aniqlaydi (katta-kichik harf farq qilmaydi, nom yagona bo‘lishi shart). Fayl UTF-8 kodlashida bo‘lishi kerak.
 
 ### 14.2. Xavflar
 

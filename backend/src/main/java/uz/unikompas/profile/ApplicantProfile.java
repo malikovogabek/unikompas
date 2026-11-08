@@ -96,6 +96,13 @@ public class ApplicantProfile {
         updatedAt = Instant.now();
     }
 
+    /**
+     * JPQL form of {@link #isComplete()} (alias {@code p}); keep both in sync.
+     * Used by the admin dashboard to count complete profiles in the database.
+     */
+    public static final String COMPLETE_JPQL = "p.region is not null and p.firstSubject is not null "
+            + "and p.secondSubject is not null and p.expectedScore is not null";
+
     /** True when every field the recommendation engine requires is filled in. */
     public boolean isComplete() {
         return region != null && firstSubject != null && secondSubject != null && expectedScore != null;

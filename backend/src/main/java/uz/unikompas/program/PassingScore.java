@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,8 +27,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PassingScore {
 
+    /** Pooled sequence (V7: INCREMENT BY 50) so CSV imports are sent as JDBC batches. */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "passing_scores_seq")
+    @SequenceGenerator(name = "passing_scores_seq", sequenceName = "passing_scores_id_seq", allocationSize = 50)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
