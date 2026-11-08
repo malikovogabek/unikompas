@@ -1,5 +1,4 @@
 import type { ComponentProps, ReactNode } from 'react'
-import { Link, type LinkProps } from 'react-router'
 import { buttonClasses, type Size, type Variant } from './buttonStyles'
 import { Spinner } from './Spinner'
 
@@ -22,17 +21,5 @@ export function Button({ variant, size, loading, icon, className, children, disa
       {loading ? <Spinner className="size-4" /> : icon}
       {children}
     </button>
-  )
-}
-
-type ButtonLinkProps = LinkProps & { variant?: Variant; size?: Size; icon?: ReactNode }
-
-/** A router link styled as a button (for navigation, not actions). */
-export function ButtonLink({ variant, size, icon, className, children, ...rest }: ButtonLinkProps) {
-  return (
-    <Link className={buttonClasses(variant, size, typeof className === 'string' ? className : undefined)} {...rest}>
-      {icon}
-      {children}
-    </Link>
   )
 }

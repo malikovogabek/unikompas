@@ -25,7 +25,9 @@
     "login": "Kirish",
     "register": "Ro‘yxatdan o‘tish",
     "logout": "Chiqish",
-    "skipToContent": "Asosiy mazmunga o‘tish"
+    "skipToContent": "Asosiy mazmunga o‘tish",
+    "mainNav": "Asosiy navigatsiya",
+    "mobileNav": "Mobil navigatsiya"
   },
   "theme": {
     "toLight": "Yorug‘ mavzuga o‘tish",
@@ -42,7 +44,9 @@
       "fullName": "F.I.Sh.",
       "email": "E-pochta",
       "password": "Parol",
-      "passwordHint": "Kamida 8 ta belgi, harf va raqam bo‘lsin"
+      "passwordHint": "Kamida 8 ta belgi, harf va raqam bo‘lsin",
+      "showPassword": "Parolni ko‘rsatish",
+      "hidePassword": "Parolni yashirish"
     },
     "login": {
       "title": "Xush kelibsiz",

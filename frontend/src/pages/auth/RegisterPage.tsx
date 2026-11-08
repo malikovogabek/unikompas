@@ -8,6 +8,8 @@ import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { TextField } from '@/components/ui/TextField'
 import { useApiErrorMessage } from '@/hooks/useApiErrorMessage'
+import { queryClient } from '@/lib/queryClient'
+import { homePathFor } from '@/lib/routes'
 import { useAuthStore } from '@/store/authStore'
 import { registerSchema, type RegisterForm } from './authSchemas'
 import { PasswordField } from './PasswordField'
@@ -25,7 +27,8 @@ export function RegisterPage() {
     mutationFn: registerUser,
     onSuccess: (auth) => {
       setSession(auth)
-      void navigate('/dashboard', { replace: true })
+      queryClient.setQueryData(['me'], auth.user)
+      void navigate(homePathFor(auth.user.role), { replace: true })
     },
   })
   const server = mutation.isError ? apiError.fields(mutation.error) : {}
@@ -35,7 +38,7 @@ export function RegisterPage() {
       <h1 className="text-3xl font-extrabold text-text">{t('auth.register.title')}</h1>
       <p className="mt-2 text-muted">{t('auth.register.subtitle')}</p>
 
-      <form className="mt-8 flex flex-col gap-5" noValidate onSubmit={handleSubmit((v) => mutation.mutate(v))}>
+      <form className="mt-8 flex flex-col gap-5" noValidate onSubmit={handleSubmit((v) => mutation.mutate(v), () => mutation.reset())}>
         {mutation.isError && <Alert tone="error">{apiError.message(mutation.error)}</Alert>}
         <TextField
           label={t('auth.fields.fullName')}

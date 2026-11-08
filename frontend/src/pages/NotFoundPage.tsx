@@ -1,6 +1,6 @@
 import { Compass } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { ButtonLink } from '@/components/ui/Button'
+import { ButtonLink } from '@/components/ui/ButtonLink'
 import { EmptyState } from '@/components/ui/EmptyState'
 
 export function NotFoundPage() {

@@ -25,7 +25,9 @@
     "login": "Sign in",
     "register": "Sign up",
     "logout": "Sign out",
-    "skipToContent": "Skip to main content"
+    "skipToContent": "Skip to main content",
+    "mainNav": "Main navigation",
+    "mobileNav": "Mobile navigation"
   },
   "theme": {
     "toLight": "Switch to light theme",
@@ -42,7 +44,9 @@
       "fullName": "Full name",
       "email": "Email",
       "password": "Password",
-      "passwordHint": "At least 8 characters with letters and digits"
+      "passwordHint": "At least 8 characters with letters and digits",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
     },
     "login": {
       "title": "Welcome back",

@@ -25,6 +25,12 @@ describe('LoginPage', () => {
     expect(screen.getByLabelText('E-pochta')).toHaveAttribute('aria-invalid', 'true')
   })
 
+  it('gives the password toggle its own accessible name', () => {
+    renderPage()
+    expect(screen.getByRole('button', { name: 'Parolni ko‘rsatish' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Parol')).toHaveAttribute('type', 'password')
+  })
+
   it('switches language without reload', async () => {
     renderPage()
     await i18n.changeLanguage('ru')

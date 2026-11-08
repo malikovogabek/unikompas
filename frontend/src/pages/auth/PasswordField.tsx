@@ -17,7 +17,7 @@ export function PasswordField(props: PasswordFieldProps) {
           type="button"
           onClick={() => setVisible((v) => !v)}
           className="inline-flex size-9 items-center justify-center rounded-sm text-muted hover:text-text"
-          aria-label={t('auth.fields.password')}
+          aria-label={visible ? t('auth.fields.hidePassword') : t('auth.fields.showPassword')}
           aria-pressed={visible}
         >
           {visible ? <EyeOff className="size-[18px]" strokeWidth={1.75} /> : <Eye className="size-[18px]" strokeWidth={1.75} />}
