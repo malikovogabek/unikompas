@@ -217,7 +217,7 @@ Har bir controller klassiga `@Tag(name = "…", description = "…")` qo‘yilad
 
 ### 6.6. Lombok
 
-Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda) va `@RequiredArgsConstructor` (service, controller’larda) ishlatiladi. Entity’larda `@Data` va `@EqualsAndHashCode` **ishlatilmaydi**.
+Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda), `@RequiredArgsConstructor` (service, controller’larda) va `@Slf4j` (logger) ishlatiladi. Entity’larda `@Data` va `@EqualsAndHashCode` **ishlatilmaydi**.
 
 ### 6.7. Testlar
 
