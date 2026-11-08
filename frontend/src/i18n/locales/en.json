@@ -138,7 +138,9 @@
     "CONFLICT": "This conflicts with existing data",
     "INTERNAL_ERROR": "Something went wrong on the server. Please try again shortly",
     "NETWORK": "Cannot reach the server. Check your connection",
-    "UNKNOWN": "An unexpected error occurred"
+    "UNKNOWN": "An unexpected error occurred",
+    "NEW_VERSION": "A new version is available",
+    "NEW_VERSION_TEXT": "Reload the page to load the new version."
   },
   "home": {
     "title": "Find the study programme and university that fit you",

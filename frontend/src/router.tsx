@@ -1,23 +1,36 @@
-import type { ComponentType } from 'react'
-import { createBrowserRouter, type RouteObject } from 'react-router'
-import { AdminLayout as AdminShell } from '@/components/layout/AdminLayout'
-import { ApplicantLayout as ApplicantShell } from '@/components/layout/ApplicantLayout'
+import { createBrowserRouter, Navigate, type LazyRouteFunction, type RouteObject } from 'react-router'
+import { AdminLayout } from '@/components/layout/AdminLayout'
+import { ApplicantLayout } from '@/components/layout/ApplicantLayout'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
 import { RouteError } from '@/components/layout/RouteError'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { homePathFor } from '@/lib/routes'
 import { HomePage } from '@/pages/HomePage'
+import { selectIsAuthenticated, useAuthStore } from '@/store/authStore'
+import type { Role } from '@/types/api'
 
 /**
- * Every page except the landing page is code-split: the initial bundle stays small and heavy
- * dependencies (Recharts, admin forms) load only on the routes that use them.
+ * Every page except the landing page is code-split; Recharts and admin forms load only where used.
+ * For protected pages the role check runs BEFORE the chunk is requested, so guests are redirected
+ * to /login without downloading admin code (and a stale chunk cannot turn a redirect into an error).
  */
-function page(load: () => Promise<{ default: ComponentType }>): Pick<RouteObject, 'lazy'> {
-  return { lazy: async () => ({ Component: (await load()).default }) }
+function guarded(role: Role, lazy: LazyRouteFunction<RouteObject>): LazyRouteFunction<RouteObject> {
+  return async () => {
+    const state = useAuthStore.getState()
+    if (!selectIsAuthenticated(state)) {
+      const from = window.location.pathname + window.location.search + window.location.hash
+      return { Component: () => <Navigate to="/login" replace state={{ from }} /> }
+    }
+    if (state.user?.role !== role) {
+      return { Component: () => <Navigate to={homePathFor(state.user?.role)} replace /> }
+    }
+    return lazy()
+  }
 }
 
-const fallback = (
+const pageFallback = (
   <div className="mx-auto max-w-[1200px] px-4 py-10">
     <Skeleton className="h-96 rounded-lg" />
   </div>
@@ -26,57 +39,63 @@ const fallback = (
 export const router = createBrowserRouter([
   {
     element: <AppLayout />,
-    errorElement: <RouteError />,
-    hydrateFallbackElement: fallback,
     children: [
-      { index: true, element: <HomePage /> },
       {
-        element: <AuthLayout />,
+        // Errors and first-load fallbacks render INSIDE the layout, so header, footer and the
+        // #main landmark stay on screen.
+        errorElement: <RouteError />,
+        hydrateFallbackElement: pageFallback,
         children: [
-          { path: 'login', ...page(() => import('@/pages/auth/LoginPage').then((m) => ({ default: m.LoginPage }))) },
-          { path: 'register', ...page(() => import('@/pages/auth/RegisterPage').then((m) => ({ default: m.RegisterPage }))) },
+          { index: true, element: <HomePage /> },
+          {
+            element: <AuthLayout />,
+            children: [
+              { path: 'login', lazy: () => import('@/pages/auth/LoginPage').then((m) => ({ Component: m.LoginPage })) },
+              { path: 'register', lazy: () => import('@/pages/auth/RegisterPage').then((m) => ({ Component: m.RegisterPage })) },
+            ],
+          },
+          { path: 'universities', lazy: () => import('@/pages/universities/UniversitiesPage').then((m) => ({ Component: m.UniversitiesPage })) },
+          { path: 'universities/:id', lazy: () => import('@/pages/universities/UniversityDetailPage').then((m) => ({ Component: m.UniversityDetailPage })) },
+          { path: 'directions', lazy: () => import('@/pages/directions/DirectionsPage').then((m) => ({ Component: m.DirectionsPage })) },
+          { path: 'directions/:id', lazy: () => import('@/pages/directions/DirectionDetailPage').then((m) => ({ Component: m.DirectionDetailPage })) },
+          { path: 'programs/:id', lazy: () => import('@/pages/programs/ProgramPage').then((m) => ({ Component: m.ProgramPage })) },
+          { path: 'calculator', lazy: () => import('@/pages/CalculatorPage').then((m) => ({ Component: m.CalculatorPage })) },
+          {
+            element: (
+              <ProtectedRoute role="APPLICANT">
+                <ApplicantLayout />
+              </ProtectedRoute>
+            ),
+            children: [
+              { path: 'dashboard', lazy: guarded('APPLICANT', () => import('@/pages/applicant/DashboardPage').then((m) => ({ Component: m.DashboardPage }))) },
+              { path: 'profile', lazy: guarded('APPLICANT', () => import('@/pages/applicant/ProfilePage').then((m) => ({ Component: m.ProfilePage }))) },
+              { path: 'test', lazy: guarded('APPLICANT', () => import('@/pages/applicant/CareerTestPage').then((m) => ({ Component: m.CareerTestPage }))) },
+              { path: 'test/result', lazy: guarded('APPLICANT', () => import('@/pages/applicant/TestResultPage').then((m) => ({ Component: m.TestResultPage }))) },
+              { path: 'recommendations', lazy: guarded('APPLICANT', () => import('@/pages/applicant/RecommendationsPage').then((m) => ({ Component: m.RecommendationsPage }))) },
+              { path: 'favorites', lazy: guarded('APPLICANT', () => import('@/pages/applicant/FavoritesPage').then((m) => ({ Component: m.FavoritesPage }))) },
+              { path: 'compare', lazy: guarded('APPLICANT', () => import('@/pages/applicant/ComparePage').then((m) => ({ Component: m.ComparePage }))) },
+            ],
+          },
+          {
+            path: 'admin',
+            element: (
+              <ProtectedRoute role="ADMIN">
+                <AdminLayout />
+              </ProtectedRoute>
+            ),
+            children: [
+              { index: true, lazy: guarded('ADMIN', () => import('@/pages/admin/AdminOverviewPage').then((m) => ({ Component: m.AdminOverviewPage }))) },
+              { path: 'universities', lazy: guarded('ADMIN', () => import('@/pages/admin/AdminUniversitiesPage').then((m) => ({ Component: m.AdminUniversitiesPage }))) },
+              { path: 'directions', lazy: guarded('ADMIN', () => import('@/pages/admin/AdminDirectionsPage').then((m) => ({ Component: m.AdminDirectionsPage }))) },
+              { path: 'programs', lazy: guarded('ADMIN', () => import('@/pages/admin/AdminProgramsPage').then((m) => ({ Component: m.AdminProgramsPage }))) },
+              { path: 'import', lazy: guarded('ADMIN', () => import('@/pages/admin/AdminImportPage').then((m) => ({ Component: m.AdminImportPage }))) },
+              { path: 'settings', lazy: guarded('ADMIN', () => import('@/pages/admin/AdminSettingsPage').then((m) => ({ Component: m.AdminSettingsPage }))) },
+              { path: 'users', lazy: guarded('ADMIN', () => import('@/pages/admin/AdminUsersPage').then((m) => ({ Component: m.AdminUsersPage }))) },
+            ],
+          },
+          { path: '*', lazy: () => import('@/pages/NotFoundPage').then((m) => ({ Component: m.NotFoundPage })) },
         ],
       },
-      { path: 'universities', ...page(() => import('@/pages/universities/UniversitiesPage').then((m) => ({ default: m.UniversitiesPage }))) },
-      { path: 'universities/:id', ...page(() => import('@/pages/universities/UniversityDetailPage').then((m) => ({ default: m.UniversityDetailPage }))) },
-      { path: 'directions', ...page(() => import('@/pages/directions/DirectionsPage').then((m) => ({ default: m.DirectionsPage }))) },
-      { path: 'directions/:id', ...page(() => import('@/pages/directions/DirectionDetailPage').then((m) => ({ default: m.DirectionDetailPage }))) },
-      { path: 'programs/:id', ...page(() => import('@/pages/programs/ProgramPage').then((m) => ({ default: m.ProgramPage }))) },
-      { path: 'calculator', ...page(() => import('@/pages/CalculatorPage').then((m) => ({ default: m.CalculatorPage }))) },
-      {
-        element: (
-          <ProtectedRoute role="APPLICANT">
-            <ApplicantShell />
-          </ProtectedRoute>
-        ),
-        children: [
-          { path: 'dashboard', ...page(() => import('@/pages/applicant/DashboardPage').then((m) => ({ default: m.DashboardPage }))) },
-          { path: 'profile', ...page(() => import('@/pages/applicant/ProfilePage').then((m) => ({ default: m.ProfilePage }))) },
-          { path: 'test', ...page(() => import('@/pages/applicant/CareerTestPage').then((m) => ({ default: m.CareerTestPage }))) },
-          { path: 'test/result', ...page(() => import('@/pages/applicant/TestResultPage').then((m) => ({ default: m.TestResultPage }))) },
-          { path: 'recommendations', ...page(() => import('@/pages/applicant/RecommendationsPage').then((m) => ({ default: m.RecommendationsPage }))) },
-          { path: 'favorites', ...page(() => import('@/pages/applicant/FavoritesPage').then((m) => ({ default: m.FavoritesPage }))) },
-          { path: 'compare', ...page(() => import('@/pages/applicant/ComparePage').then((m) => ({ default: m.ComparePage }))) },
-        ],
-      },
-      {
-        path: 'admin',
-        element: (
-          <ProtectedRoute role="ADMIN">
-            <AdminShell />
-          </ProtectedRoute>
-        ),
-        children: [
-          { index: true, ...page(() => import('@/pages/admin/AdminOverviewPage').then((m) => ({ default: m.AdminOverviewPage }))) },
-          { path: 'universities', ...page(() => import('@/pages/admin/AdminUniversitiesPage').then((m) => ({ default: m.AdminUniversitiesPage }))) },
-          { path: 'directions', ...page(() => import('@/pages/admin/AdminDirectionsPage').then((m) => ({ default: m.AdminDirectionsPage }))) },
-          { path: 'programs', ...page(() => import('@/pages/admin/AdminProgramsPage').then((m) => ({ default: m.AdminProgramsPage }))) },
-          { path: 'import', ...page(() => import('@/pages/admin/AdminImportPage').then((m) => ({ default: m.AdminImportPage }))) },
-          { path: 'settings', ...page(() => import('@/pages/admin/AdminSettingsPage').then((m) => ({ default: m.AdminSettingsPage }))) },
-          { path: 'users', ...page(() => import('@/pages/admin/AdminUsersPage').then((m) => ({ default: m.AdminUsersPage }))) },
-        ],
-      },
-      { path: '*', ...page(() => import('@/pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))) },
     ],
   },
 ])
