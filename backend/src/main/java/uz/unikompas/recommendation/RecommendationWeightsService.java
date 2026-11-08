@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.unikompas.common.exception.FieldValidationException;
 import uz.unikompas.settings.AppSetting;
 import uz.unikompas.settings.AppSettingRepository;
 
@@ -27,9 +28,19 @@ public class RecommendationWeightsService {
 
     private final AppSettingRepository settings;
 
-    /** Stores new weights (FR-8.6); they apply to recommendations generated afterwards. */
+    /**
+     * Validates and stores new weights (FR-8.6); they apply to recommendations generated afterwards.
+     *
+     * @throws FieldValidationException {@code weights: SumToOne} if they do not form a valid set
+     */
     @Transactional
-    public RecommendationWeights update(RecommendationWeights w) {
+    public RecommendationWeights update(double interest, double chance, double preference, double rating) {
+        RecommendationWeights w;
+        try {
+            w = new RecommendationWeights(interest, chance, preference, rating);
+        } catch (IllegalArgumentException e) {
+            throw FieldValidationException.of("weights", "SumToOne");
+        }
         settings.saveAll(java.util.List.of(
                 new AppSetting(INTEREST, Double.toString(w.interest())),
                 new AppSetting(CHANCE, Double.toString(w.chance())),

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,10 +38,7 @@ public class ProgramAdminService {
     /** Admin list with optional university / direction filters. */
     @Transactional(readOnly = true)
     public PageResponse<ProgramResponse> list(Long universityId, Long directionId, Pageable pageable) {
-        Page<Program> page = programs.findForAdmin(universityId, directionId, Pageables.unsorted(pageable));
-        List<ProgramResponse> content = programService.listInOrder(page.map(Program::getId).getContent());
-        return new PageResponse<>(content, page.getNumber(), page.getSize(), page.getTotalElements(),
-                page.getTotalPages());
+        return programService.toPage(programs.findForAdmin(universityId, directionId, Pageables.unsorted(pageable)));
     }
 
     @Transactional
@@ -60,6 +56,7 @@ public class ProgramAdminService {
         return programService.get(id);
     }
 
+    /** Deletes the program with its scores, favorites and items in saved recommendations (FK cascade). */
     @Transactional
     public void delete(Long id) {
         if (!programs.existsById(id)) {
@@ -77,6 +74,9 @@ public class ProgramAdminService {
         Program program = programs.findById(programId).orElseThrow(() -> new NotFoundException("Program", programId));
         Set<Integer> seen = new HashSet<>();
         for (PassingScoreRequest y : years) {
+            if (y == null) {
+                throw FieldValidationException.of("scores", "NotNull");
+            }
             if (!seen.add(y.year())) {
                 throw FieldValidationException.of("year", "Duplicate");
             }

@@ -39,6 +39,7 @@ public class AdminDirectionController {
 
     private final DirectionService service;
 
+    /** Paged management list, ordered by code. */
     @Operation(summary = "Yo‘nalishlar (admin jadvali)", description = "Sahifalangan ro‘yxat; standart tartib — kod.")
     @ApiResponse(responseCode = "200", description = "Sahifalangan ro‘yxat")
     @GetMapping
@@ -60,6 +61,7 @@ public class AdminDirectionController {
         return service.create(request);
     }
 
+    /** Replaces all fields of a direction. */
     @Operation(summary = "Yo‘nalishni tahrirlash", description = "Barcha maydonlarni yangilaydi (PUT).")
     @ApiResponse(responseCode = "200", description = "Yangilandi")
     @ApiResponse(responseCode = "404", description = "NOT_FOUND")
@@ -68,7 +70,10 @@ public class AdminDirectionController {
         return service.update(id, request);
     }
 
-    @Operation(summary = "Yo‘nalishni o‘chirish", description = "Yo‘nalish va uning barcha dasturlari o‘chiriladi.")
+    /** Deletes a direction with its programs. */
+    @Operation(summary = "Yo‘nalishni o‘chirish",
+            description = "Yo‘nalish va uning barcha dasturlari o‘chiriladi. Diqqat: bu dasturlar abituriyentlarning "
+                    + "saqlangan tavsiyalaridan ham olib tashlanadi.")
     @ApiResponse(responseCode = "204", description = "O‘chirildi")
     @ApiResponse(responseCode = "404", description = "NOT_FOUND")
     @DeleteMapping("/{id}")

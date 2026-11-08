@@ -89,7 +89,8 @@ public class ProgramService {
         return withHistory(ids.stream().filter(found::containsKey).map(found::get).toList());
     }
 
-    private PageResponse<ProgramResponse> toPage(Page<Program> page) {
+    /** Maps an already-fetched page of programs (with joins) to responses with score history. */
+    public PageResponse<ProgramResponse> toPage(Page<Program> page) {
         List<ProgramResponse> content = withHistory(page.getContent());
         return new PageResponse<>(content, page.getNumber(), page.getSize(), page.getTotalElements(),
                 page.getTotalPages());

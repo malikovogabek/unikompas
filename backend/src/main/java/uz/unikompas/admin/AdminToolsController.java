@@ -1,7 +1,5 @@
 package uz.unikompas.admin;
 
-import java.io.IOException;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,7 +27,6 @@ import uz.unikompas.admin.dto.StatsResponse;
 import uz.unikompas.admin.dto.WeightsRequest;
 import uz.unikompas.auth.dto.UserResponse;
 import uz.unikompas.common.dto.PageResponse;
-import uz.unikompas.common.exception.FieldValidationException;
 import uz.unikompas.recommendation.RecommendationWeights;
 import uz.unikompas.recommendation.RecommendationWeightsService;
 import uz.unikompas.user.Role;
@@ -61,13 +58,11 @@ public class AdminToolsController {
     @ApiResponse(responseCode = "400", description = "VALIDATION_ERROR (`file: InvalidHeader | Empty | TooManyRows`)")
     @ApiResponse(responseCode = "413", description = "PAYLOAD_TOO_LARGE — fayl 2 MB dan katta")
     @PostMapping(value = "/import/passing-scores", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ImportReport importScores(@RequestParam("file") MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw FieldValidationException.of("file", "Empty");
-        }
-        return importService.importCsv(file.getInputStream());
+    public ImportReport importScores(@RequestParam("file") MultipartFile file) {
+        return importService.importCsv(file);
     }
 
+    /** Current algorithm weights. */
     @Operation(summary = "Algoritm vaznlari", description = "Joriy w₁ (qiziqish), w₂ (ehtimol), w₃ (afzallik), w₄ (reyting).")
     @ApiResponse(responseCode = "200", description = "Vaznlar")
     @GetMapping("/settings/recommendation-weights")
@@ -83,15 +78,10 @@ public class AdminToolsController {
     @ApiResponse(responseCode = "400", description = "VALIDATION_ERROR (`weights: SumToOne`)")
     @PutMapping("/settings/recommendation-weights")
     public RecommendationWeights updateWeights(@Valid @RequestBody WeightsRequest r) {
-        RecommendationWeights w;
-        try {
-            w = new RecommendationWeights(r.interest(), r.chance(), r.preference(), r.rating());
-        } catch (IllegalArgumentException e) {
-            throw FieldValidationException.of("weights", "SumToOne");
-        }
-        return weightsService.update(w);
+        return weightsService.update(r.interest(), r.chance(), r.preference(), r.rating());
     }
 
+    /** Dashboard aggregates. */
     @Operation(summary = "Statistika",
             description = "Abituriyentlar, to‘liq profillar, testlar va tavsiyalar soni; katalog hajmi; tavsiyalarning "
                     + "top-10 talig‘ida eng ko‘p uchragan 5 ta yo‘nalish va OTM; hududlar bo‘yicha abituriyentlar.")
@@ -101,6 +91,7 @@ public class AdminToolsController {
         return statsService.stats();
     }
 
+    /** Paged user list with search and role filter. */
     @Operation(summary = "Foydalanuvchilar", description = "E-pochta yoki F.I.Sh. bo‘yicha qidiruv, rol bo‘yicha filtr.")
     @ApiResponse(responseCode = "200", description = "Sahifalangan ro‘yxat")
     @GetMapping("/users")

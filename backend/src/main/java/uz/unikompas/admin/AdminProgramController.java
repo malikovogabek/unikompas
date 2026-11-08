@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import uz.unikompas.common.dto.PageResponse;
@@ -41,6 +42,7 @@ public class AdminProgramController {
 
     private final ProgramAdminService service;
 
+    /** Paged management list with optional filters. */
     @Operation(summary = "Dasturlar (admin jadvali)",
             description = "OTM va/yoki yo‘nalish bo‘yicha filtr, o‘tish ballari tarixi bilan.")
     @ApiResponse(responseCode = "200", description = "Sahifalangan ro‘yxat")
@@ -62,6 +64,7 @@ public class AdminProgramController {
         return service.create(request);
     }
 
+    /** Replaces all fields of a program. */
     @Operation(summary = "Dasturni tahrirlash", description = "Barcha maydonlarni yangilaydi (PUT).")
     @ApiResponse(responseCode = "200", description = "Yangilandi")
     @ApiResponse(responseCode = "404", description = "NOT_FOUND")
@@ -70,7 +73,10 @@ public class AdminProgramController {
         return service.update(id, request);
     }
 
-    @Operation(summary = "Dasturni o‘chirish", description = "Dastur, uning ballari va saralanganlardagi yozuvlar o‘chiriladi.")
+    /** Deletes a program with its scores. */
+    @Operation(summary = "Dasturni o‘chirish",
+            description = "Dastur, uning ballari va saralanganlardagi yozuvlar o‘chiriladi. Diqqat: dastur "
+                    + "abituriyentlarning saqlangan tavsiyalaridan ham olib tashlanadi.")
     @ApiResponse(responseCode = "204", description = "O‘chirildi")
     @ApiResponse(responseCode = "404", description = "NOT_FOUND")
     @DeleteMapping("/{id}")
@@ -84,11 +90,12 @@ public class AdminProgramController {
             description = "Dasturning butun ballar tarixini almashtiradi: ro‘yxatdagi yillar qo‘shiladi yoki "
                     + "yangilanadi, ro‘yxatda yo‘q yillar o‘chiriladi. Bo‘sh (null) bal — o‘sha turdagi o‘rin yo‘q.")
     @ApiResponse(responseCode = "200", description = "Yangilangan dastur va ballar tarixi")
-    @ApiResponse(responseCode = "400", description = "VALIDATION_ERROR (`year: Duplicate`, ball 0–189 emas)")
+    @ApiResponse(responseCode = "400", description = "VALIDATION_ERROR (`year: Duplicate`, "
+            + "`scores[0].grantScore: DecimalMax`, `scores[1]: NotNull`)")
     @ApiResponse(responseCode = "404", description = "NOT_FOUND")
     @PutMapping("/{id}/passing-scores")
     public ProgramResponse replaceScores(@PathVariable Long id,
-                                         @RequestBody List<@Valid PassingScoreRequest> scores) {
+                                         @RequestBody List<@Valid @NotNull PassingScoreRequest> scores) {
         return service.replaceScores(id, scores);
     }
 }

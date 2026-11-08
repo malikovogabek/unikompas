@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.unikompas.admin.dto.StatsResponse;
 import uz.unikompas.admin.dto.StatsResponse.Ranked;
+import uz.unikompas.profile.ApplicantProfile;
 
 /**
  * Aggregates for the admin dashboard (FR-8.7). "Most recommended" counts how often a
@@ -26,10 +27,7 @@ public class AdminStatsService {
     public StatsResponse stats() {
         return new StatsResponse(
                 count("select count(u) from User u where u.role = uz.unikompas.user.Role.APPLICANT"),
-                count("""
-                        select count(p) from ApplicantProfile p where p.region is not null
-                           and p.firstSubject is not null and p.secondSubject is not null
-                           and p.expectedScore is not null"""),
+                count("select count(p) from ApplicantProfile p where " + ApplicantProfile.COMPLETE_JPQL),
                 count("select count(t) from TestAttempt t"),
                 count("select count(distinct t.userId) from TestAttempt t"),
                 count("select count(r) from Recommendation r"),

@@ -56,7 +56,7 @@ public class AdminUniversityController {
     @Operation(summary = "OTM yaratish",
             description = "Yangi OTM qo‘shadi. Hudud mavjudligi tekshiriladi, reyting 0–100 oralig‘ida bo‘lishi kerak.")
     @ApiResponse(responseCode = "201", description = "Yaratildi")
-    @ApiResponse(responseCode = "400", description = "VALIDATION_ERROR (masalan `regionId: Exists`)")
+    @ApiResponse(responseCode = "400", description = "VALIDATION_ERROR (`regionId: Exists`, `shortName: Unique`)")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UniversityDetailsResponse create(@Valid @RequestBody UniversityRequest request) {
@@ -74,7 +74,8 @@ public class AdminUniversityController {
 
     /** Deletes a university with all its programs. */
     @Operation(summary = "OTMni o‘chirish",
-            description = "OTM va unga tegishli barcha dasturlar, o‘tish ballari va saralanganlar o‘chiriladi.")
+            description = "OTM va unga tegishli barcha dasturlar, o‘tish ballari va saralanganlar o‘chiriladi. "
+                    + "Diqqat: bu dasturlar abituriyentlarning saqlangan tavsiyalaridan ham olib tashlanadi.")
     @ApiResponse(responseCode = "204", description = "O‘chirildi")
     @ApiResponse(responseCode = "404", description = "NOT_FOUND")
     @DeleteMapping("/{id}")

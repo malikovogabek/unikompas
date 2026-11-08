@@ -58,7 +58,7 @@ public class DirectionService {
         return DirectionDetailsResponse.from(d, programs.countByDirectionId(id));
     }
 
-    /** Deletes the direction and its programs (FK cascade). */
+    /** Deletes the direction, its programs and their items in saved recommendations (FK cascade). */
     @Transactional
     public void delete(Long id) {
         if (!directions.existsById(id)) {

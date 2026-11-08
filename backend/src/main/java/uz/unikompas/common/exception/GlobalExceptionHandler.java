@@ -6,6 +6,7 @@ import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,9 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.validation.method.ParameterErrors;
+import org.springframework.validation.method.ParameterValidationResult;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
@@ -49,6 +53,31 @@ public class GlobalExceptionHandler {
             fields.putIfAbsent(fe.getField(), fe.getCode());
         }
         return ResponseEntity.badRequest().body(ApiError.validation(req.getRequestURI(), fields));
+    }
+
+    /**
+     * Method-level validation (e.g. {@code List<@Valid PassingScoreRequest>} bodies). Keys look like
+     * {@code scores[0].grantScore} or {@code scores[1]}; values are constraint names.
+     */
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    ResponseEntity<ApiError> handleMethodValidation(HandlerMethodValidationException ex, HttpServletRequest req) {
+        Map<String, String> fields = new LinkedHashMap<>();
+        for (ParameterValidationResult result : ex.getParameterValidationResults()) {
+            String name = result.getMethodParameter().getParameterName();
+            String prefix = result.getContainerIndex() == null ? name : name + "[" + result.getContainerIndex() + "]";
+            if (result instanceof ParameterErrors errors) {
+                errors.getFieldErrors().forEach(fe -> fields.putIfAbsent(prefix + "." + fe.getField(), fe.getCode()));
+            } else {
+                result.getResolvableErrors().forEach(e -> fields.putIfAbsent(prefix, constraintName(e)));
+            }
+        }
+        return ResponseEntity.badRequest().body(ApiError.validation(req.getRequestURI(), fields));
+    }
+
+    /** Last (least specific) message code is the bare constraint name, e.g. {@code NotNull}. */
+    private static String constraintName(MessageSourceResolvable error) {
+        String[] codes = error.getCodes();
+        return codes == null || codes.length == 0 ? "Invalid" : codes[codes.length - 1];
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class,
