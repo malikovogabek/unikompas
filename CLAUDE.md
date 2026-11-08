@@ -243,11 +243,11 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda), `@RequiredArg
 ## 7. Frontend qoidalari
 
 1. **TypeScript strict.** `any` taqiqlangan. Noma’lum ma’lumot uchun `unknown` va type guard ishlatiladi.
-2. Faqat funksional komponentlar. Props tiplari `type XxxProps = {...}` ko‘rinishida yoziladi. Har bir faylda bitta eksport qilingan komponent bo‘ladi.
+2. Faqat funksional komponentlar. Props tiplari `type XxxProps = {...}` ko‘rinishida yoziladi. Har bir faylda bitta eksport qilingan komponent bo‘ladi. Istisno: bitta oilaga mansub primitivlar (`Table`/`Th`/`Td`) bitta faylda tursa bo‘ladi.
 3. **Server ma’lumotlari faqat TanStack Query orqali olinadi.** `useEffect` + `fetch` ishlatilmaydi. Query kalitlari `['universities', filters]` ko‘rinishida beriladi.
 4. API chaqiruvlari faqat `src/api/*` da yoziladi. Komponentlar axios’ni to‘g‘ridan-to‘g‘ri chaqirmaydi.
 5. Formalar React Hook Form + Zod sxemasi bilan yaratiladi. Xato xabarlari o‘zbek tilida bo‘ladi.
-6. Global holat (Zustand) faqat auth uchun ishlatiladi. Qolgan holat — lokal `useState` yoki URL (`useSearchParams`, filtrlar uchun).
+6. Global holat (Zustand) faqat haqiqatan global, sahifalararo holat uchun ishlatiladi: auth, tema, taqqoslash tanlovi. Qolgan holat — lokal `useState` yoki URL (`useSearchParams`, filtrlar uchun). Foydalanuvchiga tegishli brauzer ma’lumotlari (masalan, test qoralamasi) kalitida user id bo‘ladi va sessiya almashganda tozalanadi (`lib/storageKeys.ts`).
 7. Har bir ma’lumot ko‘rsatiladigan joyda **3 holat** bo‘lishi shart: yuklanish (Skeleton), xato (qayta urinish tugmasi bilan), bo‘sh (EmptyState).
 8. Nomlash: komponentlar `PascalCase.tsx`, hook’lar `useCamelCase.ts`, qolgan fayllar `camelCase.ts`.
 9. Importlarda `@/` aliasi (`src/`) ishlatiladi.
