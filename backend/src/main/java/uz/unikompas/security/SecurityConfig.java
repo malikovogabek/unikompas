@@ -1,5 +1,7 @@
 package uz.unikompas.security;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -26,7 +28,12 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
@@ -39,6 +46,10 @@ import uz.unikompas.common.config.UniKompasProperties;
  * Stateless security: JWT bearer tokens (HS256) validated by Spring Security's
  * OAuth2 resource server. Public endpoints are listed explicitly; everything
  * else requires authentication, and role checks use {@code @PreAuthorize}.
+ *
+ * <p>Rule: the catalog prefixes ({@code /universities}, {@code /directions}, {@code /programs})
+ * are <b>entirely public for GET</b>. Personalised reads must live under their own
+ * prefixes ({@code /profile}, {@code /recommendations}, {@code /favorites}, {@code /admin}).
  */
 @Configuration
 @EnableMethodSecurity
@@ -49,10 +60,21 @@ public class SecurityConfig {
             "/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/score/calculate"};
     private static final String[] PUBLIC_GET = {
             "/api/v1/regions", "/api/v1/subjects", "/api/v1/fields",
-            "/api/v1/universities", "/api/v1/universities/*", "/api/v1/universities/*/programs",
-            "/api/v1/directions", "/api/v1/directions/*", "/api/v1/directions/*/programs",
-            "/api/v1/programs/*"};
-    private static final String[] PUBLIC_DOCS = {"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**"};
+            "/api/v1/universities/**", "/api/v1/directions/**", "/api/v1/programs/**"};
+    private static final String[] PUBLIC_ANY = {"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/error"};
+
+    /** Single source of truth for public requests: used for authorization and token resolution. */
+    static final RequestMatcher PUBLIC_REQUESTS = publicRequests();
+
+    private static RequestMatcher publicRequests() {
+        var paths = PathPatternRequestMatcher.withDefaults();
+        List<RequestMatcher> matchers = new ArrayList<>();
+        matchers.add(paths.matcher(HttpMethod.OPTIONS, "/**"));
+        Arrays.stream(PUBLIC_POST).forEach(p -> matchers.add(paths.matcher(HttpMethod.POST, p)));
+        Arrays.stream(PUBLIC_GET).forEach(p -> matchers.add(paths.matcher(HttpMethod.GET, p)));
+        Arrays.stream(PUBLIC_ANY).forEach(p -> matchers.add(paths.matcher(p)));
+        return new OrRequestMatcher(matchers);
+    }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -68,13 +90,10 @@ public class SecurityConfig {
                 .cors(c -> {})
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
-                        .requestMatchers(PUBLIC_DOCS).permitAll()
-                        .requestMatchers("/error").permitAll()
+                        .requestMatchers(PUBLIC_REQUESTS).permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(o -> o
+                        .bearerTokenResolver(publicAwareTokenResolver())
                         .jwt(j -> j.jwtAuthenticationConverter(jwtAuthConverter))
                         .authenticationEntryPoint(entryPoint)
                         .accessDeniedHandler(deniedHandler))
@@ -82,6 +101,15 @@ public class SecurityConfig {
                         .authenticationEntryPoint(entryPoint)
                         .accessDeniedHandler(deniedHandler))
                 .build();
+    }
+
+    /**
+     * Ignores the Authorization header on public requests, so a stale or expired token
+     * stored by the client never blocks guest-accessible pages with a 401.
+     */
+    private static BearerTokenResolver publicAwareTokenResolver() {
+        DefaultBearerTokenResolver delegate = new DefaultBearerTokenResolver();
+        return request -> PUBLIC_REQUESTS.matches(request) ? null : delegate.resolve(request);
     }
 
     @Bean
