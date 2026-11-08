@@ -7,6 +7,7 @@ import java.util.Map;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -44,7 +45,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ApiError.validation(req.getRequestURI(), fields));
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class,
+            PropertyReferenceException.class})
     ResponseEntity<ApiError> handleMalformed(Exception ex, HttpServletRequest req) {
         return build(ErrorCode.MALFORMED_REQUEST, "Malformed request", req);
     }

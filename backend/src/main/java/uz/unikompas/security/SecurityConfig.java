@@ -44,8 +44,14 @@ import uz.unikompas.common.config.UniKompasProperties;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    /** Endpoints reachable without a token. Catalog GETs are added in stage 2. */
-    private static final String[] PUBLIC_POST = {"/api/v1/auth/register", "/api/v1/auth/login"};
+    /** Endpoints reachable without a token (guests can browse the catalog, FR-5, FR-3.2). */
+    private static final String[] PUBLIC_POST = {
+            "/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/score/calculate"};
+    private static final String[] PUBLIC_GET = {
+            "/api/v1/regions", "/api/v1/subjects", "/api/v1/fields",
+            "/api/v1/universities", "/api/v1/universities/*", "/api/v1/universities/*/programs",
+            "/api/v1/directions", "/api/v1/directions/*", "/api/v1/directions/*/programs",
+            "/api/v1/programs/*"};
     private static final String[] PUBLIC_DOCS = {"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**"};
 
     @Bean
@@ -64,6 +70,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
                         .requestMatchers(PUBLIC_DOCS).permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated())
