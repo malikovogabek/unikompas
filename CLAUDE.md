@@ -60,7 +60,7 @@ backend/
     │   │   ├── careertest/          # CareerQuestion, TestAttempt, RiasecScorer
     │   │   ├── recommendation/      # RecommendationEngine, ChanceEstimator, ReasonBuilder, ...
     │   │   ├── favorite/
-    │   │   └── admin/               # AdminStatsController, PassingScoreImportService, SettingsService
+    │   │   └── admin/               # Admin*Controller, PassingScoreImportService, AdminStatsService, AdminUserService
     │   └── resources/
     │       ├── application.yml
     │       ├── application-local.yml        # gitignore’da emas, faqat lokal standartlar
