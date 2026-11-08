@@ -259,6 +259,8 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda), `@RequiredArg
 16. Katalog filtrlari URL’da saqlanadi (`useSearchParamState`): filtr o‘zgarganda `page` 0 ga qaytadi, qidiruv 300 ms debounce bilan yoziladi.
 17. Grafiklar (Recharts) animatsiyasiz chiziladi (`isAnimationActive={false}`). Ranglar CSS o‘zgaruvchilari orqali beriladi (`var(--uk-primary)`). Ro‘yxat qatorlaridagi kichik trend grafiklari Recharts’siz, oddiy SVG (`Sparkline`) bilan chiziladi.
 18. Sonlar `lib/format.ts` orqali formatlanadi. O‘zbek tili uchun sonlar `ru-RU` qoidalari bilan chiqariladi (bo‘sh joy bilan guruhlash, o‘nlik vergul), chunki brauzerlarda `uz` CLDR ma’lumotlari to‘liq emas.
+19. Modal oynalar faqat `components/ui/Modal` (native `<dialog>`) orqali ochiladi: fokus tuzog‘i, Esc va fonning nofaol bo‘lishi brauzer tomonidan ta’minlanadi. O‘chirish amali faqat `ConfirmDialog` orqali, oqibatlari tushuntirilgan holda bajariladi.
+20. `<select>` bor formalar faqat **variantlar ro‘yxati yuklangandan keyin** chiziladi (mount qilinadi). Aks holda brauzer birinchi variantni tanlab qo‘yadi va saqlash paytida haqiqiy qiymat yo‘qoladi (`ProfilePage` regression testi).
 11. **Lokalizatsiya (i18n):**
     - JSX ichida qattiq yozilgan matn bo‘lmaydi. Hamma matn `const { t } = useTranslation()` → `t('catalog.filters.region')` orqali olinadi.
     - Kalitlar `bo‘lim.kichikBo‘lim.kalit` (camelCase) formatida yoziladi. Umumiy so‘zlar `common.*` da, xato kodlari `errors.<CODE>` da saqlanadi.
@@ -390,7 +392,7 @@ Batafsil: TZ 12-bo‘lim. Joriy holat shu yerda belgilanadi.
 - [x] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
 - [x] **5.** Frontend asosi: dizayn tizimi, UI kit, layout, i18n (uz/ru/en), auth sahifalari
 - [x] **6.** Frontend: bosh sahifa, katalog, dastur sahifasi, ball kalkulyatori
-- [ ] **7.** Frontend: abituriyent kabineti (profil, test, tavsiyalar, taqqoslash, saralanganlar) va admin panel
+- [x] **7.** Frontend: abituriyent kabineti (profil, test, tavsiyalar, taqqoslash, saralanganlar) va admin panel
 - [ ] **8.** Testlash va topshirish: integratsion va frontend testlar, e2e, a11y, README, `v1.0.0` — **loyiha tayyor**
 
 ## 11. Claude uchun ish tartibi
