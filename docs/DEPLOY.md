@@ -42,3 +42,21 @@ Lokal sinov (prod profili, 512 MB sharoitiga yaqin): ilova 5 soniyada ishga tush
 - Demo abituriyent paroli ochiq (portfolio uchun ataylab). Admin paroli faqat Render’da saqlanadi.
 - Har bir `git push origin main` dan keyin Render va Vercel avtomatik qayta deploy qiladi.
 - Ixtiyoriy: uyg‘otish kutishini kamaytirish uchun UptimeRobot’da `…/api/v1/regions` ga har 10 daqiqada so‘rov yuboradigan monitor qo‘shish mumkin. Bunda oyiga taxminan 730 soat sarflanadi, bu 750 soatlik limitga sig‘adi.
+
+## Joriy deploy (2026-11-08)
+
+| Qism | Manzil |
+|---|---|
+| Frontend (Vercel) | https://unikompas.vercel.app |
+| Backend (Render, Frankfurt) | https://unikompas-api.onrender.com (`srv-dboc1cu417fc73fr16a0`) |
+| Baza (Neon, Frankfurt) | `unikompas` loyihasi, PostgreSQL 17 |
+
+Xizmatlar CLI va API orqali yaratilgan, GitHub ilovalari ulanmagan. Shuning uchun `git push` dan keyin avtomatik deploy **bo‘lmaydi**. Yangilash uchun quyidagi buyruqlarni bajaring:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+render deploys create srv-dboc1cu417fc73fr16a0 --confirm   # backend (main branch'dan qayta build)
+cd frontend && vercel deploy --prod --yes                   # frontend
+```
+
+Avtomatik deploy yoqish uchun Render va Vercel dashboard’larida repozitoriyni GitHub orqali ulash kifoya: **Settings → Git / Build & Deploy → Connect repository**.
