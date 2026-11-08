@@ -135,7 +135,41 @@ class AdminIntegrationTest {
                 .andExpect(jsonPath("$.scoreHistory[0].contractScore").value(103.0));
         mvc.perform(put(path).header("Authorization", admin).contentType(MediaType.APPLICATION_JSON).content("""
                         [{"year":2026,"contractScore":105.0},{"year":2026,"contractScore":190}]"""))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$.fieldErrors['scores[1].contractScore']").value("DecimalMax"));
+        mvc.perform(put(path).header("Authorization", admin).contentType(MediaType.APPLICATION_JSON).content("[null]"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+        mvc.perform(put(path).header("Authorization", admin).contentType(MediaType.APPLICATION_JSON).content("""
+                        [{"year":2026,"contractScore":105.0},{"year":2026,"contractScore":106.0}]"""))
+                .andExpect(jsonPath("$.fieldErrors.year").value("Duplicate"));
+    }
+
+    @Test
+    void shouldRequireUniqueShortName_andAllowBlankOptionalUrls() throws Exception {
+        create("/api/v1/admin/universities", uni("UNIQ1"));
+        mvc.perform(post("/api/v1/admin/universities").header("Authorization", admin)
+                        .contentType(MediaType.APPLICATION_JSON).content(uni("uniq1")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors.shortName").value("Unique"));
+        mvc.perform(post("/api/v1/admin/universities").header("Authorization", admin)
+                        .contentType(MediaType.APPLICATION_JSON).content("""
+                                {"name":"No site","shortName":"NOSITE","regionId":1,"type":"STATE","rating":50,
+                                 "hasDormitory":true,"website":"","logoUrl":""}"""))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.website").doesNotExist());
+    }
+
+    @Test
+    void shouldRejectNonUtf8Csv() throws Exception {
+        byte[] cp1251 = ("university,direction_code,language,study_form,year,grant_score,contract_score\n"
+                + "ТАТУ,60610100,UZ,FULL_TIME,2026,150,120\n").getBytes(java.nio.charset.Charset.forName("windows-1251"));
+        mvc.perform(multipart("/api/v1/admin/import/passing-scores")
+                        .file(new MockMultipartFile("file", "s.csv", "text/csv", cp1251))
+                        .header("Authorization", admin))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors.file").value("Encoding"));
     }
 
     @Test
