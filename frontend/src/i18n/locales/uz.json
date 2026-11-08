@@ -184,7 +184,129 @@
   },
   "admin": {
     "title": "Admin panel",
-    "lead": "Katalog, CSV import, algoritm vaznlari va statistika shu yerda bo‘ladi."
+    "lead": "Katalog, import, algoritm sozlamalari va statistika.",
+    "nav": {
+      "overview": "Umumiy ko‘rinish",
+      "universities": "OTMlar",
+      "directions": "Yo‘nalishlar",
+      "programs": "Dasturlar",
+      "import": "CSV import",
+      "settings": "Algoritm",
+      "users": "Foydalanuvchilar",
+      "section": "Admin bo‘limlari"
+    },
+    "stats": {
+      "applicants": "Abituriyentlar",
+      "completeProfiles": "To‘liq profillar",
+      "tests": "Topshirilgan testlar",
+      "withTest": "Test topshirganlar",
+      "recommendations": "Tavsiyalar",
+      "catalog": "Katalog",
+      "universities": "OTM",
+      "directions": "yo‘nalish",
+      "programs": "dastur",
+      "topDirections": "Eng ko‘p tavsiya qilingan yo‘nalishlar",
+      "topUniversities": "Eng ko‘p tavsiya qilingan OTMlar",
+      "byRegion": "Hududlar bo‘yicha abituriyentlar",
+      "noData": "Hali ma’lumot yo‘q",
+      "top10Hint": "Tavsiyalarning top-10 taligida necha marta uchragan"
+    },
+    "table": {
+      "actions": "Amallar",
+      "name": "Nomi",
+      "shortName": "Qisqa nomi",
+      "region": "Hudud",
+      "type": "Turi",
+      "rating": "Reyting",
+      "code": "Kod",
+      "field": "Soha",
+      "subjects": "Fanlar",
+      "university": "OTM",
+      "direction": "Yo‘nalish",
+      "languageForm": "Til / shakl",
+      "quotas": "Grant / kontrakt",
+      "fee": "Narx",
+      "scores": "Ballar",
+      "email": "E-pochta",
+      "role": "Rol",
+      "created": "Ro‘yxatdan o‘tgan",
+      "empty": "Hech narsa topilmadi"
+    },
+    "form": {
+      "createTitle": "Yangi yozuv",
+      "editTitle": "Tahrirlash",
+      "city": "Shahar",
+      "address": "Manzil",
+      "website": "Sayt",
+      "foundedYear": "Tashkil topgan yili",
+      "description": "Tavsif",
+      "logoUrl": "Logotip URL",
+      "dormitory": "Yotoqxona bor",
+      "careers": "Kasbiy istiqbollar",
+      "riasec": "RIASEC profili (0–10)",
+      "language": "Ta’lim tili",
+      "studyForm": "Ta’lim shakli",
+      "grantQuota": "Grant o‘rinlari",
+      "contractQuota": "Kontrakt o‘rinlari",
+      "contractFee": "Kontrakt narxi (so‘m)",
+      "duration": "Davomiyligi (yil)"
+    },
+    "delete": {
+      "title": "O‘chirishni tasdiqlang",
+      "text": "“{{name}}” o‘chiriladi. Bog‘liq dasturlar, o‘tish ballari va saralanganlar ham o‘chadi; ular abituriyentlarning saqlangan tavsiyalaridan ham olib tashlanadi. Bu amalni qaytarib bo‘lmaydi."
+    },
+    "scores": {
+      "title": "O‘tish ballari",
+      "year": "Yil",
+      "grant": "Grant bali",
+      "contract": "Kontrakt bali",
+      "addYear": "Yil qo‘shish",
+      "hint": "Bo‘sh bal — o‘sha turdagi o‘rin bo‘lmagan. Ro‘yxatda yo‘q yillar o‘chiriladi."
+    },
+    "import": {
+      "title": "O‘tish ballarini import qilish",
+      "lead": "UTF-8 kodlashdagi CSV fayl. OTM qisqa nomi + yo‘nalish kodi + til + shakl bo‘yicha aniqlanadi.",
+      "file": "CSV fayl",
+      "upload": "Yuklash",
+      "template": "Namuna fayl",
+      "result": "Natija",
+      "total": "Jami qatorlar",
+      "created": "Qo‘shildi",
+      "updated": "Yangilandi",
+      "errors": "Xatolar",
+      "line": "Qator",
+      "code": "Xato",
+      "value": "Qiymat",
+      "noErrors": "Xato qatorlar yo‘q",
+      "errorCodes": {
+        "COLUMN_COUNT": "Ustunlar soni noto‘g‘ri",
+        "UNKNOWN_PROGRAM": "Bunday dastur topilmadi",
+        "INVALID_YEAR": "Yil noto‘g‘ri",
+        "INVALID_SCORE": "Bal noto‘g‘ri (0–189, bitta kasr)",
+        "INVALID_LANGUAGE": "Til noto‘g‘ri (UZ, RU, EN)",
+        "INVALID_STUDY_FORM": "Ta’lim shakli noto‘g‘ri",
+        "DUPLICATE_ROW": "Takrorlangan qator"
+      },
+      "fileErrors": {
+        "Empty": "Fayl bo‘sh",
+        "InvalidHeader": "Sarlavha qatori noto‘g‘ri",
+        "TooManyRows": "Qatorlar juda ko‘p (≤ 10 000)",
+        "Encoding": "Fayl UTF-8 kodlashida emas",
+        "Unreadable": "Faylni o‘qib bo‘lmadi"
+      }
+    },
+    "settings": {
+      "title": "Algoritm vaznlari",
+      "lead": "Yakuniy ball = w₁·qiziqish + w₂·ehtimol + w₃·afzallik + w₄·reyting. Vaznlar yig‘indisi 1 bo‘lishi kerak. O‘zgarish faqat yangi tavsiyalarga ta’sir qiladi.",
+      "sum": "Yig‘indi: {{value}}",
+      "reset": "Standart qiymatlar",
+      "saved": "Vaznlar saqlandi"
+    },
+    "users": {
+      "title": "Foydalanuvchilar",
+      "APPLICANT": "Abituriyent",
+      "ADMIN": "Administrator"
+    }
   },
   "notFound": {
     "title": "Sahifa topilmadi",

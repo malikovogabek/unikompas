@@ -184,7 +184,129 @@
   },
   "admin": {
     "title": "Admin panel",
-    "lead": "Catalog, CSV import, algorithm weights and statistics will live here."
+    "lead": "Catalog, import, algorithm settings and statistics.",
+    "nav": {
+      "overview": "Overview",
+      "universities": "Universities",
+      "directions": "Programmes",
+      "programs": "Offers",
+      "import": "CSV import",
+      "settings": "Algorithm",
+      "users": "Users",
+      "section": "Admin sections"
+    },
+    "stats": {
+      "applicants": "Applicants",
+      "completeProfiles": "Complete profiles",
+      "tests": "Tests taken",
+      "withTest": "Took the test",
+      "recommendations": "Recommendations",
+      "catalog": "Catalog",
+      "universities": "universities",
+      "directions": "programmes",
+      "programs": "offers",
+      "topDirections": "Most recommended programmes",
+      "topUniversities": "Most recommended universities",
+      "byRegion": "Applicants by region",
+      "noData": "No data yet",
+      "top10Hint": "Times in a recommendation top 10"
+    },
+    "table": {
+      "actions": "Actions",
+      "name": "Name",
+      "shortName": "Short name",
+      "region": "Region",
+      "type": "Type",
+      "rating": "Rating",
+      "code": "Code",
+      "field": "Field",
+      "subjects": "Subjects",
+      "university": "University",
+      "direction": "Programme",
+      "languageForm": "Language / form",
+      "quotas": "Grant / paid",
+      "fee": "Tuition",
+      "scores": "Scores",
+      "email": "Email",
+      "role": "Role",
+      "created": "Registered",
+      "empty": "Nothing found"
+    },
+    "form": {
+      "createTitle": "New record",
+      "editTitle": "Edit",
+      "city": "City",
+      "address": "Address",
+      "website": "Website",
+      "foundedYear": "Founded",
+      "description": "Description",
+      "logoUrl": "Logo URL",
+      "dormitory": "Has dormitory",
+      "careers": "Career prospects",
+      "riasec": "RIASEC profile (0–10)",
+      "language": "Language",
+      "studyForm": "Study form",
+      "grantQuota": "Grant places",
+      "contractQuota": "Paid places",
+      "contractFee": "Tuition (UZS)",
+      "duration": "Duration (years)"
+    },
+    "delete": {
+      "title": "Confirm deletion",
+      "text": "“{{name}}” will be deleted together with related offers, passing scores and saved items; they will also disappear from applicants' saved recommendations. This cannot be undone."
+    },
+    "scores": {
+      "title": "Passing scores",
+      "year": "Year",
+      "grant": "Grant score",
+      "contract": "Paid score",
+      "addYear": "Add year",
+      "hint": "An empty score means no places of that type. Years not in the list are removed."
+    },
+    "import": {
+      "title": "Import passing scores",
+      "lead": "A UTF-8 CSV file. Offers are matched by university short name, programme code, language and form.",
+      "file": "CSV file",
+      "upload": "Upload",
+      "template": "Sample file",
+      "result": "Result",
+      "total": "Total rows",
+      "created": "Created",
+      "updated": "Updated",
+      "errors": "Errors",
+      "line": "Line",
+      "code": "Error",
+      "value": "Value",
+      "noErrors": "No invalid rows",
+      "errorCodes": {
+        "COLUMN_COUNT": "Wrong number of columns",
+        "UNKNOWN_PROGRAM": "Offer not found",
+        "INVALID_YEAR": "Invalid year",
+        "INVALID_SCORE": "Invalid score (0–189, one decimal)",
+        "INVALID_LANGUAGE": "Invalid language (UZ, RU, EN)",
+        "INVALID_STUDY_FORM": "Invalid study form",
+        "DUPLICATE_ROW": "Duplicate row"
+      },
+      "fileErrors": {
+        "Empty": "The file is empty",
+        "InvalidHeader": "Invalid header row",
+        "TooManyRows": "Too many rows (≤ 10,000)",
+        "Encoding": "The file is not UTF-8",
+        "Unreadable": "The file could not be read"
+      }
+    },
+    "settings": {
+      "title": "Algorithm weights",
+      "lead": "Final score = w₁·interest + w₂·chance + w₃·preference + w₄·rating. Weights must add up to 1. Changes apply to new recommendations only.",
+      "sum": "Sum: {{value}}",
+      "reset": "Defaults",
+      "saved": "Weights saved"
+    },
+    "users": {
+      "title": "Users",
+      "APPLICANT": "Applicant",
+      "ADMIN": "Administrator"
+    }
   },
   "notFound": {
     "title": "Page not found",
