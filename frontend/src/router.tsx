@@ -1,86 +1,82 @@
-import { createBrowserRouter } from 'react-router'
-import { AdminLayout } from '@/components/layout/AdminLayout'
+import type { ComponentType } from 'react'
+import { createBrowserRouter, type RouteObject } from 'react-router'
+import { AdminLayout as AdminShell } from '@/components/layout/AdminLayout'
+import { ApplicantLayout as ApplicantShell } from '@/components/layout/ApplicantLayout'
 import { AppLayout } from '@/components/layout/AppLayout'
-import { ApplicantLayout } from '@/components/layout/ApplicantLayout'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
-import { AdminDirectionsPage } from '@/pages/admin/AdminDirectionsPage'
-import { AdminImportPage } from '@/pages/admin/AdminImportPage'
-import { AdminOverviewPage } from '@/pages/admin/AdminOverviewPage'
-import { AdminProgramsPage } from '@/pages/admin/AdminProgramsPage'
-import { AdminSettingsPage } from '@/pages/admin/AdminSettingsPage'
-import { AdminUniversitiesPage } from '@/pages/admin/AdminUniversitiesPage'
-import { AdminUsersPage } from '@/pages/admin/AdminUsersPage'
-import { CareerTestPage } from '@/pages/applicant/CareerTestPage'
-import { ComparePage } from '@/pages/applicant/ComparePage'
-import { DashboardPage } from '@/pages/applicant/DashboardPage'
-import { FavoritesPage } from '@/pages/applicant/FavoritesPage'
-import { ProfilePage } from '@/pages/applicant/ProfilePage'
-import { RecommendationsPage } from '@/pages/applicant/RecommendationsPage'
-import { TestResultPage } from '@/pages/applicant/TestResultPage'
-import { LoginPage } from '@/pages/auth/LoginPage'
-import { RegisterPage } from '@/pages/auth/RegisterPage'
-import { CalculatorPage } from '@/pages/CalculatorPage'
-import { DirectionDetailPage } from '@/pages/directions/DirectionDetailPage'
-import { DirectionsPage } from '@/pages/directions/DirectionsPage'
+import { RouteError } from '@/components/layout/RouteError'
+import { Skeleton } from '@/components/ui/Skeleton'
 import { HomePage } from '@/pages/HomePage'
-import { NotFoundPage } from '@/pages/NotFoundPage'
-import { ProgramPage } from '@/pages/programs/ProgramPage'
-import { UniversitiesPage } from '@/pages/universities/UniversitiesPage'
-import { UniversityDetailPage } from '@/pages/universities/UniversityDetailPage'
+
+/**
+ * Every page except the landing page is code-split: the initial bundle stays small and heavy
+ * dependencies (Recharts, admin forms) load only on the routes that use them.
+ */
+function page(load: () => Promise<{ default: ComponentType }>): Pick<RouteObject, 'lazy'> {
+  return { lazy: async () => ({ Component: (await load()).default }) }
+}
+
+const fallback = (
+  <div className="mx-auto max-w-[1200px] px-4 py-10">
+    <Skeleton className="h-96 rounded-lg" />
+  </div>
+)
 
 export const router = createBrowserRouter([
   {
     element: <AppLayout />,
+    errorElement: <RouteError />,
+    hydrateFallbackElement: fallback,
     children: [
       { index: true, element: <HomePage /> },
       {
         element: <AuthLayout />,
         children: [
-          { path: 'login', element: <LoginPage /> },
-          { path: 'register', element: <RegisterPage /> },
+          { path: 'login', ...page(() => import('@/pages/auth/LoginPage').then((m) => ({ default: m.LoginPage }))) },
+          { path: 'register', ...page(() => import('@/pages/auth/RegisterPage').then((m) => ({ default: m.RegisterPage }))) },
         ],
       },
-      { path: 'universities', element: <UniversitiesPage /> },
-      { path: 'universities/:id', element: <UniversityDetailPage /> },
-      { path: 'directions', element: <DirectionsPage /> },
-      { path: 'directions/:id', element: <DirectionDetailPage /> },
-      { path: 'programs/:id', element: <ProgramPage /> },
-      { path: 'calculator', element: <CalculatorPage /> },
+      { path: 'universities', ...page(() => import('@/pages/universities/UniversitiesPage').then((m) => ({ default: m.UniversitiesPage }))) },
+      { path: 'universities/:id', ...page(() => import('@/pages/universities/UniversityDetailPage').then((m) => ({ default: m.UniversityDetailPage }))) },
+      { path: 'directions', ...page(() => import('@/pages/directions/DirectionsPage').then((m) => ({ default: m.DirectionsPage }))) },
+      { path: 'directions/:id', ...page(() => import('@/pages/directions/DirectionDetailPage').then((m) => ({ default: m.DirectionDetailPage }))) },
+      { path: 'programs/:id', ...page(() => import('@/pages/programs/ProgramPage').then((m) => ({ default: m.ProgramPage }))) },
+      { path: 'calculator', ...page(() => import('@/pages/CalculatorPage').then((m) => ({ default: m.CalculatorPage }))) },
       {
         element: (
           <ProtectedRoute role="APPLICANT">
-            <ApplicantLayout />
+            <ApplicantShell />
           </ProtectedRoute>
         ),
         children: [
-          { path: 'dashboard', element: <DashboardPage /> },
-          { path: 'profile', element: <ProfilePage /> },
-          { path: 'test', element: <CareerTestPage /> },
-          { path: 'test/result', element: <TestResultPage /> },
-          { path: 'recommendations', element: <RecommendationsPage /> },
-          { path: 'favorites', element: <FavoritesPage /> },
-          { path: 'compare', element: <ComparePage /> },
+          { path: 'dashboard', ...page(() => import('@/pages/applicant/DashboardPage').then((m) => ({ default: m.DashboardPage }))) },
+          { path: 'profile', ...page(() => import('@/pages/applicant/ProfilePage').then((m) => ({ default: m.ProfilePage }))) },
+          { path: 'test', ...page(() => import('@/pages/applicant/CareerTestPage').then((m) => ({ default: m.CareerTestPage }))) },
+          { path: 'test/result', ...page(() => import('@/pages/applicant/TestResultPage').then((m) => ({ default: m.TestResultPage }))) },
+          { path: 'recommendations', ...page(() => import('@/pages/applicant/RecommendationsPage').then((m) => ({ default: m.RecommendationsPage }))) },
+          { path: 'favorites', ...page(() => import('@/pages/applicant/FavoritesPage').then((m) => ({ default: m.FavoritesPage }))) },
+          { path: 'compare', ...page(() => import('@/pages/applicant/ComparePage').then((m) => ({ default: m.ComparePage }))) },
         ],
       },
       {
         path: 'admin',
         element: (
           <ProtectedRoute role="ADMIN">
-            <AdminLayout />
+            <AdminShell />
           </ProtectedRoute>
         ),
         children: [
-          { index: true, element: <AdminOverviewPage /> },
-          { path: 'universities', element: <AdminUniversitiesPage /> },
-          { path: 'directions', element: <AdminDirectionsPage /> },
-          { path: 'programs', element: <AdminProgramsPage /> },
-          { path: 'import', element: <AdminImportPage /> },
-          { path: 'settings', element: <AdminSettingsPage /> },
-          { path: 'users', element: <AdminUsersPage /> },
+          { index: true, ...page(() => import('@/pages/admin/AdminOverviewPage').then((m) => ({ default: m.AdminOverviewPage }))) },
+          { path: 'universities', ...page(() => import('@/pages/admin/AdminUniversitiesPage').then((m) => ({ default: m.AdminUniversitiesPage }))) },
+          { path: 'directions', ...page(() => import('@/pages/admin/AdminDirectionsPage').then((m) => ({ default: m.AdminDirectionsPage }))) },
+          { path: 'programs', ...page(() => import('@/pages/admin/AdminProgramsPage').then((m) => ({ default: m.AdminProgramsPage }))) },
+          { path: 'import', ...page(() => import('@/pages/admin/AdminImportPage').then((m) => ({ default: m.AdminImportPage }))) },
+          { path: 'settings', ...page(() => import('@/pages/admin/AdminSettingsPage').then((m) => ({ default: m.AdminSettingsPage }))) },
+          { path: 'users', ...page(() => import('@/pages/admin/AdminUsersPage').then((m) => ({ default: m.AdminUsersPage }))) },
         ],
       },
-      { path: '*', element: <NotFoundPage /> },
+      { path: '*', ...page(() => import('@/pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))) },
     ],
   },
 ])
