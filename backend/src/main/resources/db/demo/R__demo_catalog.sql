@@ -9,7 +9,9 @@
 -- real use or the diploma defence (TZ §7.3).
 -- =====================================================================
 
-TRUNCATE universities, directions RESTART IDENTITY CASCADE;
+-- recommendations are listed explicitly: their items reference programs, and a saved
+-- recommendation without items would be inconsistent.
+TRUNCATE universities, directions, recommendations RESTART IDENTITY CASCADE;
 
 -- ---------- Universities ---------------------------------------------
 INSERT INTO universities (name, short_name, region_id, city, website, type, rating, has_dormitory, founded_year, description) VALUES
