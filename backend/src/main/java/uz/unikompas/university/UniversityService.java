@@ -1,5 +1,8 @@
 package uz.unikompas.university;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -51,7 +54,10 @@ public class UniversityService {
         return UniversityDetailsResponse.from(u, programs.countByUniversityId(id));
     }
 
-    /** Deletes the university together with its programs, scores and favorites (FK cascade). */
+    /**
+     * Deletes the university together with its programs, scores, favorites and the matching
+     * items of saved recommendations (FK cascade; input/weight snapshots are kept).
+     */
     @Transactional
     public void delete(Long id) {
         if (!universities.existsById(id)) {
@@ -61,10 +67,23 @@ public class UniversityService {
     }
 
     private University apply(University u, UniversityRequest req) {
-        u.setRegion(regions.findById(req.regionId())
-                .orElseThrow(() -> FieldValidationException.of("regionId", "Exists")));
+        Map<String, String> errors = new LinkedHashMap<>();
+        var region = regions.findById(req.regionId());
+        if (region.isEmpty()) {
+            errors.put("regionId", "Exists");
+        }
+        String shortName = blankToNull(req.shortName());
+        // Short names identify universities in the CSV import, so they must be unique (also V7 index).
+        if (shortName != null) {
+            universities.findByShortNameIgnoreCase(shortName).filter(other -> !other.getId().equals(u.getId()))
+                    .ifPresent(other -> errors.put("shortName", "Unique"));
+        }
+        if (!errors.isEmpty()) {
+            throw new FieldValidationException(errors);
+        }
+        u.setRegion(region.get());
         u.setName(req.name().trim());
-        u.setShortName(blankToNull(req.shortName()));
+        u.setShortName(shortName);
         u.setCity(blankToNull(req.city()));
         u.setAddress(blankToNull(req.address()));
         u.setWebsite(blankToNull(req.website()));

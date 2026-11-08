@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.math.BigDecimal;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import uz.unikompas.admin.dto.ImportReport;
 import uz.unikompas.admin.dto.ImportReport.RowError;
 import uz.unikompas.common.exception.FieldValidationException;
@@ -35,7 +39,8 @@ import uz.unikompas.program.StudyLanguage;
  * university,direction_code,language,study_form,year,grant_score,contract_score
  * TATU,60610100,UZ,FULL_TIME,2026,165.2,132.0
  * </pre>
- * {@code university} is the university short name (case-insensitive). An empty score means
+ * {@code university} is the university short name (case-insensitive, unique since V7); universities
+ * without a short name cannot be targeted. The file must be UTF-8 (a BOM is allowed). An empty score means
  * "no places of that type". Rows are upserted by (program, year). Valid rows are saved even
  * if other rows fail; failures are reported per line.
  */
@@ -52,8 +57,16 @@ public class PassingScoreImportService {
     private final PassingScoreRepository scores;
 
     @Transactional
-    public ImportReport importCsv(InputStream in) {
-        List<String> lines = readLines(in);
+    public ImportReport importCsv(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw FieldValidationException.of("file", "Empty");
+        }
+        List<String> lines;
+        try (InputStream in = file.getInputStream()) {
+            lines = readLines(in);
+        } catch (IOException | UncheckedIOException e) {
+            throw FieldValidationException.of("file", "Unreadable");
+        }
         if (lines.isEmpty()) {
             throw FieldValidationException.of("file", "Empty");
         }
@@ -124,6 +137,7 @@ public class PassingScoreImportService {
         }
 
         Map<String, PassingScore> existing = new HashMap<>();
+        List<PassingScore> toSave = new ArrayList<>(rows.size());
         scores.findByProgramIds(rows.stream().map(r -> r.program().getId()).distinct().toList())
                 .forEach(s -> existing.put(s.getProgram().getId() + "/" + s.getYear(), s));
         int created = 0;
@@ -140,24 +154,36 @@ public class PassingScoreImportService {
             }
             s.setGrantScore(r.grant());
             s.setContractScore(r.contract());
-            scores.save(s);
+            toSave.add(s);
         }
+        scores.saveAll(toSave); // pooled sequence + hibernate.jdbc.batch_size -> batched inserts
         return new ImportReport(total, created, updated, errors);
     }
 
     private record ParsedRow(Program program, int year, BigDecimal grant, BigDecimal contract) {
     }
 
-    private static List<String> readLines(InputStream in) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
-            List<String> lines = reader.lines().collect(Collectors.toCollection(ArrayList::new));
-            if (!lines.isEmpty() && lines.getFirst().startsWith("﻿")) {
-                lines.set(0, lines.getFirst().substring(1)); // Excel UTF-8 BOM
+    /**
+     * Reads strict UTF-8: a file saved in another encoding (e.g. Windows-1251 from Excel)
+     * is rejected with {@code file: Encoding} instead of silently producing U+FFFD characters.
+     */
+    private static List<String> readLines(InputStream in) throws IOException {
+        var decoder = StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT);
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, decoder))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
             }
-            return lines;
-        } catch (IOException e) {
-            throw FieldValidationException.of("file", "Unreadable");
+        } catch (CharacterCodingException e) {
+            throw FieldValidationException.of("file", "Encoding");
         }
+        if (!lines.isEmpty() && lines.getFirst().startsWith("\uFEFF")) {
+            lines.set(0, lines.getFirst().substring(1)); // Excel UTF-8 BOM
+        }
+        return lines;
     }
 
     /** Splits a CSV line; supports double-quoted fields with escaped quotes (""). */
