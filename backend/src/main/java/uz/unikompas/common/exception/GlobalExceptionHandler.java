@@ -30,6 +30,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(FieldValidationException.class)
+    ResponseEntity<ApiError> handleFieldValidation(FieldValidationException ex, HttpServletRequest req) {
+        return ResponseEntity.badRequest().body(ApiError.validation(req.getRequestURI(), ex.getFieldErrors()));
+    }
+
     @ExceptionHandler(ApiException.class)
     ResponseEntity<ApiError> handleApi(ApiException ex, HttpServletRequest req) {
         return build(ex.getCode(), ex.getMessage(), req);

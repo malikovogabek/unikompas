@@ -18,6 +18,8 @@ public enum ErrorCode {
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE),
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE),
     EMAIL_TAKEN(HttpStatus.CONFLICT),
+    /** Recommendation requested before the required profile fields are filled in. */
+    PROFILE_INCOMPLETE(HttpStatus.CONFLICT),
     CONFLICT(HttpStatus.CONFLICT),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR);
 
