@@ -106,6 +106,12 @@ flowchart LR
 
 Loyiha tuzilmasi, kod qoidalari va **“Registon”** dizayn tizimi (Registon koshinlaridan olingan lojuvard, feruza, zarhal va terrakota ranglari): [`CLAUDE.md`](CLAUDE.md).
 
+## Jonli demo
+
+Bepul deploy: Vercel + Render + Neon. Yo‘riqnoma: [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
+> Backend bepul tarifda ishlaydi: 15 daqiqa faol bo‘lmasa uxlab qoladi, shuning uchun birinchi so‘rov ~1 daqiqa kutishi mumkin.
+
 ## Ishga tushirish
 
 Talablar: **JDK 21+**, **Node.js 20+**, **PostgreSQL 17**.
