@@ -795,6 +795,9 @@ Har bir bosqich oxirida loyiha **ishlaydigan holatda** bo‘ladi va kichik, mazm
 - Ilova davlat qabul tizimi (my.uzbmb.uz) bilan integratsiya qilinmagan, ma’lumotlar admin orqali kiritiladi.
 - Imtiyozlar, xalqaro va milliy sertifikatlar, ijodiy imtihonlar birinchi versiyada hisobga olinmaydi.
 
+- Katalogdan OTM, yo‘nalish yoki dastur o‘chirilsa, ular abituriyentlarning saqlangan tavsiyalaridan ham olib tashlanadi (FK cascade). Tavsiyaning kirish ma’lumotlari va vaznlari snapshot sifatida saqlanib qoladi. Admin panel o‘chirishdan oldin bu haqda ogohlantiradi.
+- CSV import OTMni **qisqa nomi** bo‘yicha aniqlaydi (katta-kichik harf farq qilmaydi, nom yagona bo‘lishi shart). Fayl UTF-8 kodlashida bo‘lishi kerak.
+
 ### 14.2. Xavflar
 
 | Xavf | Ehtimoli | Choralar |

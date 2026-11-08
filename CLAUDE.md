@@ -222,6 +222,7 @@ Har bir controller klassiga `@Tag(name = "…", description = "…")` qo‘yilad
 - **Demo ma’lumotlar** faqat `db/demo/` dagi repeatable migratsiyada saqlanadi (`R__*.sql`, katalogni tozalab qayta yozadi). U `local` va `test` profillarida `spring.flyway.locations` orqali ulanadi va production’ga hech qachon tushmaydi.
 - Idempotent qo‘shish (masalan, saralanganlar) `INSERT ... ON CONFLICT DO NOTHING` orqali bajariladi: "tekshir-keyin-yoz" usuli parallel so‘rovlarda 500 xato beradi.
 - Ko‘p qatorli `saveAll` qilinadigan jadvallar `SEQUENCE` (pooled, allocationSize = 50) va JDBC batch ishlatadi.
+- Biznes qoidasi bitta joyda yoziladi. Agar u JPQL’da ham kerak bo‘lsa, Java metodining yonida konstanta sifatida turadi (masalan, `ApplicantProfile.COMPLETE_JPQL` ↔ `isComplete()`).
 - Ixtiyoriy filtrlar `Specification` orqali yoziladi. Parametr bo‘lmasa `Specification.unrestricted()` qaytariladi (Spring Data 4 `null` qabul qilmaydi).
 - Har bir repozitoriy alohida faylda yoziladi: Spring Data ichki (nested) interfeyslarni topmaydi.
 
