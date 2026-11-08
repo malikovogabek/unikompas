@@ -19,6 +19,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  * Translates every exception into the uniform {@link ApiError} format.
@@ -64,6 +65,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
     ResponseEntity<ApiError> handleAccessDenied(Exception ex, HttpServletRequest req) {
         return build(ErrorCode.FORBIDDEN, "Access denied", req);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    ResponseEntity<ApiError> handleTooLarge(MaxUploadSizeExceededException ex, HttpServletRequest req) {
+        return build(ErrorCode.PAYLOAD_TOO_LARGE, "Uploaded file is too large", req);
     }
 
     /** Unique/foreign-key violations that slipped past service checks (e.g. concurrent inserts). */

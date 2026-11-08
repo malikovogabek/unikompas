@@ -27,6 +27,17 @@ public class RecommendationWeightsService {
 
     private final AppSettingRepository settings;
 
+    /** Stores new weights (FR-8.6); they apply to recommendations generated afterwards. */
+    @Transactional
+    public RecommendationWeights update(RecommendationWeights w) {
+        settings.saveAll(java.util.List.of(
+                new AppSetting(INTEREST, Double.toString(w.interest())),
+                new AppSetting(CHANCE, Double.toString(w.chance())),
+                new AppSetting(PREFERENCE, Double.toString(w.preference())),
+                new AppSetting(RATING, Double.toString(w.rating()))));
+        return w;
+    }
+
     @Transactional(readOnly = true)
     public RecommendationWeights current() {
         Map<String, String> values = settings.findAllById(java.util.List.of(INTEREST, CHANCE, PREFERENCE, RATING))

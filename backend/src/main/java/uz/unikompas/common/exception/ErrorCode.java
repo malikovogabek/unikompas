@@ -17,6 +17,7 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED),
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE),
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE),
+    PAYLOAD_TOO_LARGE(HttpStatus.CONTENT_TOO_LARGE),
     EMAIL_TAKEN(HttpStatus.CONFLICT),
     /** Recommendation requested before the required profile fields are filled in. */
     PROFILE_INCOMPLETE(HttpStatus.CONFLICT),
@@ -42,6 +43,7 @@ public enum ErrorCode {
             case 405 -> METHOD_NOT_ALLOWED;
             case 406 -> NOT_ACCEPTABLE;
             case 409 -> CONFLICT;
+            case 413 -> PAYLOAD_TOO_LARGE;
             case 415 -> UNSUPPORTED_MEDIA_TYPE;
             default -> status >= 500 ? INTERNAL_ERROR : MALFORMED_REQUEST;
         };

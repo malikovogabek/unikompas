@@ -17,6 +17,10 @@ spring:
         order_inserts: true
   flyway:
     locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
   data:
     web:
       pageable:
