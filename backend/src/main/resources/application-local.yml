@@ -1,4 +1,8 @@
 # Local development defaults. NOT for production — secrets here are public by design.
+spring:
+  flyway:
+    locations: classpath:db/migration,classpath:db/demo
+
 unikompas:
   jwt:
     secret: dW5pa29tcGFzLWxvY2FsLWRldi1vbmx5LXNlY3JldC1rZXktMjAyNg==
