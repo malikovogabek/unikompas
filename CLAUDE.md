@@ -378,7 +378,7 @@ Batafsil: TZ 12-bo‘lim. Joriy holat shu yerda belgilanadi.
 - [x] **1.** Backend asosi va autentifikatsiya: Spring Boot, PostgreSQL, Flyway V1, xatolar, Swagger, JWT
 - [x] **2.** Katalog API va demo ma’lumotlar
 - [x] **3.** Profil, RIASEC testi, tavsiya dvigateli, saralanganlar va unit testlar
-- [ ] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
+- [x] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
 - [ ] **5.** Frontend asosi: dizayn tizimi, UI kit, layout, i18n (uz/ru/en), auth sahifalari
 - [ ] **6.** Frontend: bosh sahifa, katalog, dastur sahifasi, ball kalkulyatori
 - [ ] **7.** Frontend: abituriyent kabineti (profil, test, tavsiyalar, taqqoslash, saralanganlar) va admin panel
