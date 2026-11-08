@@ -9,7 +9,20 @@
     "close": "Close",
     "menu": "Menu",
     "or": "or",
-    "comingSoon": "This section is coming soon"
+    "comingSoon": "This section is coming soon",
+    "search": "Search",
+    "all": "All",
+    "page": "{{page}} / {{total}}",
+    "prev": "Previous",
+    "next": "Next",
+    "notFound": "Not found",
+    "errorLoading": "Could not load data",
+    "results": "{{count}} results",
+    "years": "{{count}} years",
+    "yes": "Yes",
+    "no": "No",
+    "resetFilters": "Reset filters",
+    "demoData": "Demo data: scores, fees and quotas are illustrative."
   },
   "nav": {
     "home": "Home",
@@ -27,7 +40,8 @@
     "logout": "Sign out",
     "skipToContent": "Skip to main content",
     "mainNav": "Main navigation",
-    "mobileNav": "Mobile navigation"
+    "mobileNav": "Mobile navigation",
+    "program": "Programme"
   },
   "theme": {
     "toLight": "Switch to light theme",
@@ -119,7 +133,27 @@
     "title": "Find the study programme and university that fit you",
     "subtitle": "Explained recommendations based on your interests, score and preferences.",
     "cta": "Get started",
-    "browse": "Browse universities"
+    "browse": "Browse universities",
+    "eyebrow": "Recommendations for university applicants",
+    "howTitle": "How it works",
+    "howLead": "Three steps and your list of matching programmes is ready.",
+    "step1Title": "Fill in your profile",
+    "step1Text": "Subject pair, expected score, region, language and budget.",
+    "step2Title": "Take the career test",
+    "step2Text": "36 questions build your Holland RIASEC interest profile.",
+    "step3Title": "Get recommendations",
+    "step3Text": "Safe, Target and Reach bands — each one explained.",
+    "statsTitle": "In the catalog",
+    "statUniversities": "universities",
+    "statDirections": "programmes",
+    "statRegions": "regions",
+    "sampleTitle": "Sample recommendation",
+    "sampleMatch": "match",
+    "sampleReason1": "Matches your interest profile (ICR)",
+    "sampleReason2": "Above the forecast grant score",
+    "sampleSafe": "Safe",
+    "ctaTitle": "Choose the right direction for your future",
+    "ctaText": "Signing up is free and takes a minute."
   },
   "dashboard": {
     "welcome": "Hi, {{name}}!",
@@ -180,5 +214,116 @@
     "LANGUAGES": "Philology and languages",
     "AGRICULTURE": "Agriculture",
     "ARTS": "Arts and design"
+  },
+  "universityType": {
+    "STATE": "State",
+    "PRIVATE": "Private",
+    "FOREIGN_BRANCH": "Foreign branch"
+  },
+  "studyLanguage": {
+    "UZ": "Uzbek",
+    "RU": "Russian",
+    "EN": "English"
+  },
+  "studyForm": {
+    "FULL_TIME": "Full-time",
+    "PART_TIME": "Part-time",
+    "EVENING": "Evening",
+    "DISTANCE": "Distance"
+  },
+  "riasec": {
+    "title": "RIASEC profile",
+    "hollandCode": "Holland code",
+    "R": {
+      "name": "Realistic",
+      "desc": "Machines, tools and hands-on work"
+    },
+    "I": {
+      "name": "Investigative",
+      "desc": "Analysis, research and complex problems"
+    },
+    "A": {
+      "name": "Artistic",
+      "desc": "Creativity, design and self-expression"
+    },
+    "S": {
+      "name": "Social",
+      "desc": "Helping and teaching people"
+    },
+    "E": {
+      "name": "Enterprising",
+      "desc": "Leading, persuading and business"
+    },
+    "C": {
+      "name": "Conventional",
+      "desc": "Order, accuracy and working with data"
+    }
+  },
+  "catalog": {
+    "universities": {
+      "title": "Universities",
+      "lead": "Filter by region and type, then explore each university's programmes and passing scores.",
+      "searchPlaceholder": "Name or abbreviation…",
+      "region": "Region",
+      "type": "University type",
+      "empty": "No universities found",
+      "emptyText": "Try changing the filters.",
+      "programs": "Programmes",
+      "about": "About",
+      "website": "Official website",
+      "founded": "Founded",
+      "dormitory": "Dormitory",
+      "rating": "Rating",
+      "programCount": "{{count}} programmes"
+    },
+    "directions": {
+      "title": "Study programmes",
+      "lead": "Find a bachelor's programme by exam subject pair and field.",
+      "searchPlaceholder": "Name or code…",
+      "field": "Field",
+      "subject1": "Subject 1",
+      "subject2": "Subject 2",
+      "empty": "No programmes found",
+      "emptyText": "Try a different subject pair or field.",
+      "subjects": "Subject pair",
+      "careers": "Career prospects",
+      "about": "About the programme",
+      "offeredBy": "Where it is taught",
+      "code": "Code"
+    },
+    "program": {
+      "title": "Programme",
+      "language": "Language",
+      "form": "Study form",
+      "duration": "Duration",
+      "grantQuota": "Grant places",
+      "contractQuota": "Paid places",
+      "fee": "Tuition (per year)",
+      "grant": "Grant",
+      "contract": "Paid",
+      "noGrant": "No grant",
+      "lastScores": "{{year}} passing scores",
+      "history": "Passing score trend",
+      "historyLead": "Lowest admitted score for grant and paid places.",
+      "noHistory": "No passing scores yet",
+      "open": "Details",
+      "university": "University",
+      "direction": "Programme"
+    }
+  },
+  "calculator": {
+    "title": "Score calculator",
+    "lead": "Enter the number of correct answers — we compute your total score by block.",
+    "mandatory": "Mandatory subjects",
+    "mandatoryHint": "Native language, maths, history — 30 questions in total, 1.1 points each",
+    "first": "Specialised subject 1",
+    "firstHint": "30 questions, 3.1 points each",
+    "second": "Specialised subject 2",
+    "secondHint": "30 questions, 2.1 points each",
+    "correct": "Correct answers",
+    "total": "Total score",
+    "of": "of {{max}}",
+    "useInProfile": "Use this score in my profile",
+    "note": "Coefficients follow the current admission rules. Benefits and certificates are not included."
   }
 }

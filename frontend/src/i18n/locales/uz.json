@@ -9,7 +9,20 @@
     "close": "Yopish",
     "menu": "Menyu",
     "or": "yoki",
-    "comingSoon": "Bu bo‘lim tez orada tayyor bo‘ladi"
+    "comingSoon": "Bu bo‘lim tez orada tayyor bo‘ladi",
+    "search": "Qidirish",
+    "all": "Barchasi",
+    "page": "{{page}} / {{total}}",
+    "prev": "Oldingi",
+    "next": "Keyingi",
+    "notFound": "Topilmadi",
+    "errorLoading": "Ma’lumotlarni yuklab bo‘lmadi",
+    "results": "{{count}} ta natija",
+    "years": "{{count}} yil",
+    "yes": "Ha",
+    "no": "Yo‘q",
+    "resetFilters": "Filtrlarni tozalash",
+    "demoData": "Demo ma’lumotlar: ballar, narxlar va kvotalar namunaviy."
   },
   "nav": {
     "home": "Bosh sahifa",
@@ -27,7 +40,8 @@
     "logout": "Chiqish",
     "skipToContent": "Asosiy mazmunga o‘tish",
     "mainNav": "Asosiy navigatsiya",
-    "mobileNav": "Mobil navigatsiya"
+    "mobileNav": "Mobil navigatsiya",
+    "program": "Dastur"
   },
   "theme": {
     "toLight": "Yorug‘ mavzuga o‘tish",
@@ -119,7 +133,27 @@
     "title": "O‘zingizga mos yo‘nalish va OTMni toping",
     "subtitle": "Qiziqishlaringiz, balingiz va afzalliklaringiz asosida tushuntirilgan tavsiyalar.",
     "cta": "Boshlash",
-    "browse": "OTMlarni ko‘rish"
+    "browse": "OTMlarni ko‘rish",
+    "eyebrow": "Abituriyentlar uchun tavsiya tizimi",
+    "howTitle": "Qanday ishlaydi",
+    "howLead": "Uch qadam — va sizga mos yo‘nalishlar ro‘yxati tayyor.",
+    "step1Title": "Profilni to‘ldiring",
+    "step1Text": "Fanlar majmuasi, kutilayotgan bal, hudud, til va byudjetingiz.",
+    "step2Title": "Kasbiy testdan o‘ting",
+    "step2Text": "36 ta savol — Holland RIASEC qiziqishlar profili.",
+    "step3Title": "Tavsiyalarni oling",
+    "step3Text": "Ishonchli, Maqbul va Orzu toifalari — har biri sababi bilan.",
+    "statsTitle": "Katalogda",
+    "statUniversities": "OTM",
+    "statDirections": "yo‘nalish",
+    "statRegions": "hudud",
+    "sampleTitle": "Namuna tavsiya",
+    "sampleMatch": "mos",
+    "sampleReason1": "Qiziqish profilingizga mos (ICR)",
+    "sampleReason2": "Prognoz qilingan grant balidan yuqori",
+    "sampleSafe": "Ishonchli",
+    "ctaTitle": "Kelajagingiz uchun to‘g‘ri yo‘nalishni tanlang",
+    "ctaText": "Ro‘yxatdan o‘tish bepul va bir daqiqa vaqt oladi."
   },
   "dashboard": {
     "welcome": "Salom, {{name}}!",
@@ -180,5 +214,116 @@
     "LANGUAGES": "Filologiya va tillar",
     "AGRICULTURE": "Qishloq xo‘jaligi",
     "ARTS": "San’at va dizayn"
+  },
+  "universityType": {
+    "STATE": "Davlat",
+    "PRIVATE": "Nodavlat",
+    "FOREIGN_BRANCH": "Xorijiy filial"
+  },
+  "studyLanguage": {
+    "UZ": "O‘zbek tili",
+    "RU": "Rus tili",
+    "EN": "Ingliz tili"
+  },
+  "studyForm": {
+    "FULL_TIME": "Kunduzgi",
+    "PART_TIME": "Sirtqi",
+    "EVENING": "Kechki",
+    "DISTANCE": "Masofaviy"
+  },
+  "riasec": {
+    "title": "RIASEC profili",
+    "hollandCode": "Holland kodi",
+    "R": {
+      "name": "Realistik",
+      "desc": "Texnika, asbob-uskunalar va amaliy ish"
+    },
+    "I": {
+      "name": "Intellektual",
+      "desc": "Tahlil, tadqiqot va murakkab masalalar"
+    },
+    "A": {
+      "name": "Artistik",
+      "desc": "Ijod, dizayn va o‘zini ifodalash"
+    },
+    "S": {
+      "name": "Sotsial",
+      "desc": "Odamlarga yordam berish va o‘qitish"
+    },
+    "E": {
+      "name": "Tadbirkor",
+      "desc": "Rahbarlik, ishontirish va biznes"
+    },
+    "C": {
+      "name": "Konvensional",
+      "desc": "Tartib, aniqlik va ma’lumotlar bilan ishlash"
+    }
+  },
+  "catalog": {
+    "universities": {
+      "title": "Oliy ta’lim muassasalari",
+      "lead": "Hudud va tur bo‘yicha saralang, har bir OTMning dasturlari va o‘tish ballarini ko‘ring.",
+      "searchPlaceholder": "Nom yoki qisqa nom…",
+      "region": "Hudud",
+      "type": "OTM turi",
+      "empty": "Mos OTM topilmadi",
+      "emptyText": "Filtrlarni o‘zgartirib ko‘ring.",
+      "programs": "Dasturlar",
+      "about": "OTM haqida",
+      "website": "Rasmiy sayt",
+      "founded": "Tashkil topgan",
+      "dormitory": "Yotoqxona",
+      "rating": "Reyting",
+      "programCount": "{{count}} ta dastur"
+    },
+    "directions": {
+      "title": "Ta’lim yo‘nalishlari",
+      "lead": "Fanlar majmuasi va soha bo‘yicha o‘zingizga mos bakalavriat yo‘nalishini toping.",
+      "searchPlaceholder": "Nom yoki kod…",
+      "field": "Soha",
+      "subject1": "1-fan",
+      "subject2": "2-fan",
+      "empty": "Mos yo‘nalish topilmadi",
+      "emptyText": "Fanlar majmuasini yoki sohani o‘zgartirib ko‘ring.",
+      "subjects": "Fanlar majmuasi",
+      "careers": "Kasbiy istiqbollar",
+      "about": "Yo‘nalish haqida",
+      "offeredBy": "Qaysi OTMlarda o‘qitiladi",
+      "code": "Kod"
+    },
+    "program": {
+      "title": "Dastur",
+      "language": "Ta’lim tili",
+      "form": "Ta’lim shakli",
+      "duration": "O‘qish muddati",
+      "grantQuota": "Grant o‘rinlari",
+      "contractQuota": "Kontrakt o‘rinlari",
+      "fee": "Kontrakt (yiliga)",
+      "grant": "Grant",
+      "contract": "Kontrakt",
+      "noGrant": "Grant yo‘q",
+      "lastScores": "{{year}}-yil o‘tish ballari",
+      "history": "O‘tish ballari dinamikasi",
+      "historyLead": "Grant va kontrakt asosida qabul qilinganlarning eng past bali.",
+      "noHistory": "O‘tish ballari hali kiritilmagan",
+      "open": "Batafsil",
+      "university": "OTM",
+      "direction": "Yo‘nalish"
+    }
+  },
+  "calculator": {
+    "title": "Ball kalkulyatori",
+    "lead": "To‘g‘ri javoblar sonini kiriting — umumiy balingizni bloklar bo‘yicha hisoblaymiz.",
+    "mandatory": "Majburiy fanlar",
+    "mandatoryHint": "Ona tili, matematika, tarix — jami 30 ta savol, har biri 1,1 ball",
+    "first": "1-mutaxassislik fani",
+    "firstHint": "30 ta savol, har biri 3,1 ball",
+    "second": "2-mutaxassislik fani",
+    "secondHint": "30 ta savol, har biri 2,1 ball",
+    "correct": "To‘g‘ri javoblar",
+    "total": "Umumiy ball",
+    "of": "{{max}} dan",
+    "useInProfile": "Bu ballni profilga qo‘shish",
+    "note": "Koeffitsiyentlar amaldagi qabul qoidalariga muvofiq. Imtiyoz va sertifikatlar hisobga olinmagan."
   }
 }
