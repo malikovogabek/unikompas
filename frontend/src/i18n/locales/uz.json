@@ -22,7 +22,16 @@
     "yes": "Ha",
     "no": "Yo‘q",
     "resetFilters": "Filtrlarni tozalash",
-    "demoData": "Demo ma’lumotlar: ballar, narxlar va kvotalar namunaviy."
+    "demoData": "Demo ma’lumotlar: ballar, narxlar va kvotalar namunaviy.",
+    "saved": "Saqlandi",
+    "any": "Farqi yo‘q",
+    "edit": "Tahrirlash",
+    "delete": "O‘chirish",
+    "add": "Qo‘shish",
+    "create": "Yaratish",
+    "confirm": "Tasdiqlash",
+    "optional": "ixtiyoriy",
+    "percent": "{{value}}%"
   },
   "nav": {
     "home": "Bosh sahifa",
@@ -41,7 +50,9 @@
     "skipToContent": "Asosiy mazmunga o‘tish",
     "mainNav": "Asosiy navigatsiya",
     "mobileNav": "Mobil navigatsiya",
-    "program": "Dastur"
+    "program": "Dastur",
+    "compare": "Taqqoslash",
+    "cabinet": "Kabinet bo‘limlari"
   },
   "theme": {
     "toLight": "Yorug‘ mavzuga o‘tish",
@@ -159,7 +170,17 @@
   },
   "dashboard": {
     "welcome": "Salom, {{name}}!",
-    "lead": "Shaxsiy kabinetingiz shu yerda bo‘ladi: profil, kasbiy test va tavsiyalar."
+    "lead": "Uch qadamni bajaring — shaxsiy tavsiyalaringiz tayyor bo‘ladi.",
+    "step1": "Profilni to‘ldiring",
+    "step1Done": "Profil to‘ldirilgan",
+    "step2": "Kasbiy testdan o‘ting",
+    "step2Done": "Test topshirilgan: {{code}}",
+    "step3": "Tavsiyalarni oling",
+    "step3Done": "{{count}} ta mos dastur topildi",
+    "open": "Ochish",
+    "start": "Boshlash",
+    "topDirections": "Sizga eng mos yo‘nalishlar",
+    "seeAll": "Barcha tavsiyalar"
   },
   "admin": {
     "title": "Admin panel",
@@ -328,5 +349,120 @@
     "of": "{{max}} dan",
     "useInProfile": "Bu ballni profilga qo‘shish",
     "note": "Koeffitsiyentlar amaldagi qabul qoidalariga muvofiq. Imtiyoz va sertifikatlar hisobga olinmagan."
+  },
+  "profile": {
+    "title": "Profil",
+    "lead": "Tavsiyalar shu ma’lumotlar asosida hisoblanadi. Qanchalik aniq bo‘lsa, natija shunchalik yaxshi.",
+    "sectionExam": "Imtihon",
+    "sectionPrefs": "Afzalliklar",
+    "sectionInterests": "Qiziqish sohalari",
+    "region": "Yashash hududingiz",
+    "subject1": "1-mutaxassislik fani",
+    "subject2": "2-mutaxassislik fani",
+    "expectedScore": "Kutilayotgan bal (0–189)",
+    "calcLink": "Ball kalkulyatori",
+    "language": "Ta’lim tili",
+    "form": "Ta’lim shakli",
+    "financing": "Moliyalashtirish",
+    "GRANT_ONLY": "Faqat grant",
+    "CONTRACT_OK": "Grant yoki kontrakt",
+    "maxFee": "Kontrakt uchun maksimal summa (so‘m/yil)",
+    "maxFeeHint": "Bo‘sh qoldirsangiz — cheklov yo‘q",
+    "relocate": "Boshqa hududda o‘qishga tayyorman",
+    "fieldsHint": "Ko‘pi bilan 5 ta soha tanlang",
+    "saved": "Profil saqlandi",
+    "next": "Kasbiy testga o‘tish",
+    "scoreFromCalc": "Kalkulyatordan olingan bal qo‘yildi"
+  },
+  "test": {
+    "title": "Kasbiy qiziqishlar testi",
+    "lead": "36 ta fikrga qanchalik qo‘shilishingizni belgilang. To‘g‘ri yoki noto‘g‘ri javob yo‘q.",
+    "progress": "{{done}} / {{total}} javob",
+    "step": "{{step}}-qadam / {{total}}",
+    "scale1": "Umuman qo‘shilmayman",
+    "scale2": "Qo‘shilmayman",
+    "scale3": "Bilmayman",
+    "scale4": "Qo‘shilaman",
+    "scale5": "To‘liq qo‘shilaman",
+    "submit": "Natijani ko‘rish",
+    "draft": "Javoblaringiz shu brauzerda saqlanib turadi.",
+    "resultTitle": "Sizning RIASEC profilingiz",
+    "resultLead": "Eng kuchli uchta tipingiz Holland kodini tashkil qiladi.",
+    "retake": "Testni qayta topshirish",
+    "toRecommendations": "Tavsiyalarni olish",
+    "noResult": "Siz hali testdan o‘tmagansiz",
+    "noResultText": "Test 5–7 daqiqa vaqt oladi va tavsiyalarni ancha aniqroq qiladi."
+  },
+  "recommendations": {
+    "title": "Tavsiyalar",
+    "lead": "Profilingiz va qiziqishlaringiz asosida hisoblangan.",
+    "generate": "Tavsiya olish",
+    "regenerate": "Qayta hisoblash",
+    "generatedAt": "{{date}} holatiga",
+    "empty": "Hali tavsiya yo‘q",
+    "emptyText": "Profilingizni to‘ldiring va tavsiya oling.",
+    "incomplete": "Tavsiya olish uchun avval profilni to‘ldiring.",
+    "noMatches": "Mos dastur topilmadi",
+    "noMatchesText": "Afzalliklarni kengaytirib ko‘ring: boshqa hudud, ta’lim tili yoki kontrakt byudjeti.",
+    "topDirections": "Mos yo‘nalishlar",
+    "match": "moslik",
+    "interest": "qiziqish {{value}}%",
+    "programsCount": "{{count}} ta dastur",
+    "programs": "Mos OTM dasturlari",
+    "coldStart": "Kasbiy test topshirilmagan — qiziqish tanlangan sohalar bo‘yicha baholandi.",
+    "grantChance": "Grant ehtimoli",
+    "contractChance": "Kontrakt ehtimoli",
+    "notOption": "—",
+    "forecast": "Prognoz bal",
+    "whyTitle": "Nega tavsiya qilindi",
+    "addCompare": "Taqqoslashga",
+    "inCompare": "Taqqoslashda",
+    "compareTray": "{{count}} ta dastur tanlandi",
+    "compareGo": "Taqqoslash",
+    "fav": "Saralanganlarga qo‘shish",
+    "unfav": "Saralanganlardan olib tashlash",
+    "breakdown": "Ball tarkibi",
+    "criteria": {
+      "interest": "Qiziqish",
+      "chance": "Ehtimol",
+      "preference": "Afzallik",
+      "rating": "Reyting"
+    }
+  },
+  "category": {
+    "SAFE": "Ishonchli",
+    "TARGET": "Maqbul",
+    "REACH": "Orzu",
+    "SAFEHint": "Kirish ehtimoli yuqori",
+    "TARGETHint": "Real imkoniyat bor",
+    "REACHHint": "Riskli, lekin mumkin"
+  },
+  "reasons": {
+    "INTEREST_MATCH": "Qiziqish profilingiz ({{hollandCode}}) ushbu yo‘nalishga {{percent}}% mos",
+    "FIELD_MATCH": "Siz tanlagan qiziqish sohasiga kiradi",
+    "ABOVE_GRANT": "Kutilayotgan balingiz prognoz qilingan grant balidan {{diff}} ballga yuqori",
+    "BELOW_GRANT_CONTRACT_LIKELY": "Grant uchun {{diff}} ball yetmaydi, lekin kontrakt asosida kirish ehtimoli yuqori",
+    "BELOW_GRANT": "Grant uchun {{diff}} ball yetmaydi",
+    "CONTRACT_ONLY": "Faqat kontrakt asosida; prognoz qilingan baldan farq: {{diff}}",
+    "SAME_REGION": "OTM sizning hududingizda joylashgan",
+    "WITHIN_BUDGET": "Kontrakt narxi byudjetingiz doirasida ({{fee}})",
+    "RISING_TREND": "Diqqat: o‘tish bali har yili o‘rtacha {{delta}} ballga oshmoqda",
+    "HIGH_RATING": "Yuqori reytingli OTM ({{rating}})"
+  },
+  "compare": {
+    "title": "Dasturlarni taqqoslash",
+    "lead": "2–4 ta dasturni yonma-yon solishtiring.",
+    "empty": "Taqqoslash uchun dastur tanlanmagan",
+    "emptyText": "Tavsiyalar sahifasida 2–4 ta dasturni “Taqqoslashga” qo‘shing.",
+    "remove": "Olib tashlash",
+    "region": "Hudud",
+    "rating": "Reyting",
+    "latest": "Oxirgi ballar (grant / kontrakt)"
+  },
+  "favorites": {
+    "title": "Saralanganlar",
+    "lead": "Saqlab qo‘ygan dasturlaringiz.",
+    "empty": "Saralangan dastur yo‘q",
+    "emptyText": "Tavsiyalar yoki katalogdan dasturlarni saqlang."
   }
 }
