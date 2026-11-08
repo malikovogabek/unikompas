@@ -1,6 +1,7 @@
 package uz.unikompas.user;
 
 import java.time.Instant;
+import java.util.Locale;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,6 +44,15 @@ public class User {
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
+
+    /**
+     * Single canonical e-mail form used by every write and lookup path.
+     * Locale.ROOT avoids locale-specific casing (e.g. Turkish dotless i).
+     * The database additionally enforces uniqueness on lower(email).
+     */
+    public static String normalizeEmail(String email) {
+        return email.trim().toLowerCase(Locale.ROOT);
+    }
 
     public User(String fullName, String email, String passwordHash, Role role) {
         this.fullName = fullName;

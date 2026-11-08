@@ -1,8 +1,8 @@
 package uz.unikompas.auth;
 
-import java.util.Locale;
+import java.util.UUID;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,30 +23,48 @@ import uz.unikompas.user.UserRepository;
  * {@link Role#APPLICANT}; administrators are provisioned by configuration.
  */
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository users;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    /** Real BCrypt hash of a random value, checked when the e-mail is unknown (timing safety). */
+    private final String dummyHash;
+
+    public AuthService(UserRepository users, PasswordEncoder passwordEncoder, JwtService jwtService) {
+        this.users = users;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.dummyHash = passwordEncoder.encode(UUID.randomUUID().toString());
+    }
 
     @Transactional
     public AuthResponse register(RegisterRequest req) {
-        String email = normalize(req.email());
+        String email = User.normalizeEmail(req.email());
         if (users.existsByEmail(email)) {
-            throw new ApiException(ErrorCode.EMAIL_TAKEN, "E-mail is already registered");
+            throw emailTaken();
         }
-        User user = users.save(new User(req.fullName(), email,
-                passwordEncoder.encode(req.password()), Role.APPLICANT));
-        return toAuthResponse(user);
+        try {
+            // saveAndFlush surfaces the unique-index violation here if a concurrent
+            // request registered the same e-mail between the check and the insert.
+            User user = users.saveAndFlush(new User(req.fullName(), email,
+                    passwordEncoder.encode(req.password()), Role.APPLICANT));
+            return toAuthResponse(user);
+        } catch (DataIntegrityViolationException e) {
+            throw emailTaken();
+        }
     }
 
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest req) {
-        User user = users.findByEmail(normalize(req.email()))
-                .filter(u -> passwordEncoder.matches(req.password(), u.getPasswordHash()))
-                // Same error for unknown e-mail and wrong password: no account enumeration.
-                .orElseThrow(() -> new ApiException(ErrorCode.INVALID_CREDENTIALS, "Invalid e-mail or password"));
+        User user = users.findByEmail(User.normalizeEmail(req.email())).orElse(null);
+        // Always run BCrypt (against a dummy hash for unknown e-mails) and return the same
+        // error, so neither the response body nor its timing reveals whether an account exists.
+        String hash = user != null ? user.getPasswordHash() : dummyHash;
+        boolean matches = passwordEncoder.matches(req.password(), hash);
+        if (user == null || !matches) {
+            throw new ApiException(ErrorCode.INVALID_CREDENTIALS, "Invalid e-mail or password");
+        }
         return toAuthResponse(user);
     }
 
@@ -61,7 +79,7 @@ public class AuthService {
         return new AuthResponse(token.value(), token.expiresAt(), UserResponse.from(user));
     }
 
-    private static String normalize(String email) {
-        return email.trim().toLowerCase(Locale.ROOT);
+    private static ApiException emailTaken() {
+        return new ApiException(ErrorCode.EMAIL_TAKEN, "E-mail is already registered");
     }
 }
