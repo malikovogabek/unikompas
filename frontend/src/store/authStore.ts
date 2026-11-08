@@ -13,7 +13,8 @@ type AuthState = {
 
 /**
  * The only global client state (CLAUDE.md §7.6). Persisted to localStorage so a reload
- * keeps the session; an expired token is discarded on load.
+ * keeps the session. Expiry is enforced on load, in {@link selectIsAuthenticated} and by a
+ * timer in SessionSync while the tab stays open.
  */
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -29,7 +30,7 @@ export const useAuthStore = create<AuthState>()(
       name: 'unikompas.auth',
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
-        if (state?.expiresAt && Date.parse(state.expiresAt) <= Date.now()) {
+        if (state && isExpired(state.expiresAt)) {
           state.logout()
         }
       },
@@ -37,4 +38,8 @@ export const useAuthStore = create<AuthState>()(
   ),
 )
 
-export const selectIsAuthenticated = (s: AuthState) => s.token !== null && s.user !== null
+export function isExpired(expiresAt: string | null): boolean {
+  return expiresAt !== null && Date.parse(expiresAt) <= Date.now()
+}
+
+export const selectIsAuthenticated = (s: AuthState) => s.token !== null && s.user !== null && !isExpired(s.expiresAt)

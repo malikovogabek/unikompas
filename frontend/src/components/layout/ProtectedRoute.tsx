@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router'
+import { homePathFor } from '@/lib/routes'
 import { selectIsAuthenticated, useAuthStore } from '@/store/authStore'
 import type { Role } from '@/types/api'
 
@@ -15,10 +16,10 @@ export function ProtectedRoute({ role, children }: ProtectedRouteProps) {
   const user = useAuthStore((s) => s.user)
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />
+    return <Navigate to="/login" replace state={{ from: location.pathname + location.search + location.hash }} />
   }
   if (role && user?.role !== role) {
-    return <Navigate to={user?.role === 'ADMIN' ? '/admin' : '/dashboard'} replace />
+    return <Navigate to={homePathFor(user?.role)} replace />
   }
   return children
 }

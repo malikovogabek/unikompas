@@ -1,5 +1,4 @@
 import axios, { AxiosError } from 'axios'
-import { currentLanguage } from '@/i18n'
 import { useAuthStore } from '@/store/authStore'
 import type { ApiError } from '@/types/api'
 
@@ -9,20 +8,25 @@ export const api = axios.create({
   timeout: 15_000,
 })
 
+// Backend data is language-independent (the client translates codes), so no Accept-Language
+// header is sent and query keys do not need the language.
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
-  config.headers['Accept-Language'] = currentLanguage()
   return config
 })
 
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ApiError>) => {
-    // An expired/invalid session on a protected call: drop it so guards redirect to /login.
-    if (error.response?.status === 401 && useAuthStore.getState().token && !isAuthCall(error)) {
+    // An expired/invalid session on a protected call: drop it so guards redirect to /login —
+    // but only if the request was sent with the *current* token (a late 401 from an old token
+    // must not end a fresh session).
+    const current = useAuthStore.getState().token
+    const sentWith = String(error.config?.headers?.Authorization ?? '')
+    if (error.response?.status === 401 && current && sentWith === `Bearer ${current}` && !isAuthCall(error)) {
       useAuthStore.getState().logout()
     }
     return Promise.reject(error)

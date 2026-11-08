@@ -2,11 +2,12 @@ import { LogOut, Menu, UserRound, X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink, useNavigate } from 'react-router'
-import { ButtonLink } from '@/components/ui/Button'
+import { ButtonLink } from '@/components/ui/ButtonLink'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { Logo } from '@/components/ui/Logo'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { cn } from '@/lib/cn'
+import { homePathFor } from '@/lib/routes'
 import { selectIsAuthenticated, useAuthStore } from '@/store/authStore'
 
 const PUBLIC_LINKS = [
@@ -29,7 +30,7 @@ export function Header() {
   const isAuthenticated = useAuthStore(selectIsAuthenticated)
   const logout = useAuthStore((s) => s.logout)
 
-  const privateLink = user?.role === 'ADMIN' ? { to: '/admin', key: 'nav.admin' as const } : { to: '/dashboard', key: 'nav.dashboard' as const }
+  const privateLink = { to: homePathFor(user?.role), key: user?.role === 'ADMIN' ? ('nav.admin' as const) : ('nav.dashboard' as const) }
   const links = isAuthenticated ? [...PUBLIC_LINKS, privateLink] : PUBLIC_LINKS
 
   const onLogout = () => {
@@ -48,7 +49,7 @@ export function Header() {
           <Logo />
         </Link>
 
-        <nav className="ml-4 hidden items-center gap-1 md:flex" aria-label="Main">
+        <nav className="ml-4 hidden items-center gap-1 md:flex" aria-label={t('nav.mainNav')}>
           {links.map((l) => (
             <NavLink key={l.to} to={l.to} className={navClass}>
               {t(l.key)}
@@ -100,7 +101,7 @@ export function Header() {
 
       {open && (
         <div id="mobile-menu" className="border-t border-line bg-surface px-4 pt-3 pb-5 md:hidden">
-          <nav className="flex flex-col gap-1" aria-label="Mobile">
+          <nav className="flex flex-col gap-1" aria-label={t('nav.mobileNav')}>
             {links.map((l) => (
               <NavLink key={l.to} to={l.to} className={navClass} onClick={() => setOpen(false)}>
                 {t(l.key)}
