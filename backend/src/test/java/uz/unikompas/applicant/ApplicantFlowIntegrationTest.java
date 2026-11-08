@@ -166,6 +166,8 @@ class ApplicantFlowIntegrationTest {
         mvc.perform(put("/api/v1/favorites/1").header("Authorization", token)).andExpect(status().isNoContent());
         mvc.perform(put("/api/v1/favorites/1").header("Authorization", token)).andExpect(status().isNoContent());
         mvc.perform(put("/api/v1/favorites/2").header("Authorization", token)).andExpect(status().isNoContent());
+        mvc.perform(get("/api/v1/favorites/ids").header("Authorization", token))
+                .andExpect(jsonPath("$", hasSize(2)));
         mvc.perform(get("/api/v1/favorites").header("Authorization", token))
                 .andExpect(jsonPath("$.content", hasSize(2)))
                 .andExpect(jsonPath("$.totalElements").value(2));

@@ -1,15 +1,17 @@
 import { useQuery } from '@tanstack/react-query'
-import { Calculator, RotateCw } from 'lucide-react'
+import { ArrowRight, Calculator, RotateCw } from 'lucide-react'
 import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { calculateScore } from '@/api/programs'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
+import { ButtonLink } from '@/components/ui/ButtonLink'
 import { Card } from '@/components/ui/Card'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { useApiErrorMessage } from '@/hooks/useApiErrorMessage'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { formatScore } from '@/lib/format'
+import { selectIsAuthenticated, useAuthStore } from '@/store/authStore'
 
 const MAX = 30
 
@@ -20,6 +22,7 @@ const MAX = 30
 export function CalculatorPage() {
   const { t } = useTranslation()
   const err = useApiErrorMessage()
+  const isApplicant = useAuthStore((s) => selectIsAuthenticated(s) && s.user?.role === 'APPLICANT')
   const [answers, setAnswers] = useState({ mandatoryCorrect: 24, firstSubjectCorrect: 24, secondSubjectCorrect: 24 })
   const debounced = useDebouncedValue(answers, 150)
   const result = useQuery({
@@ -62,6 +65,11 @@ export function CalculatorPage() {
             {r ? formatScore(r.total) : '—'}
           </p>
           {r && <p className="mt-1 text-sm text-muted">{t('calculator.of', { max: formatScore(r.maxTotal) })}</p>}
+          {isApplicant && r && (
+            <ButtonLink to={`/profile?score=${r.total}`} className="mt-6 w-full" icon={<ArrowRight className="size-4" />}>
+              {t('calculator.useInProfile')}
+            </ButtonLink>
+          )}
           {result.isError && (
             <div className="mt-4 flex flex-col items-center gap-3 text-left">
               <Alert tone="error">{err.message(result.error)}</Alert>

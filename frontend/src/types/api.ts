@@ -121,3 +121,158 @@ export type ScoreCalculationResponse = {
   total: number
   maxTotal: number
 }
+
+// ---------------------------------------------------------------- applicant
+
+export type Financing = 'GRANT_ONLY' | 'CONTRACT_OK'
+
+export type Profile = {
+  region: RefItem | null
+  firstSubject: RefItem | null
+  secondSubject: RefItem | null
+  expectedScore: number | null
+  preferredLanguage: StudyLanguage | null
+  preferredStudyForm: StudyForm | null
+  financing: Financing
+  maxContractFee: number | null
+  willingToRelocate: boolean
+  fields: RefItem[]
+  complete: boolean
+  updatedAt: string | null
+}
+
+export type ProfileUpdateRequest = {
+  regionId: number
+  firstSubjectId: number
+  secondSubjectId: number
+  expectedScore: number
+  preferredLanguage: StudyLanguage | null
+  preferredStudyForm: StudyForm | null
+  financing: Financing
+  maxContractFee: number | null
+  willingToRelocate: boolean
+  fieldIds: number[]
+}
+
+export type CareerQuestion = { id: number; orderNo: number; text: { uz: string; ru: string; en: string } }
+
+export type TestResult = {
+  id: number
+  scores: { r: number; i: number; a: number; s: number; e: number; c: number }
+  hollandCode: string
+  createdAt: string
+}
+
+export type Category = 'SAFE' | 'TARGET' | 'REACH'
+
+export type Reason = { code: string; params: Record<string, string | number> }
+
+export type RecommendedProgram = {
+  programId: number
+  rank: number
+  category: Category
+  university: University
+  direction: Direction
+  language: StudyLanguage
+  studyForm: StudyForm
+  grantQuota: number
+  contractQuota: number
+  contractFee: number
+  scores: {
+    total: number
+    interest: number
+    chance: number
+    preference: number
+    rating: number
+    grantChance: number | null
+    contractChance: number | null
+  }
+  predictedGrantScore: number | null
+  predictedContractScore: number | null
+  reasons: Reason[]
+}
+
+export type DirectionMatch = {
+  direction: Direction
+  matchPercent: number
+  interestPercent: number
+  bestProgramId: number
+  programCount: number
+}
+
+export type Weights = { interest: number; chance: number; preference: number; rating: number }
+
+export type Recommendation = {
+  id: number
+  createdAt: string
+  expectedScore: number
+  usedCareerTest: boolean
+  hollandCode: string | null
+  weights: Weights
+  totalMatches: number
+  counts: Record<Category, number>
+  topDirections: DirectionMatch[]
+  programs: Record<Category, RecommendedProgram[]>
+}
+
+export type RecommendationSummary = { id: number; createdAt: string; totalMatches: number; counts: Record<Category, number> }
+
+// ---------------------------------------------------------------- admin
+
+export type Ranked = { id: number; code: string | null; name: string; count: number }
+
+export type Stats = {
+  applicants: number
+  completeProfiles: number
+  testAttempts: number
+  applicantsWithTest: number
+  recommendations: number
+  catalog: { universities: number; directions: number; programs: number }
+  topDirections: Ranked[]
+  topUniversities: Ranked[]
+  applicantsByRegion: Ranked[]
+}
+
+export type UniversityRequest = {
+  name: string
+  shortName: string
+  regionId: number
+  city: string
+  address: string
+  website: string
+  type: UniversityType
+  rating: number
+  hasDormitory: boolean
+  foundedYear: number | null
+  description: string
+  logoUrl: string
+}
+
+export type DirectionRequest = {
+  code: string
+  name: string
+  fieldId: number
+  firstSubjectId: number
+  secondSubjectId: number
+  riasec: RiasecProfile
+  description: string
+  careerProspects: string
+}
+
+export type ProgramRequest = {
+  universityId: number
+  directionId: number
+  language: StudyLanguage
+  studyForm: StudyForm
+  grantQuota: number
+  contractQuota: number
+  contractFee: number
+  durationYears: number
+}
+
+export type ImportReport = {
+  totalRows: number
+  created: number
+  updated: number
+  errors: { line: number; code: string; value: string }[]
+}

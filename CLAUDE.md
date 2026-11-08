@@ -243,11 +243,11 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda), `@RequiredArg
 ## 7. Frontend qoidalari
 
 1. **TypeScript strict.** `any` taqiqlangan. Noma’lum ma’lumot uchun `unknown` va type guard ishlatiladi.
-2. Faqat funksional komponentlar. Props tiplari `type XxxProps = {...}` ko‘rinishida yoziladi. Har bir faylda bitta eksport qilingan komponent bo‘ladi.
+2. Faqat funksional komponentlar. Props tiplari `type XxxProps = {...}` ko‘rinishida yoziladi. Har bir faylda bitta eksport qilingan komponent bo‘ladi. Istisno: bitta oilaga mansub primitivlar (`Table`/`Th`/`Td`) bitta faylda tursa bo‘ladi.
 3. **Server ma’lumotlari faqat TanStack Query orqali olinadi.** `useEffect` + `fetch` ishlatilmaydi. Query kalitlari `['universities', filters]` ko‘rinishida beriladi.
 4. API chaqiruvlari faqat `src/api/*` da yoziladi. Komponentlar axios’ni to‘g‘ridan-to‘g‘ri chaqirmaydi.
 5. Formalar React Hook Form + Zod sxemasi bilan yaratiladi. Xato xabarlari o‘zbek tilida bo‘ladi.
-6. Global holat (Zustand) faqat auth uchun ishlatiladi. Qolgan holat — lokal `useState` yoki URL (`useSearchParams`, filtrlar uchun).
+6. Global holat (Zustand) faqat haqiqatan global, sahifalararo holat uchun ishlatiladi: auth, tema, taqqoslash tanlovi. Qolgan holat — lokal `useState` yoki URL (`useSearchParams`, filtrlar uchun). Foydalanuvchiga tegishli brauzer ma’lumotlari (masalan, test qoralamasi) kalitida user id bo‘ladi va sessiya almashganda tozalanadi (`lib/storageKeys.ts`).
 7. Har bir ma’lumot ko‘rsatiladigan joyda **3 holat** bo‘lishi shart: yuklanish (Skeleton), xato (qayta urinish tugmasi bilan), bo‘sh (EmptyState).
 8. Nomlash: komponentlar `PascalCase.tsx`, hook’lar `useCamelCase.ts`, qolgan fayllar `camelCase.ts`.
 9. Importlarda `@/` aliasi (`src/`) ishlatiladi.
@@ -259,6 +259,8 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda), `@RequiredArg
 16. Katalog filtrlari URL’da saqlanadi (`useSearchParamState`): filtr o‘zgarganda `page` 0 ga qaytadi, qidiruv 300 ms debounce bilan yoziladi.
 17. Grafiklar (Recharts) animatsiyasiz chiziladi (`isAnimationActive={false}`). Ranglar CSS o‘zgaruvchilari orqali beriladi (`var(--uk-primary)`). Ro‘yxat qatorlaridagi kichik trend grafiklari Recharts’siz, oddiy SVG (`Sparkline`) bilan chiziladi.
 18. Sonlar `lib/format.ts` orqali formatlanadi. O‘zbek tili uchun sonlar `ru-RU` qoidalari bilan chiqariladi (bo‘sh joy bilan guruhlash, o‘nlik vergul), chunki brauzerlarda `uz` CLDR ma’lumotlari to‘liq emas.
+19. Modal oynalar faqat `components/ui/Modal` (native `<dialog>`) orqali ochiladi: fokus tuzog‘i, Esc va fonning nofaol bo‘lishi brauzer tomonidan ta’minlanadi. O‘chirish amali faqat `ConfirmDialog` orqali, oqibatlari tushuntirilgan holda bajariladi.
+20. `<select>` bor formalar faqat **variantlar ro‘yxati yuklangandan keyin** chiziladi (mount qilinadi). Aks holda brauzer birinchi variantni tanlab qo‘yadi va saqlash paytida haqiqiy qiymat yo‘qoladi (`ProfilePage` regression testi).
 11. **Lokalizatsiya (i18n):**
     - JSX ichida qattiq yozilgan matn bo‘lmaydi. Hamma matn `const { t } = useTranslation()` → `t('catalog.filters.region')` orqali olinadi.
     - Kalitlar `bo‘lim.kichikBo‘lim.kalit` (camelCase) formatida yoziladi. Umumiy so‘zlar `common.*` da, xato kodlari `errors.<CODE>` da saqlanadi.
@@ -390,7 +392,7 @@ Batafsil: TZ 12-bo‘lim. Joriy holat shu yerda belgilanadi.
 - [x] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
 - [x] **5.** Frontend asosi: dizayn tizimi, UI kit, layout, i18n (uz/ru/en), auth sahifalari
 - [x] **6.** Frontend: bosh sahifa, katalog, dastur sahifasi, ball kalkulyatori
-- [ ] **7.** Frontend: abituriyent kabineti (profil, test, tavsiyalar, taqqoslash, saralanganlar) va admin panel
+- [x] **7.** Frontend: abituriyent kabineti (profil, test, tavsiyalar, taqqoslash, saralanganlar) va admin panel
 - [ ] **8.** Testlash va topshirish: integratsion va frontend testlar, e2e, a11y, README, `v1.0.0` — **loyiha tayyor**
 
 ## 11. Claude uchun ish tartibi

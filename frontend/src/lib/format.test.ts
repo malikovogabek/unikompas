@@ -1,4 +1,4 @@
-import { formatInteger, formatPercent, formatScore, formatSum } from './format'
+import { formatDate, formatInteger, formatPercent, formatScore, formatSum } from './format'
 
 describe('format', () => {
   it('formats money with the localized currency label', () => {
@@ -20,5 +20,10 @@ describe('format', () => {
 
   it('formats unit values as percent', () => {
     expect(formatPercent(0.874, 'en')).toBe('87%')
+    expect(formatPercent(0.874, 'uz')).toBe('87%')
+  })
+
+  it('formats Uzbek dates numerically', () => {
+    expect(formatDate('2026-11-08T12:00:00Z', 'uz')).toBe('08.11.2026')
   })
 })

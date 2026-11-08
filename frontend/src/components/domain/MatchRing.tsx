@@ -26,8 +26,8 @@ export function MatchRing({ percent, label, size = 88, className }: MatchRingPro
         />
       </svg>
       <span className="absolute inset-0 flex flex-col items-center justify-center leading-none" aria-hidden="true">
-        <span className="tabular font-display text-xl font-extrabold text-text">{clamped}%</span>
-        <span className="mt-0.5 text-[10px] font-medium text-muted uppercase">{label}</span>
+        <span className={cn('tabular font-display font-extrabold text-text', size >= 72 ? 'text-xl' : 'text-base')}>{clamped}%</span>
+        {size >= 72 && <span className="mt-0.5 text-[10px] font-medium text-muted uppercase">{label}</span>}
       </span>
     </div>
   )
