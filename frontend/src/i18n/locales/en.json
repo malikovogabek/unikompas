@@ -1,0 +1,180 @@
+{
+  "common": {
+    "appName": "UniKompas",
+    "loading": "Loading…",
+    "retry": "Try again",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "close": "Close",
+    "menu": "Menu",
+    "or": "or",
+    "comingSoon": "This section is coming soon"
+  },
+  "nav": {
+    "home": "Home",
+    "universities": "Universities",
+    "directions": "Programmes",
+    "calculator": "Score calculator",
+    "dashboard": "Dashboard",
+    "test": "Career test",
+    "recommendations": "Recommendations",
+    "favorites": "Saved",
+    "profile": "Profile",
+    "admin": "Admin panel",
+    "login": "Sign in",
+    "register": "Sign up",
+    "logout": "Sign out",
+    "skipToContent": "Skip to main content"
+  },
+  "theme": {
+    "toLight": "Switch to light theme",
+    "toDark": "Switch to dark theme"
+  },
+  "language": {
+    "label": "Language",
+    "uz": "O‘zbekcha",
+    "ru": "Русский",
+    "en": "English"
+  },
+  "auth": {
+    "fields": {
+      "fullName": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "passwordHint": "At least 8 characters with letters and digits"
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to see your recommendations and saved programmes.",
+      "submit": "Sign in",
+      "noAccount": "No account yet?",
+      "registerLink": "Sign up"
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Sign up in a minute and find the study programme that fits you.",
+      "submit": "Sign up",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in"
+    },
+    "aside": {
+      "title": "The right direction is a confident step forward",
+      "point1": "Programmes that match your interests",
+      "point2": "A forecast of your admission chances",
+      "point3": "Every recommendation explained"
+    },
+    "demoHint": "Demo: abituriyent@unikompas.uz / Demo123!"
+  },
+  "validation": {
+    "required": "Required",
+    "email": "Invalid email address",
+    "minLength": "At least {{count}} characters",
+    "maxLength": "At most {{count}} characters",
+    "passwordRule": "Password must contain letters and digits",
+    "NotBlank": "Required",
+    "NotNull": "Required",
+    "NotEmpty": "Required",
+    "Email": "Invalid email address",
+    "Size": "Invalid length",
+    "Pattern": "Invalid format",
+    "MaxBytes": "Too long",
+    "Min": "Value is too small",
+    "Max": "Value is too large",
+    "DecimalMin": "Value is too small",
+    "DecimalMax": "Value is too large",
+    "Digits": "At most one decimal place",
+    "PositiveOrZero": "Must not be negative",
+    "Exists": "The selected value does not exist",
+    "Unique": "This value is already taken",
+    "DistinctSubjects": "Subjects 1 and 2 must differ",
+    "Duplicate": "Duplicate value",
+    "AllQuestionsRequired": "Please answer every question",
+    "SumToOne": "Weights must add up to 1",
+    "Invalid": "Invalid value"
+  },
+  "errors": {
+    "VALIDATION_ERROR": "Some fields are invalid",
+    "MALFORMED_REQUEST": "The request is malformed",
+    "UNAUTHORIZED": "Please sign in again",
+    "INVALID_CREDENTIALS": "Wrong email or password",
+    "FORBIDDEN": "You are not allowed to do this",
+    "NOT_FOUND": "Not found",
+    "METHOD_NOT_ALLOWED": "This action is not allowed",
+    "NOT_ACCEPTABLE": "Requested format is not supported",
+    "UNSUPPORTED_MEDIA_TYPE": "File or data type is not supported",
+    "PAYLOAD_TOO_LARGE": "The file is too large",
+    "EMAIL_TAKEN": "An account with this email already exists",
+    "PROFILE_INCOMPLETE": "Please complete your profile first",
+    "CONFLICT": "This conflicts with existing data",
+    "INTERNAL_ERROR": "Something went wrong on the server. Please try again shortly",
+    "NETWORK": "Cannot reach the server. Check your connection",
+    "UNKNOWN": "An unexpected error occurred"
+  },
+  "home": {
+    "title": "Find the study programme and university that fit you",
+    "subtitle": "Explained recommendations based on your interests, score and preferences.",
+    "cta": "Get started",
+    "browse": "Browse universities"
+  },
+  "dashboard": {
+    "welcome": "Hi, {{name}}!",
+    "lead": "Your dashboard will live here: profile, career test and recommendations."
+  },
+  "admin": {
+    "title": "Admin panel",
+    "lead": "Catalog, CSV import, algorithm weights and statistics will live here."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The page you are looking for does not exist or has moved.",
+    "home": "Back to home"
+  },
+  "footer": {
+    "tagline": "Study programme and university recommendations for applicants",
+    "disclaimer": "Forecasts are based on previous years and do not guarantee admission.",
+    "thesis": "Bachelor's thesis, 2027"
+  },
+  "regions": {
+    "TASHKENT_CITY": "Tashkent city",
+    "TASHKENT": "Tashkent region",
+    "ANDIJAN": "Andijan region",
+    "NAMANGAN": "Namangan region",
+    "FERGANA": "Fergana region",
+    "SAMARKAND": "Samarkand region",
+    "BUKHARA": "Bukhara region",
+    "NAVOI": "Navoi region",
+    "KASHKADARYA": "Kashkadarya region",
+    "SURKHANDARYA": "Surkhandarya region",
+    "JIZZAKH": "Jizzakh region",
+    "SYRDARYA": "Syrdarya region",
+    "KHOREZM": "Khorezm region",
+    "KARAKALPAKSTAN": "Republic of Karakalpakstan"
+  },
+  "subjects": {
+    "MATH": "Mathematics",
+    "PHYSICS": "Physics",
+    "CHEMISTRY": "Chemistry",
+    "BIOLOGY": "Biology",
+    "HISTORY": "History",
+    "GEOGRAPHY": "Geography",
+    "NATIVE_LANG": "Native language and literature",
+    "ENGLISH": "English",
+    "RUSSIAN": "Russian",
+    "LAW": "Fundamentals of law"
+  },
+  "fields": {
+    "IT": "Information technology",
+    "ENGINEERING": "Engineering",
+    "ARCHITECTURE": "Architecture and construction",
+    "MEDICINE": "Medicine and pharmacy",
+    "NATURAL_SCIENCES": "Natural and exact sciences",
+    "ECONOMICS": "Economics and business",
+    "LAW": "Law",
+    "SOCIAL_SCIENCES": "Social sciences and journalism",
+    "EDUCATION": "Education",
+    "LANGUAGES": "Philology and languages",
+    "AGRICULTURE": "Agriculture",
+    "ARTS": "Arts and design"
+  }
+}

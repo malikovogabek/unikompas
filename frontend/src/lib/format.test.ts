@@ -1,0 +1,18 @@
+import { formatPercent, formatScore, formatSum } from './format'
+
+describe('format', () => {
+  it('formats money with the localized currency label', () => {
+    expect(formatSum(14_500_000, 'uz')).toMatch(/^14\s500\s000 so‘m$/)
+    expect(formatSum(14_500_000, 'ru')).toMatch(/^14\s500\s000 сум$/)
+    expect(formatSum(14_500_000, 'en')).toBe('14,500,000 UZS')
+  })
+
+  it('formats scores with one decimal and locale separator', () => {
+    expect(formatScore(153.2, 'ru')).toBe('153,2')
+    expect(formatScore(153, 'en')).toBe('153.0')
+  })
+
+  it('formats unit values as percent', () => {
+    expect(formatPercent(0.874, 'en')).toBe('87%')
+  })
+})

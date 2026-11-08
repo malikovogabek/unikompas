@@ -1,0 +1,180 @@
+{
+  "common": {
+    "appName": "UniKompas",
+    "loading": "Yuklanmoqda…",
+    "retry": "Qayta urinish",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "back": "Orqaga",
+    "close": "Yopish",
+    "menu": "Menyu",
+    "or": "yoki",
+    "comingSoon": "Bu bo‘lim tez orada tayyor bo‘ladi"
+  },
+  "nav": {
+    "home": "Bosh sahifa",
+    "universities": "OTMlar",
+    "directions": "Yo‘nalishlar",
+    "calculator": "Ball kalkulyatori",
+    "dashboard": "Kabinet",
+    "test": "Kasbiy test",
+    "recommendations": "Tavsiyalar",
+    "favorites": "Saralanganlar",
+    "profile": "Profil",
+    "admin": "Admin panel",
+    "login": "Kirish",
+    "register": "Ro‘yxatdan o‘tish",
+    "logout": "Chiqish",
+    "skipToContent": "Asosiy mazmunga o‘tish"
+  },
+  "theme": {
+    "toLight": "Yorug‘ mavzuga o‘tish",
+    "toDark": "Qorong‘i mavzuga o‘tish"
+  },
+  "language": {
+    "label": "Til",
+    "uz": "O‘zbekcha",
+    "ru": "Русский",
+    "en": "English"
+  },
+  "auth": {
+    "fields": {
+      "fullName": "F.I.Sh.",
+      "email": "E-pochta",
+      "password": "Parol",
+      "passwordHint": "Kamida 8 ta belgi, harf va raqam bo‘lsin"
+    },
+    "login": {
+      "title": "Xush kelibsiz",
+      "subtitle": "Tavsiyalaringiz va saralangan dasturlaringizni ko‘rish uchun tizimga kiring.",
+      "submit": "Kirish",
+      "noAccount": "Hisobingiz yo‘qmi?",
+      "registerLink": "Ro‘yxatdan o‘ting"
+    },
+    "register": {
+      "title": "Hisob yaratish",
+      "subtitle": "Bir daqiqada ro‘yxatdan o‘ting va o‘zingizga mos yo‘nalishni toping.",
+      "submit": "Ro‘yxatdan o‘tish",
+      "hasAccount": "Hisobingiz bormi?",
+      "loginLink": "Kirish"
+    },
+    "aside": {
+      "title": "To‘g‘ri yo‘nalish — kelajakka ishonchli qadam",
+      "point1": "Qiziqishlaringizga mos yo‘nalishlar",
+      "point2": "Kirish ehtimoli prognozi",
+      "point3": "Har bir tavsiya sababi bilan"
+    },
+    "demoHint": "Demo: abituriyent@unikompas.uz / Demo123!"
+  },
+  "validation": {
+    "required": "Majburiy maydon",
+    "email": "E-pochta manzili noto‘g‘ri",
+    "minLength": "Kamida {{count}} ta belgi",
+    "maxLength": "Ko‘pi bilan {{count}} ta belgi",
+    "passwordRule": "Parolda harf va raqam bo‘lishi kerak",
+    "NotBlank": "Majburiy maydon",
+    "NotNull": "Majburiy maydon",
+    "NotEmpty": "Majburiy maydon",
+    "Email": "E-pochta manzili noto‘g‘ri",
+    "Size": "Uzunlik noto‘g‘ri",
+    "Pattern": "Format noto‘g‘ri",
+    "MaxBytes": "Juda uzun",
+    "Min": "Qiymat juda kichik",
+    "Max": "Qiymat juda katta",
+    "DecimalMin": "Qiymat juda kichik",
+    "DecimalMax": "Qiymat juda katta",
+    "Digits": "Ko‘pi bilan bitta kasr raqam",
+    "PositiveOrZero": "Manfiy bo‘lmasligi kerak",
+    "Exists": "Tanlangan qiymat mavjud emas",
+    "Unique": "Bu qiymat allaqachon band",
+    "DistinctSubjects": "1- va 2-fan bir xil bo‘lmasligi kerak",
+    "Duplicate": "Takrorlangan qiymat",
+    "AllQuestionsRequired": "Barcha savollarga javob bering",
+    "SumToOne": "Vaznlar yig‘indisi 1 ga teng bo‘lishi kerak",
+    "Invalid": "Qiymat noto‘g‘ri"
+  },
+  "errors": {
+    "VALIDATION_ERROR": "Ma’lumotlar noto‘g‘ri kiritilgan",
+    "MALFORMED_REQUEST": "So‘rov noto‘g‘ri tuzilgan",
+    "UNAUTHORIZED": "Iltimos, tizimga qayta kiring",
+    "INVALID_CREDENTIALS": "E-pochta yoki parol noto‘g‘ri",
+    "FORBIDDEN": "Bu amal uchun ruxsatingiz yo‘q",
+    "NOT_FOUND": "Ma’lumot topilmadi",
+    "METHOD_NOT_ALLOWED": "Bu amalga ruxsat berilmagan",
+    "NOT_ACCEPTABLE": "So‘rov formati qo‘llab-quvvatlanmaydi",
+    "UNSUPPORTED_MEDIA_TYPE": "Fayl yoki ma’lumot turi qo‘llab-quvvatlanmaydi",
+    "PAYLOAD_TOO_LARGE": "Fayl juda katta",
+    "EMAIL_TAKEN": "Bu e-pochta bilan hisob allaqachon mavjud",
+    "PROFILE_INCOMPLETE": "Avval profilingizni to‘ldiring",
+    "CONFLICT": "Ma’lumot mavjud ma’lumotlar bilan ziddiyatga kirdi",
+    "INTERNAL_ERROR": "Serverda xatolik yuz berdi. Birozdan so‘ng urinib ko‘ring",
+    "NETWORK": "Server bilan aloqa yo‘q. Internetni tekshiring",
+    "UNKNOWN": "Kutilmagan xatolik yuz berdi"
+  },
+  "home": {
+    "title": "O‘zingizga mos yo‘nalish va OTMni toping",
+    "subtitle": "Qiziqishlaringiz, balingiz va afzalliklaringiz asosida tushuntirilgan tavsiyalar.",
+    "cta": "Boshlash",
+    "browse": "OTMlarni ko‘rish"
+  },
+  "dashboard": {
+    "welcome": "Salom, {{name}}!",
+    "lead": "Shaxsiy kabinetingiz shu yerda bo‘ladi: profil, kasbiy test va tavsiyalar."
+  },
+  "admin": {
+    "title": "Admin panel",
+    "lead": "Katalog, CSV import, algoritm vaznlari va statistika shu yerda bo‘ladi."
+  },
+  "notFound": {
+    "title": "Sahifa topilmadi",
+    "text": "Siz qidirgan sahifa mavjud emas yoki ko‘chirilgan.",
+    "home": "Bosh sahifaga qaytish"
+  },
+  "footer": {
+    "tagline": "Abituriyentlar uchun ta’lim yo‘nalishi va OTM tavsiya tizimi",
+    "disclaimer": "Prognozlar o‘tgan yillar ma’lumotlariga asoslanadi va qabulni kafolatlamaydi.",
+    "thesis": "Bitiruv malakaviy ishi, 2027"
+  },
+  "regions": {
+    "TASHKENT_CITY": "Toshkent shahri",
+    "TASHKENT": "Toshkent viloyati",
+    "ANDIJAN": "Andijon viloyati",
+    "NAMANGAN": "Namangan viloyati",
+    "FERGANA": "Farg‘ona viloyati",
+    "SAMARKAND": "Samarqand viloyati",
+    "BUKHARA": "Buxoro viloyati",
+    "NAVOI": "Navoiy viloyati",
+    "KASHKADARYA": "Qashqadaryo viloyati",
+    "SURKHANDARYA": "Surxondaryo viloyati",
+    "JIZZAKH": "Jizzax viloyati",
+    "SYRDARYA": "Sirdaryo viloyati",
+    "KHOREZM": "Xorazm viloyati",
+    "KARAKALPAKSTAN": "Qoraqalpog‘iston Respublikasi"
+  },
+  "subjects": {
+    "MATH": "Matematika",
+    "PHYSICS": "Fizika",
+    "CHEMISTRY": "Kimyo",
+    "BIOLOGY": "Biologiya",
+    "HISTORY": "Tarix",
+    "GEOGRAPHY": "Geografiya",
+    "NATIVE_LANG": "Ona tili va adabiyoti",
+    "ENGLISH": "Ingliz tili",
+    "RUSSIAN": "Rus tili",
+    "LAW": "Huquqshunoslik asoslari"
+  },
+  "fields": {
+    "IT": "Axborot texnologiyalari",
+    "ENGINEERING": "Muhandislik va texnika",
+    "ARCHITECTURE": "Arxitektura va qurilish",
+    "MEDICINE": "Tibbiyot va farmatsiya",
+    "NATURAL_SCIENCES": "Tabiiy va aniq fanlar",
+    "ECONOMICS": "Iqtisodiyot va biznes",
+    "LAW": "Huquqshunoslik",
+    "SOCIAL_SCIENCES": "Ijtimoiy fanlar va jurnalistika",
+    "EDUCATION": "Pedagogika",
+    "LANGUAGES": "Filologiya va tillar",
+    "AGRICULTURE": "Qishloq xo‘jaligi",
+    "ARTS": "San’at va dizayn"
+  }
+}
