@@ -273,21 +273,25 @@ Har bir nomzod dastur uchun 4 ta mezon `[0; 1]` oralig‘ida hisoblanadi.
 
 #### a) Qiziqish mosligi — `I`
 
-Abituriyent va yo‘nalish RIASEC vektorlari orasidagi **kosinus o‘xshashlik**:
+Abituriyent va yo‘nalish RIASEC vektorlari orasidagi **markazlashtirilgan kosinus o‘xshashlik** (Pearson korrelyatsiyasi), `[0; 1]` oralig‘iga o‘tkazilgan:
 
 ```
-I = (u · d) / (‖u‖ · ‖d‖)
+ũ = u − mean(u),   d̃ = d − mean(d)
+I = ( (ũ · d̃) / (‖ũ‖ · ‖d̃‖) + 1 ) / 2
 ```
 
-Test topshirilmagan bo‘lsa (sovuq start), `I` qiziqish sohalari bo‘yicha hisoblanadi: yo‘nalish sohasi tanlangan sohalar orasida bo‘lsa `I = 1`, aks holda `I = 0.3`.
+> **Asoslash.** RIASEC vektorlarining barcha komponentlari musbat. Shu sababli oddiy kosinus o‘xshashlik deyarli har doim 0,7–0,95 oralig‘ida chiqadi va yo‘nalishlarni yomon ajratadi. Markazlashtirish profillarning **shaklini** (qaysi tiplar ustun ekanini) solishtiradi. Masalan, `IRC` abituriyent uchun IT yo‘nalishida `I ≈ 0,97`, pedagogikada `I < 0,5` chiqadi. Agar vektor tekis bo‘lsa (barcha javoblar bir xil), `I = 0,5` (neytral) olinadi.
+
+Test topshirilmagan bo‘lsa yoki natija vektori tekis bo‘lsa (barcha javoblar bir xil, ya’ni signal yo‘q), sovuq start qo‘llanadi: `I` qiziqish sohalari bo‘yicha hisoblanadi: yo‘nalish sohasi tanlangan sohalar orasida bo‘lsa `I = 1`, aks holda `I = 0,3`. Soha tanlanmagan bo‘lsa `I = 0,5`.
 
 #### b) Kirish ehtimoli — `C`
 
-1. **O‘tish balini prognozlash.** Oxirgi `n ≤ 3` yil ballari bo‘yicha o‘rtacha yillik o‘zgarish (trend):
+1. **O‘tish balini prognozlash.** Trend **kalendar yillar** bo‘yicha hisoblanadi: ma’lum bo‘lgan ballar orasidan oxirgi 3 kalendar yil ichidagilari olinadi. Ma’lumot e’lon qilinmagan yillar trendni buzmasligi uchun shunday qilinadi:
    ```
-   Δ = clamp( (P_last − P_first) / (n − 1), −10, +10 )
-   P̂ = P_last + Δ          (n = 1 bo‘lsa, P̂ = P_last)
+   Δ = clamp( (P_last − P_first) / (year_last − year_first), −10, +10 )   — yillik o‘zgarish
+   P̂ = P_last + Δ · (year_target − year_last)                            — maqsadli yil uchun
    ```
+   `year_target` — katalogdagi eng so‘nggi e’lon qilingan yildan keyingi yil. Bitta yil ma’lum bo‘lsa, `Δ = 0`. Oxirgi ma’lum bal maqsadli yildan 3 yildan ko‘proq oldin bo‘lsa, tarix eskirgan deb hisoblanadi va dastur baholanmaydi.
 2. **Ehtimolni baholash** (logistik funksiya, `k = 4` — tarqoqlik koeffitsiyenti):
    ```
    p = 1 / (1 + e^(−(S − P̂) / k))
@@ -296,16 +300,18 @@ Test topshirilmagan bo‘lsa (sovuq start), `I` qiziqish sohalari bo‘yicha his
 3. Grant va kontrakt uchun alohida hisoblanadi:
    ```
    GRANT_ONLY  : C = p_grant
-   CONTRACT_OK : C = max(p_grant, 0.85 · p_contract)
+   CONTRACT_OK : C = max(p_grant, 0.70 · p_contract)
    ```
-   `0.85` koeffitsiyenti grantning abituriyent uchun afzalroq ekanini aks ettiradi.
+   `0.70` koeffitsiyenti grantning abituriyent uchun afzalroq ekanini aks ettiradi.
+
+   > **Asoslash (demo ma’lumotlarda o‘tkazilgan tajriba).** Kontrakt o‘tish ballari grant ballaridan sezilarli darajada past. Shu sababli koeffitsiyent 0,85 bo‘lganda kontraktga rozi abituriyent uchun deyarli barcha dasturlar “Ishonchli” toifasiga tushdi: 60 tadan 59 tasi. Natijada toifalar axborot bermay qo‘ydi. 0,70 da faqat kontrakt orqali ochiq yo‘l ko‘pi bilan “Maqbul” toifasini oladi, “Ishonchli” toifasi esa grant ehtimoli yuqori bo‘lishini talab qiladi. Har bir dastur uchun `p_grant` va `p_contract` alohida saqlanadi va interfeysda ko‘rsatiladi.
 
 #### c) Afzalliklar mosligi — `P`
 
 ```
 P = 0.6 · regionMatch + 0.4 · fieldMatch
 regionMatch = 1 (o‘z hududi) | 0.5 (boshqa hudud, ko‘chishga tayyor)
-fieldMatch  = 1 (soha tanlangan) | 0 (aks holda)
+fieldMatch  = 1 (soha tanlangan) | 0 (aks holda) | 0.5 (abituriyent soha tanlamagan)
 ```
 
 #### d) OTM reytingi — `R`
@@ -343,7 +349,11 @@ Vaznlar admin panelidan o‘zgartiriladi (FR-8.6). Diplom ishining eksperimental
 
 ### 6.6. Tushuntirish (Explainability)
 
-Har bir tavsiya uchun sabablar shablonlar asosida generatsiya qilinadi:
+Har bir tavsiya uchun sabablar shablonlar asosida generatsiya qilinadi. Backend matn emas, **kod va parametrlar** qaytaradi, masalan `{"code": "ABOVE_GRANT", "params": {"diff": 8.4}}`. Frontend ularni tanlangan tilda (`reasons.<CODE>`) ko‘rsatadi.
+
+Kodlar: `INTEREST_MATCH {percent, hollandCode}`, `FIELD_MATCH`, `ABOVE_GRANT {diff}`, `BELOW_GRANT_CONTRACT_LIKELY {diff}`, `BELOW_GRANT {diff}`, `CONTRACT_ONLY {diff}`, `SAME_REGION`, `WITHIN_BUDGET {fee}`, `RISING_TREND {delta}`, `HIGH_RATING {rating}`.
+
+Namunalar:
 
 | Shart | Matn namunasi |
 |---|---|
@@ -544,7 +554,7 @@ erDiagram
 | 25 | GET | `/recommendations` | APPLICANT | Tavsiyalar tarixi |
 | **Saralanganlar** |||||
 | 26 | GET | `/favorites` | APPLICANT | Saralangan dasturlar |
-| 27 | POST | `/favorites/{programId}` | APPLICANT | Dasturni saralanganlarga qo‘shadi |
+| 27 | PUT | `/favorites/{programId}` | APPLICANT | Dasturni saralanganlarga qo‘shadi (idempotent) |
 | 28 | DELETE | `/favorites/{programId}` | APPLICANT | Dasturni saralanganlardan o‘chiradi |
 | **Admin** |||||
 | 29–32 | GET/POST/PUT/DELETE | `/admin/universities[/{id}]` | ADMIN | OTM CRUD |

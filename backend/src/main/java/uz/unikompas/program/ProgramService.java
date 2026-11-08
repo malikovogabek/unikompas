@@ -70,12 +70,23 @@ public class ProgramService {
             throw new ApiException(ErrorCode.VALIDATION_ERROR,
                     "Compare requires %d to %d distinct program ids".formatted(COMPARE_MIN, COMPARE_MAX));
         }
-        Map<Long, Program> found = programs.findDetailedByIds(unique).stream()
+        List<ProgramResponse> result = listInOrder(List.copyOf(unique));
+        if (result.size() != unique.size()) {
+            Set<Long> found = result.stream().map(ProgramResponse::id).collect(Collectors.toSet());
+            Long missing = unique.stream().filter(id -> !found.contains(id)).findFirst().orElseThrow();
+            throw new NotFoundException("Program", missing);
+        }
+        return result;
+    }
+
+    /** Programs with history in the given order; unknown ids are skipped. */
+    public List<ProgramResponse> listInOrder(List<Long> ids) {
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+        Map<Long, Program> found = programs.findDetailedByIds(ids).stream()
                 .collect(Collectors.toMap(Program::getId, Function.identity()));
-        unique.stream().filter(id -> !found.containsKey(id)).findFirst().ifPresent(id -> {
-            throw new NotFoundException("Program", id);
-        });
-        return withHistory(unique.stream().map(found::get).toList());
+        return withHistory(ids.stream().filter(found::containsKey).map(found::get).toList());
     }
 
     private PageResponse<ProgramResponse> toPage(Page<Program> page) {

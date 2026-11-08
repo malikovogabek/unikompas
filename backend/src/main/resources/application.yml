@@ -13,6 +13,8 @@ spring:
       hibernate:
         jdbc:
           time_zone: UTC
+          batch_size: 50
+        order_inserts: true
   flyway:
     locations: classpath:db/migration
   data:
