@@ -1,27 +1,29 @@
 package uz.unikompas.common.exception;
 
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * Translates every exception into the uniform {@link ApiError} format.
  * Security filter errors are routed here too (see {@code SecurityConfig}),
- * so clients always receive the same JSON shape.
+ * so clients always receive the same JSON shape. Client mistakes are mapped
+ * to 4xx and never logged as server errors.
  */
 @Slf4j
 @RestControllerAdvice
@@ -57,18 +59,27 @@ public class GlobalExceptionHandler {
         return build(ErrorCode.FORBIDDEN, "Access denied", req);
     }
 
-    @ExceptionHandler(NoResourceFoundException.class)
-    ResponseEntity<ApiError> handleNoResource(NoResourceFoundException ex, HttpServletRequest req) {
-        return build(ErrorCode.NOT_FOUND, "Resource not found", req);
+    /** Unique/foreign-key violations that slipped past service checks (e.g. concurrent inserts). */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    ResponseEntity<ApiError> handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest req) {
+        log.warn("Data integrity violation on {} {}: {}", req.getMethod(), req.getRequestURI(),
+                ex.getMostSpecificCause().getMessage());
+        return build(ErrorCode.CONFLICT, "Request conflicts with existing data", req);
     }
 
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    ResponseEntity<ApiError> handleMethod(HttpRequestMethodNotSupportedException ex, HttpServletRequest req) {
-        return build(ErrorCode.METHOD_NOT_ALLOWED, ex.getMessage(), req);
-    }
-
+    /**
+     * Fallback. Spring MVC client errors (404 no route, 405, 406, 415, missing
+     * parameter/header...) implement {@link ErrorResponse} and keep their own 4xx status;
+     * anything else is a genuine server error.
+     */
     @ExceptionHandler(Exception.class)
     ResponseEntity<ApiError> handleUnexpected(Exception ex, HttpServletRequest req) {
+        if (ex instanceof ErrorResponse er && er.getStatusCode().is4xxClientError()) {
+            int status = er.getStatusCode().value();
+            ApiError body = new ApiError(Instant.now(), status, ErrorCode.fromStatus(status).name(),
+                    er.getBody().getDetail(), req.getRequestURI(), null);
+            return ResponseEntity.status(status).body(body);
+        }
         log.error("Unhandled error on {} {}", req.getMethod(), req.getRequestURI(), ex);
         return build(ErrorCode.INTERNAL_ERROR, "Unexpected server error", req);
     }
