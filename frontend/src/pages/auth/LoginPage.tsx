@@ -15,6 +15,9 @@ import { loginSchema, type LoginForm } from './authSchemas'
 import { PasswordField } from './PasswordField'
 import { useFieldError } from './useFieldError'
 
+/** Demo credentials are shown in development and on the public portfolio deployment. */
+const SHOW_DEMO_HINT = import.meta.env.DEV || import.meta.env.VITE_SHOW_DEMO_HINT === 'true'
+
 export function LoginPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -65,7 +68,7 @@ export function LoginPage() {
           {t('auth.login.registerLink')}
         </Link>
       </p>
-      {import.meta.env.DEV && <p className="mt-4 text-center text-xs text-muted">{t('auth.demoHint')}</p>}
+      {SHOW_DEMO_HINT && <p className="mt-4 text-center text-xs text-muted">{t('auth.demoHint')}</p>}
     </div>
   )
 }
