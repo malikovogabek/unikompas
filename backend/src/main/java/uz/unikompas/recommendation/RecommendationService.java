@@ -1,6 +1,7 @@
 package uz.unikompas.recommendation;
 
 import java.math.BigDecimal;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -12,12 +13,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 import uz.unikompas.careertest.CareerTestService;
 import uz.unikompas.careertest.TestAttempt;
+import uz.unikompas.common.dto.PageResponse;
+import uz.unikompas.common.dto.Pageables;
 import uz.unikompas.common.exception.ApiException;
 import uz.unikompas.common.exception.ErrorCode;
 import uz.unikompas.common.exception.NotFoundException;
@@ -38,7 +43,8 @@ import uz.unikompas.university.dto.UniversityResponse;
 /**
  * Orchestrates recommendation generation (FR-6): gathers profile, latest test, weights
  * and candidate programs, runs {@link RecommendationEngine}, persists every scored
- * program and builds the response. Reads rebuild the same response from storage.
+ * program and builds the response. Reads rebuild the response from storage; deleting a
+ * program cascades to its stored items (V1 FK), so a stored result may shrink over time.
  */
 @Service
 @RequiredArgsConstructor
@@ -71,7 +77,9 @@ public class RecommendationService {
 
         List<Program> candidates = programs.findForSubjectPair(input.firstSubjectId(), input.secondSubjectId());
         Map<Long, Program> byId = candidates.stream().collect(Collectors.toMap(Program::getId, Function.identity()));
-        List<ScoredProgram> scored = engine.score(input, toCandidates(candidates), weights);
+        Map<Long, List<PassingScore>> history = historyOf(candidates);
+        List<ScoredProgram> scored = engine.score(input, toCandidates(candidates, history), weights,
+                targetYear(history));
 
         Recommendation rec = recommendations.save(
                 new Recommendation(userId, json.writeValueAsString(snapshot(profile, input)),
@@ -100,20 +108,22 @@ public class RecommendationService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecommendationSummaryResponse> history(Long userId) {
-        List<Recommendation> recs = recommendations.findTop20ByUserIdOrderByCreatedAtDescIdDesc(userId);
+    public PageResponse<RecommendationSummaryResponse> history(Long userId, Pageable pageable) {
+        Page<Recommendation> page = recommendations.findByUserIdOrderByCreatedAtDescIdDesc(userId,
+                Pageables.unsorted(pageable));
+        List<Recommendation> recs = page.getContent();
         if (recs.isEmpty()) {
-            return List.of();
+            return PageResponse.from(page.map(r -> (RecommendationSummaryResponse) null));
         }
         Map<Long, Map<Category, Integer>> counts = new LinkedHashMap<>();
         for (Object[] row : items.countByCategory(recs.stream().map(Recommendation::getId).toList())) {
             counts.computeIfAbsent((Long) row[0], k -> emptyCounts()).put((Category) row[1], ((Long) row[2]).intValue());
         }
-        return recs.stream().map(r -> {
+        return PageResponse.from(page.map(r -> {
             Map<Category, Integer> c = counts.getOrDefault(r.getId(), emptyCounts());
             int total = c.values().stream().mapToInt(Integer::intValue).sum();
             return new RecommendationSummaryResponse(r.getId(), r.getCreatedAt(), total, c);
-        }).toList();
+        }));
     }
 
     // ------------------------------------------------------------------ helpers
@@ -130,15 +140,12 @@ public class RecommendationService {
     private RecommendationResponse toResponse(Recommendation rec, String hollandCode, BigDecimal expectedScore,
                                               RecommendationWeights weights, List<RecommendationItem> ranked,
                                               Map<Long, Program> byId) {
-        // Items whose program was deleted after generation are skipped.
-        List<RecommendationItem> live = ranked.stream().filter(i -> byId.containsKey(i.getProgramId())).toList();
-
         Map<Category, Integer> counts = emptyCounts();
         Map<Category, List<RecommendedProgramResponse>> grouped = new EnumMap<>(Category.class);
         for (Category c : Category.values()) {
             grouped.put(c, new ArrayList<>());
         }
-        for (RecommendationItem item : live) {
+        for (RecommendationItem item : ranked) {
             counts.merge(item.getCategory(), 1, Integer::sum);
             List<RecommendedProgramResponse> bucket = grouped.get(item.getCategory());
             if (bucket.size() < PER_CATEGORY) {
@@ -148,7 +155,7 @@ public class RecommendationService {
 
         // Best-ranked program per direction; items are already sorted by rank.
         Map<Long, List<RecommendationItem>> byDirection = new LinkedHashMap<>();
-        for (RecommendationItem item : live) {
+        for (RecommendationItem item : ranked) {
             byDirection.computeIfAbsent(byId.get(item.getProgramId()).getDirection().getId(), k -> new ArrayList<>())
                     .add(item);
         }
@@ -164,7 +171,7 @@ public class RecommendationService {
                 .toList();
 
         return new RecommendationResponse(rec.getId(), rec.getCreatedAt(), expectedScore, hollandCode != null,
-                hollandCode, weights, live.size(), counts, topDirections, grouped);
+                hollandCode, weights, ranked.size(), counts, topDirections, grouped);
     }
 
     private RecommendedProgramResponse toProgram(RecommendationItem i, Program p) {
@@ -185,12 +192,21 @@ public class RecommendationService {
                 test == null ? null : test.vector(), test == null ? null : test.getHollandCode());
     }
 
-    private List<ProgramCandidate> toCandidates(List<Program> list) {
+    private Map<Long, List<PassingScore>> historyOf(List<Program> list) {
         if (list.isEmpty()) {
-            return List.of();
+            return Map.of();
         }
-        Map<Long, List<PassingScore>> history = passingScores.findByProgramIds(list.stream().map(Program::getId).toList())
+        return passingScores.findByProgramIds(list.stream().map(Program::getId).toList())
                 .stream().collect(Collectors.groupingBy(s -> s.getProgram().getId()));
+    }
+
+    /** Forecast for the admission after the latest published year (current year if no data). */
+    private static int targetYear(Map<Long, List<PassingScore>> history) {
+        return history.values().stream().flatMap(List::stream).mapToInt(PassingScore::getYear).max()
+                .orElse(Year.now().getValue() - 1) + 1;
+    }
+
+    private static List<ProgramCandidate> toCandidates(List<Program> list, Map<Long, List<PassingScore>> history) {
         return list.stream().map(p -> {
             List<PassingScore> h = history.getOrDefault(p.getId(), List.of()).stream()
                     .sorted(Comparator.comparingInt(PassingScore::getYear)).toList();
@@ -203,8 +219,9 @@ public class RecommendationService {
         }).toList();
     }
 
-    private static List<Double> known(List<PassingScore> history, Function<PassingScore, BigDecimal> getter) {
-        return history.stream().map(getter).filter(java.util.Objects::nonNull).map(BigDecimal::doubleValue).toList();
+    private static List<YearScore> known(List<PassingScore> history, Function<PassingScore, BigDecimal> getter) {
+        return history.stream().filter(s -> getter.apply(s) != null)
+                .map(s -> new YearScore(s.getYear(), getter.apply(s).doubleValue())).toList();
     }
 
     private static InputSnapshot snapshot(ApplicantProfile p, ApplicantInput in) {

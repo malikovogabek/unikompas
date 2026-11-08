@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.OptionalDouble;
 
-import org.springframework.stereotype.Component;
 import uz.unikompas.profile.Financing;
 
 /**
- * Hybrid, explainable, content-based recommender (TZ §6). Pure and stateless:
- * the same input always gives the same ranking, which makes it fully unit-testable.
+ * Hybrid, explainable, content-based recommender (TZ §6). Pure and stateless (no Spring,
+ * JPA or HTTP dependencies): the same input always gives the same ranking, which makes it
+ * fully unit-testable. Registered as a bean in {@link RecommendationConfig}.
  *
  * <pre>
  * 1. hard filters   — subject pair, language, form, region (if not relocating), financing/budget
@@ -22,7 +22,6 @@ import uz.unikompas.profile.Financing;
  * 5. explain        — reasons with parameters for the client to render
  * </pre>
  */
-@Component
 public class RecommendationEngine {
 
     /**
@@ -37,15 +36,21 @@ public class RecommendationEngine {
     static final double COLD_START_FIELD_MISS = 0.3;
     static final double NEUTRAL = 0.5;
     static final double OTHER_REGION = 0.5;
-    static final double HIGH_INTEREST = 0.75;
+    /** TZ §6.6: the interest reason is shown from I ≥ 0.8. */
+    static final double HIGH_INTEREST = 0.8;
+    static final double FLAT_VECTOR_VARIANCE = 1e-9;
     static final double LIKELY = 0.5;
     static final double RISING_TREND = 3;
     static final int HIGH_RATING = 85;
 
-    public List<ScoredProgram> score(ApplicantInput in, List<ProgramCandidate> candidates, RecommendationWeights w) {
+    /**
+     * @param targetYear admission year to forecast passing scores for
+     */
+    public List<ScoredProgram> score(ApplicantInput in, List<ProgramCandidate> candidates, RecommendationWeights w,
+                                     int targetYear) {
         List<ScoredProgram> result = new ArrayList<>();
         for (ProgramCandidate p : candidates) {
-            ScoredProgram scored = scoreOne(in, p, w);
+            ScoredProgram scored = scoreOne(in, p, w, targetYear);
             if (scored != null) {
                 result.add(scored);
             }
@@ -56,7 +61,7 @@ public class RecommendationEngine {
         return result;
     }
 
-    private ScoredProgram scoreOne(ApplicantInput in, ProgramCandidate p, RecommendationWeights w) {
+    private ScoredProgram scoreOne(ApplicantInput in, ProgramCandidate p, RecommendationWeights w, int targetYear) {
         // ---- 1. Hard filters (TZ §6.2) ------------------------------------
         if (p.firstSubjectId() != in.firstSubjectId() || p.secondSubjectId() != in.secondSubjectId()) {
             return null;
@@ -71,8 +76,8 @@ public class RecommendationEngine {
         if (!in.willingToRelocate() && !sameRegion) {
             return null;
         }
-        OptionalDouble grantForecast = ChanceEstimator.forecast(p.grantHistory());
-        OptionalDouble contractForecast = ChanceEstimator.forecast(p.contractHistory());
+        OptionalDouble grantForecast = ChanceEstimator.forecast(p.grantHistory(), targetYear);
+        OptionalDouble contractForecast = ChanceEstimator.forecast(p.contractHistory(), targetYear);
         boolean grantAllowed = p.grantQuota() > 0 && grantForecast.isPresent();
         boolean withinBudget = in.maxContractFee() == null || p.contractFee() <= in.maxContractFee();
         boolean contractAllowed = in.financing() == Financing.CONTRACT_OK && p.contractQuota() > 0
@@ -86,6 +91,8 @@ public class RecommendationEngine {
         double pContract = contractAllowed
                 ? ChanceEstimator.probability(in.expectedScore(), contractForecast.getAsDouble()) : 0;
         double chance = Math.max(pGrant, CONTRACT_DISCOUNT * pContract);
+        // Which financing path determines C — used for trend warnings.
+        boolean viaGrant = grantAllowed && pGrant >= CONTRACT_DISCOUNT * pContract;
         Category category = Category.of(chance);
         if (category == null) {
             return null;
@@ -94,7 +101,8 @@ public class RecommendationEngine {
         boolean noFieldsChosen = in.fieldIds() == null || in.fieldIds().isEmpty();
         boolean fieldMatch = !noFieldsChosen && in.fieldIds().contains(p.fieldId());
         double fieldScore = noFieldsChosen ? NEUTRAL : (fieldMatch ? 1 : 0);
-        boolean usedTest = in.riasec() != null;
+        // A flat test result (all answers equal) carries no signal: fall back to chosen fields.
+        boolean usedTest = in.riasec() != null && !isFlat(in.riasec());
         double interest = usedTest
                 ? interestSimilarity(in.riasec(), p.directionRiasec())
                 : (noFieldsChosen ? NEUTRAL : (fieldMatch ? COLD_START_FIELD_MATCH : COLD_START_FIELD_MISS));
@@ -132,7 +140,7 @@ public class RecommendationEngine {
         if (contractAllowed && in.maxContractFee() != null) {
             reasons.add(Reason.of("WITHIN_BUDGET", params("fee", p.contractFee())));
         }
-        double trend = grantAllowed ? ChanceEstimator.trend(p.grantHistory()) : ChanceEstimator.trend(p.contractHistory());
+        double trend = ChanceEstimator.trend(viaGrant ? p.grantHistory() : p.contractHistory());
         if (trend > RISING_TREND) {
             reasons.add(Reason.of("RISING_TREND", params("delta", round1(trend))));
         }
@@ -143,7 +151,7 @@ public class RecommendationEngine {
         return new ScoredProgram(p, interest, chance, preference, rating, total, category,
                 grantAllowed ? pGrant : null, contractAllowed ? pContract : null,
                 grantAllowed ? round1(grantForecast.getAsDouble()) : null,
-                contractForecast.isPresent() ? round1(contractForecast.getAsDouble()) : null,
+                contractAllowed ? round1(contractForecast.getAsDouble()) : null,
                 List.copyOf(reasons));
     }
 
@@ -170,6 +178,15 @@ public class RecommendationEngine {
             return NEUTRAL;
         }
         return (dot / Math.sqrt(nu * nd) + 1) / 2;
+    }
+
+    static boolean isFlat(double[] v) {
+        double m = mean(v);
+        double var = 0;
+        for (double x : v) {
+            var += (x - m) * (x - m);
+        }
+        return var < FLAT_VECTOR_VARIANCE;
     }
 
     private static double mean(double[] v) {
