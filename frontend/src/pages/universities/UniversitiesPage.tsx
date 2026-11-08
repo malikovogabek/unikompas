@@ -1,6 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { Building2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { fetchUniversities, universityKeys } from '@/api/universities'
 import { UniversityCard } from '@/components/domain/UniversityCard'
@@ -11,10 +10,10 @@ import { Pagination } from '@/components/ui/Pagination'
 import { QueryState } from '@/components/ui/QueryState'
 import { SearchInput } from '@/components/ui/SearchInput'
 import { Select } from '@/components/ui/Select'
-import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { useRegions } from '@/hooks/useReference'
 import { useRefLabel } from '@/hooks/useRefLabel'
-import { useSearchParamState } from '@/hooks/useSearchParamState'
+import { useSearchParamState, useUrlSearch } from '@/hooks/useSearchParamState'
+import { formatInteger } from '@/lib/format'
 import type { UniversityType } from '@/types/api'
 import { CardGridSkeleton } from '../CardGridSkeleton'
 
@@ -27,10 +26,7 @@ export function UniversitiesPage() {
   const regions = useRegions()
 
   // Search is typed locally and pushed to the URL debounced.
-  const [search, setSearch] = useState(params.get('q'))
-  const debounced = useDebouncedValue(search)
-  const { set } = params
-  useEffect(() => set('q', debounced.trim()), [debounced, set])
+  const [search, setSearch] = useUrlSearch(params)
 
   const filters = {
     search: params.get('q') || undefined,
@@ -97,7 +93,7 @@ export function UniversitiesPage() {
               />
             ) : (
               <>
-                <p className="mb-4 text-sm text-muted">{t('common.results', { count: page.totalElements })}</p>
+                <p className="mb-4 text-sm text-muted">{t('common.results', { count: page.totalElements, value: formatInteger(page.totalElements) })}</p>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {page.content.map((u) => (
                     <UniversityCard key={u.id} university={u} />

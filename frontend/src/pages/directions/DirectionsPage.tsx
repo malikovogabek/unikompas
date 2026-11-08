@@ -1,6 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { BookOpen } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { directionKeys, fetchDirections } from '@/api/directions'
 import { DirectionCard } from '@/components/domain/DirectionCard'
@@ -11,10 +10,10 @@ import { Pagination } from '@/components/ui/Pagination'
 import { QueryState } from '@/components/ui/QueryState'
 import { SearchInput } from '@/components/ui/SearchInput'
 import { Select } from '@/components/ui/Select'
-import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { useFields, useSubjects } from '@/hooks/useReference'
 import { useRefLabel } from '@/hooks/useRefLabel'
-import { useSearchParamState } from '@/hooks/useSearchParamState'
+import { useSearchParamState, useUrlSearch } from '@/hooks/useSearchParamState'
+import { formatInteger } from '@/lib/format'
 import { CardGridSkeleton } from '../CardGridSkeleton'
 
 export function DirectionsPage() {
@@ -24,10 +23,7 @@ export function DirectionsPage() {
   const fields = useFields()
   const subjects = useSubjects()
 
-  const [search, setSearch] = useState(params.get('q'))
-  const debounced = useDebouncedValue(search)
-  const { set } = params
-  useEffect(() => set('q', debounced.trim()), [debounced, set])
+  const [search, setSearch] = useUrlSearch(params)
 
   const filters = {
     search: params.get('q') || undefined,
@@ -97,7 +93,7 @@ export function DirectionsPage() {
               />
             ) : (
               <>
-                <p className="mb-4 text-sm text-muted">{t('common.results', { count: page.totalElements })}</p>
+                <p className="mb-4 text-sm text-muted">{t('common.results', { count: page.totalElements, value: formatInteger(page.totalElements) })}</p>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {page.content.map((d) => (
                     <DirectionCard key={d.id} direction={d} />
