@@ -6,9 +6,14 @@ import { AdminHomePage } from '@/pages/admin/AdminHomePage'
 import { DashboardPage } from '@/pages/applicant/DashboardPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
-import { ComingSoonPage } from '@/pages/ComingSoonPage'
+import { CalculatorPage } from '@/pages/CalculatorPage'
+import { DirectionDetailPage } from '@/pages/directions/DirectionDetailPage'
+import { DirectionsPage } from '@/pages/directions/DirectionsPage'
 import { HomePage } from '@/pages/HomePage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { ProgramPage } from '@/pages/programs/ProgramPage'
+import { UniversitiesPage } from '@/pages/universities/UniversitiesPage'
+import { UniversityDetailPage } from '@/pages/universities/UniversityDetailPage'
 
 export const router = createBrowserRouter([
   {
@@ -22,10 +27,12 @@ export const router = createBrowserRouter([
           { path: 'register', element: <RegisterPage /> },
         ],
       },
-      // Catalog pages arrive in stage 6.
-      { path: 'universities', element: <ComingSoonPage /> },
-      { path: 'directions', element: <ComingSoonPage /> },
-      { path: 'calculator', element: <ComingSoonPage /> },
+      { path: 'universities', element: <UniversitiesPage /> },
+      { path: 'universities/:id', element: <UniversityDetailPage /> },
+      { path: 'directions', element: <DirectionsPage /> },
+      { path: 'directions/:id', element: <DirectionDetailPage /> },
+      { path: 'programs/:id', element: <ProgramPage /> },
+      { path: 'calculator', element: <CalculatorPage /> },
       {
         path: 'dashboard',
         element: (

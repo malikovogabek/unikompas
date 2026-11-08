@@ -1,6 +1,6 @@
 import { cn } from '@/lib/cn'
 
-export type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
+export type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'accent'
 export type Size = 'sm' | 'md' | 'lg'
 
 const base =
@@ -11,6 +11,8 @@ const variants: Record<Variant, string> = {
   secondary: 'bg-surface text-text border border-line hover:bg-surface-2',
   ghost: 'text-text hover:bg-surface-2',
   danger: 'bg-terracotta text-white hover:opacity-90',
+  /** Gold on dark (lapis) surfaces, e.g. the landing CTA band. */
+  accent: 'bg-gold text-lapis-900 hover:opacity-90',
 }
 
 const sizes: Record<Size, string> = {

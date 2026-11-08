@@ -43,3 +43,81 @@ export type PageResponse<T> = {
 }
 
 export type RefItem = { id: number; code: string; name: string; icon?: string }
+
+// ---------------------------------------------------------------- catalog
+
+export type UniversityType = 'STATE' | 'PRIVATE' | 'FOREIGN_BRANCH'
+export type StudyLanguage = 'UZ' | 'RU' | 'EN'
+export type StudyForm = 'FULL_TIME' | 'PART_TIME' | 'EVENING' | 'DISTANCE'
+
+export type University = {
+  id: number
+  name: string
+  shortName: string | null
+  region: RefItem
+  city: string | null
+  type: UniversityType
+  rating: number
+  hasDormitory: boolean
+  logoUrl: string | null
+}
+
+export type UniversityDetails = University & {
+  address: string | null
+  website: string | null
+  foundedYear: number | null
+  description: string | null
+  programCount: number
+}
+
+export type Direction = {
+  id: number
+  code: string
+  name: string
+  field: RefItem
+  firstSubject: RefItem
+  secondSubject: RefItem
+}
+
+export type RiasecProfile = { r: number; i: number; a: number; s: number; e: number; c: number }
+
+export type DirectionDetails = Direction & {
+  riasec: RiasecProfile
+  hollandCode: string
+  description: string | null
+  careerProspects: string | null
+  programCount: number
+}
+
+export type ScoreHistoryItem = { year: number; grantScore: number | null; contractScore: number | null }
+
+export type Program = {
+  id: number
+  university: University
+  direction: Direction
+  language: StudyLanguage
+  studyForm: StudyForm
+  grantQuota: number
+  contractQuota: number
+  contractFee: number
+  durationYears: number
+  latestScores: ScoreHistoryItem | null
+  scoreHistory: ScoreHistoryItem[]
+}
+
+export type ScoreCalculationRequest = {
+  mandatoryCorrect: number
+  firstSubjectCorrect: number
+  secondSubjectCorrect: number
+}
+
+export type ScoreCalculationResponse = {
+  mandatoryScore: number
+  firstSubjectScore: number
+  secondSubjectScore: number
+  mandatoryMax: number
+  firstSubjectMax: number
+  secondSubjectMax: number
+  total: number
+  maxTotal: number
+}

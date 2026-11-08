@@ -256,6 +256,9 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda), `@RequiredArg
 13. Backend xatolari `useApiErrorMessage()` orqali ko‘rsatiladi: `errors.<CODE>` va `validation.<constraint>`. `locales.test.ts` uchala tildagi kalitlar bir xilligini va backend `ErrorCode` enum’idagi har bir kodning tarjimasi borligini tekshiradi.
 14. **Sessiya va kesh:** sessiya o‘zgarganda (chiqish, muddat tugashi, boshqa foydalanuvchi kirishi) `queryClient` keshi to‘liq tozalanadi (`lib/queryClient.ts`). Shuning uchun foydalanuvchiga tegishli query kalitlariga user id qo‘shish shart emas. Backend ma’lumotlari tilga bog‘liq emas (frontend kodlarni tarjima qiladi), shuning uchun kalitlarga til qo‘shilmaydi.
 15. Rolga qarab bosh sahifa faqat `homePathFor(role)` (`lib/routes.ts`) orqali aniqlanadi.
+16. Katalog filtrlari URL’da saqlanadi (`useSearchParamState`): filtr o‘zgarganda `page` 0 ga qaytadi, qidiruv 300 ms debounce bilan yoziladi.
+17. Grafiklar (Recharts) animatsiyasiz chiziladi (`isAnimationActive={false}`). Ranglar CSS o‘zgaruvchilari orqali beriladi (`var(--uk-primary)`). Ro‘yxat qatorlaridagi kichik trend grafiklari Recharts’siz, oddiy SVG (`Sparkline`) bilan chiziladi.
+18. Sonlar `lib/format.ts` orqali formatlanadi. O‘zbek tili uchun sonlar `ru-RU` qoidalari bilan chiqariladi (bo‘sh joy bilan guruhlash, o‘nlik vergul), chunki brauzerlarda `uz` CLDR ma’lumotlari to‘liq emas.
 11. **Lokalizatsiya (i18n):**
     - JSX ichida qattiq yozilgan matn bo‘lmaydi. Hamma matn `const { t } = useTranslation()` → `t('catalog.filters.region')` orqali olinadi.
     - Kalitlar `bo‘lim.kichikBo‘lim.kalit` (camelCase) formatida yoziladi. Umumiy so‘zlar `common.*` da, xato kodlari `errors.<CODE>` da saqlanadi.
@@ -386,7 +389,7 @@ Batafsil: TZ 12-bo‘lim. Joriy holat shu yerda belgilanadi.
 - [x] **3.** Profil, RIASEC testi, tavsiya dvigateli, saralanganlar va unit testlar
 - [x] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
 - [x] **5.** Frontend asosi: dizayn tizimi, UI kit, layout, i18n (uz/ru/en), auth sahifalari
-- [ ] **6.** Frontend: bosh sahifa, katalog, dastur sahifasi, ball kalkulyatori
+- [x] **6.** Frontend: bosh sahifa, katalog, dastur sahifasi, ball kalkulyatori
 - [ ] **7.** Frontend: abituriyent kabineti (profil, test, tavsiyalar, taqqoslash, saralanganlar) va admin panel
 - [ ] **8.** Testlash va topshirish: integratsion va frontend testlar, e2e, a11y, README, `v1.0.0` — **loyiha tayyor**
 
