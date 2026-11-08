@@ -12,7 +12,7 @@ Hujjat TZ’ning 13-bo‘limida belgilangan sinovlarning natijalarini jamlaydi. 
 | `AdminIntegrationTest` | 8 | Rol himoyasi, CRUD va kaskadli o‘chirish, ballar tarixi (PUT), CSV import hisoboti, UTF-8 tekshiruvi, vaznlar, statistika |
 | `RecommendationEngineTest` | 17 | Har bir qat’iy filtr, toifalar, kontrakt koeffitsiyenti, qiziqish o‘xshashligi, sovuq start, tekis vektor, sabablar, determinizm |
 | `ChanceEstimatorTest` | 7 | Kalendar yillar bo‘yicha trend, yillar orasidagi bo‘shliq, eskirgan tarix, logistik egri chiziq |
-| `RecommendationEngineScalabilityTest` | 1 | 5 000 ta dastur < 1 s |
+| `RecommendationEngineScalabilityTest` | 1 | 5 000 ta dastur < 1 s (`@Tag("performance")`, `./mvnw test -Pperf` bilan alohida ishga tushiriladi) |
 | Boshqa unit testlar | 8 | `ScoreCalculator`, `RiasecScorer`, `Riasec`, `Specs` |
 | **Backend jami** | **73** | |
 | Frontend (Vitest) | 33 | i18n kalitlari mosligi va backend xato kodlari, formatlash, sessiya va kesh izolyatsiyasi, 401 interceptor, marshrut himoyasi, sahifalash, profil formasi, axe-core a11y |
@@ -30,7 +30,7 @@ Integratsion testlar haqiqiy PostgreSQL bazasida (`unikompas_test`) ishlaydi. Ha
 | `RiasecScorer` / `Riasec` | 100% | 83–100% |
 | **Butun backend** | **90,3%** | **75,4%** |
 
-Qabul mezoni (algoritm qamrovi ≥ 80%) `./mvnw verify` tarkibida avtomatik tekshiriladi.
+Qabul mezoni `./mvnw verify` tarkibida avtomatik tekshiriladi: `recommendation`, `careertest` va `profile` paketlarining har biri ≥ 80% satr qamroviga ega bo‘lishi kerak. Tekshiruv paket darajasida qilingan, shuning uchun klass qayta nomlansa ham u chetda qolmaydi.
 
 ## 3. Unumdorlik (NFR-1)
 

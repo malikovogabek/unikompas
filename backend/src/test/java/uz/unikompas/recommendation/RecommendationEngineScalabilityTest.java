@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import uz.unikompas.profile.Financing;
 import uz.unikompas.program.StudyForm;
@@ -14,9 +15,10 @@ import uz.unikompas.program.StudyLanguage;
 
 /**
  * NFR-1: scoring must stay well under 1 s for a catalog of 5 000 programmes.
- * The engine is O(N log N); the generous bound only guards against regressions
- * (e.g. an accidental O(N²)) without making the build flaky.
+ * Wall-clock based, so it is tagged "performance" and excluded from the default build;
+ * run with {@code ./mvnw test -Pperf} (measured: ~4 ms on a laptop).
  */
+@Tag("performance")
 class RecommendationEngineScalabilityTest {
 
     @Test
@@ -46,9 +48,7 @@ class RecommendationEngineScalabilityTest {
         List<ScoredProgram> result = engine.score(applicant, candidates, RecommendationWeights.DEFAULT, 2027);
         long millis = (System.nanoTime() - start) / 1_000_000;
 
-        System.out.printf("RecommendationEngine: %d candidates -> %d scored in %d ms%n",
-                candidates.size(), result.size(), millis);
         assertThat(result).isNotEmpty();
-        assertThat(millis).isLessThan(1_000);
+        assertThat(millis).as("scoring %d programmes took %d ms", candidates.size(), millis).isLessThan(1_000);
     }
 }

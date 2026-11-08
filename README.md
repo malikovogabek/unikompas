@@ -145,6 +145,7 @@ cd frontend && npm install && npm run dev
 
 ```bash
 cd backend  && ./mvnw verify                 # testlar + qamrov hisoboti (target/site/jacoco)
+cd backend  && ./mvnw test -Pperf            # vaqtga bog‘liq unumdorlik testi (5 000 dastur)
 cd frontend && npm run typecheck && npm run lint && npm test && npm run build
 ```
 

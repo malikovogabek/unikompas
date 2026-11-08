@@ -137,7 +137,8 @@ Foydali buyruqlar:
 | Buyruq | Vazifasi |
 |---|---|
 | `./mvnw test` | Backend testlari |
-| `./mvnw verify` | Yig‘ish, testlar, JaCoCo hisoboti (`target/site/jacoco`) va algoritm qamrovi ≥ 80% tekshiruvi |
+| `./mvnw verify` | Yig‘ish, testlar, JaCoCo hisoboti (`target/site/jacoco`) va algoritm paketlari qamrovi ≥ 80% tekshiruvi |
+| `./mvnw test -Pperf` | Vaqtga bog‘liq unumdorlik testlari (`@Tag("performance")`, oddiy build’da o‘chirilgan) |
 | `npm run lint` | oxlint (Rust, ESLint’ga mos qoidalar) |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run test` | Vitest (shu jumladan axe-core a11y testlari) |
@@ -257,7 +258,7 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda), `@RequiredArg
 14. **Sessiya va kesh:** sessiya o‘zgarganda (chiqish, muddat tugashi, boshqa foydalanuvchi kirishi) `queryClient` keshi to‘liq tozalanadi (`lib/queryClient.ts`). Shuning uchun foydalanuvchiga tegishli query kalitlariga user id qo‘shish shart emas. Backend ma’lumotlari tilga bog‘liq emas (frontend kodlarni tarjima qiladi), shuning uchun kalitlarga til qo‘shilmaydi.
 15. Rolga qarab bosh sahifa faqat `homePathFor(role)` (`lib/routes.ts`) orqali aniqlanadi.
 16. Katalog filtrlari URL’da saqlanadi (`useSearchParamState`): filtr o‘zgarganda `page` 0 ga qaytadi, qidiruv 300 ms debounce bilan yoziladi.
-17. Sahifalar marshrut bo‘yicha lazy yuklanadi (`router.tsx` → `page(() => import(...))`). Yangi sahifa ham shu tarzda qo‘shiladi, faqat bosh sahifa darhol yuklanadi.
+17. Sahifalar marshrut bo‘yicha lazy yuklanadi (`lazy: () => import(...)`). Himoyalangan sahifalar `guarded(role, ...)` orqali ulanadi: rol tekshiruvi bo‘lak yuklanishidan **oldin** bajariladi. Xato chegarasi (`RouteError`) va birinchi yuklanish skeleti layout ichida turadi.
 17a. Grafiklar (Recharts) animatsiyasiz chiziladi (`isAnimationActive={false}`). Ranglar CSS o‘zgaruvchilari orqali beriladi (`var(--uk-primary)`). Ro‘yxat qatorlaridagi kichik trend grafiklari Recharts’siz, oddiy SVG (`Sparkline`) bilan chiziladi.
 18. Sonlar `lib/format.ts` orqali formatlanadi. O‘zbek tili uchun sonlar `ru-RU` qoidalari bilan chiqariladi (bo‘sh joy bilan guruhlash, o‘nlik vergul), chunki brauzerlarda `uz` CLDR ma’lumotlari to‘liq emas.
 19. Modal oynalar faqat `components/ui/Modal` (native `<dialog>`) orqali ochiladi: fokus tuzog‘i, Esc va fonning nofaol bo‘lishi brauzer tomonidan ta’minlanadi. O‘chirish amali faqat `ConfirmDialog` orqali, oqibatlari tushuntirilgan holda bajariladi.

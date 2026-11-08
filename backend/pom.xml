@@ -20,6 +20,7 @@
         <java.version>21</java.version>
         <springdoc.version>3.2.0</springdoc.version>
         <jacoco.version>0.8.16</jacoco.version>
+        <surefire.excludedGroups>performance</surefire.excludedGroups>
     </properties>
 
     <dependencies>
@@ -96,6 +97,15 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>perf</id>
+            <properties>
+                <surefire.excludedGroups />
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -111,7 +121,8 @@
                 </configuration>
             </plugin>
             <!-- Test coverage (NFR-8): report in target/site/jacoco; `verify` fails if the
-                 recommendation algorithm drops below 80% line coverage. -->
+                 algorithm packages drop below 80% line coverage. Package-level rules keep
+                 working when classes are renamed, moved or nested. -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -133,13 +144,11 @@
                         <configuration>
                             <rules>
                                 <rule>
-                                    <element>CLASS</element>
+                                    <element>PACKAGE</element>
                                     <includes>
-                                        <include>uz.unikompas.recommendation.RecommendationEngine</include>
-                                        <include>uz.unikompas.recommendation.ChanceEstimator</include>
-                                        <include>uz.unikompas.careertest.RiasecScorer</include>
-                                        <include>uz.unikompas.careertest.Riasec</include>
-                                        <include>uz.unikompas.profile.ScoreCalculator</include>
+                                        <include>uz.unikompas.recommendation</include>
+                                        <include>uz.unikompas.careertest</include>
+                                        <include>uz.unikompas.profile</include>
                                     </includes>
                                     <limits>
                                         <limit>
@@ -153,6 +162,15 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- Wall-clock performance tests (@Tag("performance")) are excluded from the default
+                 build so it never depends on machine load; run them with: ./mvnw test -Pperf -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludedGroups>${surefire.excludedGroups}</excludedGroups>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
