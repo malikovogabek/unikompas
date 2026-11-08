@@ -8,8 +8,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.unikompas.common.dto.PageResponse;
+import uz.unikompas.common.dto.Pageables;
 import uz.unikompas.common.exception.ApiException;
 import uz.unikompas.common.exception.ErrorCode;
 import uz.unikompas.common.exception.NotFoundException;
@@ -35,18 +39,20 @@ public class ProgramService {
     private final UniversityRepository universities;
     private final DirectionRepository directions;
 
-    public List<ProgramResponse> byUniversity(Long universityId) {
+    /** Programs of a university; order is fixed by the query, client sort is ignored. */
+    public PageResponse<ProgramResponse> byUniversity(Long universityId, Pageable pageable) {
         if (!universities.existsById(universityId)) {
             throw new NotFoundException("University", universityId);
         }
-        return withHistory(programs.findByUniversity(universityId));
+        return toPage(programs.findByUniversity(universityId, Pageables.unsorted(pageable)));
     }
 
-    public List<ProgramResponse> byDirection(Long directionId) {
+    /** Programs of a direction, best-rated universities first. */
+    public PageResponse<ProgramResponse> byDirection(Long directionId, Pageable pageable) {
         if (!directions.existsById(directionId)) {
             throw new NotFoundException("Direction", directionId);
         }
-        return withHistory(programs.findByDirection(directionId));
+        return toPage(programs.findByDirection(directionId, Pageables.unsorted(pageable)));
     }
 
     public ProgramResponse get(Long id) {
@@ -56,6 +62,9 @@ public class ProgramService {
 
     /** Returns 2–4 distinct programs in the requested order. */
     public List<ProgramResponse> compare(List<Long> ids) {
+        if (ids.contains(null)) {
+            throw new ApiException(ErrorCode.VALIDATION_ERROR, "Program ids must not be empty");
+        }
         Set<Long> unique = new LinkedHashSet<>(ids);
         if (unique.size() < COMPARE_MIN || unique.size() > COMPARE_MAX) {
             throw new ApiException(ErrorCode.VALIDATION_ERROR,
@@ -67,6 +76,12 @@ public class ProgramService {
             throw new NotFoundException("Program", id);
         });
         return withHistory(unique.stream().map(found::get).toList());
+    }
+
+    private PageResponse<ProgramResponse> toPage(Page<Program> page) {
+        List<ProgramResponse> content = withHistory(page.getContent());
+        return new PageResponse<>(content, page.getNumber(), page.getSize(), page.getTotalElements(),
+                page.getTotalPages());
     }
 
     private List<ProgramResponse> withHistory(List<Program> list) {

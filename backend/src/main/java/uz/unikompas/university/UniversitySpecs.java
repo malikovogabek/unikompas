@@ -1,9 +1,8 @@
 package uz.unikompas.university;
 
-import java.util.Locale;
-
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
+import uz.unikompas.common.persistence.Specs;
 
 /**
  * Optional catalog filters (FR-5.1). Each returns {@link Specification#unrestricted()}
@@ -18,14 +17,14 @@ final class UniversitySpecs {
         if (!StringUtils.hasText(search)) {
             return Specification.unrestricted();
         }
-        String pattern = "%" + search.trim().toLowerCase(Locale.ROOT) + "%";
         return (root, q, cb) -> cb.or(
-                cb.like(cb.lower(root.get("name")), pattern),
-                cb.like(cb.lower(root.get("shortName")), pattern));
+                Specs.containsIgnoreCase(cb, root.get("name"), search),
+                Specs.containsIgnoreCase(cb, root.get("shortName"), search));
     }
 
     static Specification<University> inRegion(Long regionId) {
-        return regionId == null ? Specification.unrestricted() : (root, q, cb) -> cb.equal(root.get("region").get("id"), regionId);
+        return regionId == null ? Specification.unrestricted()
+                : (root, q, cb) -> cb.equal(root.get("region").get("id"), regionId);
     }
 
     static Specification<University> ofType(UniversityType type) {

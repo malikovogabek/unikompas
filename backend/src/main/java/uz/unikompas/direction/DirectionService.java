@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.unikompas.common.dto.PageResponse;
+import uz.unikompas.common.dto.Pageables;
 import uz.unikompas.common.exception.NotFoundException;
 import uz.unikompas.direction.dto.DirectionDetailsResponse;
 import uz.unikompas.direction.dto.DirectionResponse;
@@ -26,7 +27,7 @@ public class DirectionService {
                 DirectionSpecs.inField(fieldId),
                 DirectionSpecs.firstSubject(subjectId1),
                 DirectionSpecs.secondSubject(subjectId2));
-        return PageResponse.from(directions.findAll(spec, pageable).map(DirectionResponse::from));
+        return PageResponse.from(directions.findAll(spec, Pageables.withIdTiebreaker(pageable)).map(DirectionResponse::from));
     }
 
     public DirectionDetailsResponse get(Long id) {

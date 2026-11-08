@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.unikompas.common.dto.PageResponse;
+import uz.unikompas.common.dto.Pageables;
 import uz.unikompas.common.exception.NotFoundException;
 import uz.unikompas.program.ProgramRepository;
 import uz.unikompas.university.dto.UniversityDetailsResponse;
@@ -24,7 +25,7 @@ public class UniversityService {
                 UniversitySpecs.nameContains(search),
                 UniversitySpecs.inRegion(regionId),
                 UniversitySpecs.ofType(type));
-        return PageResponse.from(universities.findAll(spec, pageable).map(UniversityResponse::from));
+        return PageResponse.from(universities.findAll(spec, Pageables.withIdTiebreaker(pageable)).map(UniversityResponse::from));
     }
 
     public UniversityDetailsResponse get(Long id) {

@@ -1,9 +1,8 @@
 package uz.unikompas.direction;
 
-import java.util.Locale;
-
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
+import uz.unikompas.common.persistence.Specs;
 
 /**
  * Optional direction filters (FR-5.3). The subject pair is ordered: the first
@@ -18,21 +17,23 @@ final class DirectionSpecs {
         if (!StringUtils.hasText(search)) {
             return Specification.unrestricted();
         }
-        String pattern = "%" + search.trim().toLowerCase(Locale.ROOT) + "%";
         return (root, q, cb) -> cb.or(
-                cb.like(cb.lower(root.get("name")), pattern),
-                cb.like(root.get("code"), pattern));
+                Specs.containsIgnoreCase(cb, root.get("name"), search),
+                Specs.containsIgnoreCase(cb, root.get("code"), search));
     }
 
     static Specification<Direction> inField(Long fieldId) {
-        return fieldId == null ? Specification.unrestricted() : (root, q, cb) -> cb.equal(root.get("field").get("id"), fieldId);
+        return fieldId == null ? Specification.unrestricted()
+                : (root, q, cb) -> cb.equal(root.get("field").get("id"), fieldId);
     }
 
     static Specification<Direction> firstSubject(Long subjectId) {
-        return subjectId == null ? Specification.unrestricted() : (root, q, cb) -> cb.equal(root.get("firstSubject").get("id"), subjectId);
+        return subjectId == null ? Specification.unrestricted()
+                : (root, q, cb) -> cb.equal(root.get("firstSubject").get("id"), subjectId);
     }
 
     static Specification<Direction> secondSubject(Long subjectId) {
-        return subjectId == null ? Specification.unrestricted() : (root, q, cb) -> cb.equal(root.get("secondSubject").get("id"), subjectId);
+        return subjectId == null ? Specification.unrestricted()
+                : (root, q, cb) -> cb.equal(root.get("secondSubject").get("id"), subjectId);
     }
 }

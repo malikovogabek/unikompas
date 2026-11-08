@@ -1,7 +1,5 @@
 package uz.unikompas.university;
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -62,10 +60,11 @@ public class UniversityController {
     @Operation(summary = "OTM dasturlari",
             description = "OTMdagi barcha yo‘nalish takliflari (til va shakl bo‘yicha alohida) "
                     + "kvota, narx va o‘tish ballari tarixi bilan.")
-    @ApiResponse(responseCode = "200", description = "Dasturlar ro‘yxati")
+    @ApiResponse(responseCode = "200", description = "Sahifalangan dasturlar ro‘yxati (standart 20 ta)")
     @ApiResponse(responseCode = "404", description = "NOT_FOUND — OTM mavjud emas")
     @GetMapping("/{id}/programs")
-    public List<ProgramResponse> programs(@PathVariable Long id) {
-        return programService.byUniversity(id);
+    public PageResponse<ProgramResponse> programs(@PathVariable Long id,
+                                                  @PageableDefault(size = 20) Pageable pageable) {
+        return programService.byUniversity(id, pageable);
     }
 }

@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -23,11 +25,13 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
               join fetch d.secondSubject
             """;
 
-    @Query(FETCH + " where u.id = :universityId order by d.name, p.language, p.studyForm")
-    List<Program> findByUniversity(Long universityId);
+    @Query(value = FETCH + " where u.id = :universityId order by d.name, p.language, p.studyForm, p.id",
+            countQuery = "select count(p) from Program p where p.university.id = :universityId")
+    Page<Program> findByUniversity(Long universityId, Pageable pageable);
 
-    @Query(FETCH + " where d.id = :directionId order by u.rating desc, u.name, p.language")
-    List<Program> findByDirection(Long directionId);
+    @Query(value = FETCH + " where d.id = :directionId order by u.rating desc, u.name, p.language, p.id",
+            countQuery = "select count(p) from Program p where p.direction.id = :directionId")
+    Page<Program> findByDirection(Long directionId, Pageable pageable);
 
     @Query(FETCH + " where p.id in :ids")
     List<Program> findDetailedByIds(Collection<Long> ids);
@@ -38,8 +42,4 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     long countByUniversityId(Long universityId);
 
     long countByDirectionId(Long directionId);
-
-    /** Used by the recommendation engine: the whole catalog in one query. */
-    @Query(FETCH)
-    List<Program> findAllDetailed();
 }

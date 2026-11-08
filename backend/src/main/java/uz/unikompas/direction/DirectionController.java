@@ -1,7 +1,5 @@
 package uz.unikompas.direction;
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -61,10 +59,11 @@ public class DirectionController {
     /** Universities offering the direction, best rated first, with score history. */
     @Operation(summary = "Yo‘nalish mavjud bo‘lgan OTM dasturlari",
             description = "Ushbu yo‘nalish bo‘yicha barcha OTM takliflari (reyting bo‘yicha), o‘tish ballari bilan.")
-    @ApiResponse(responseCode = "200", description = "Dasturlar ro‘yxati")
+    @ApiResponse(responseCode = "200", description = "Sahifalangan dasturlar ro‘yxati (standart 20 ta)")
     @ApiResponse(responseCode = "404", description = "NOT_FOUND — yo‘nalish mavjud emas")
     @GetMapping("/{id}/programs")
-    public List<ProgramResponse> programs(@PathVariable Long id) {
-        return programService.byDirection(id);
+    public PageResponse<ProgramResponse> programs(@PathVariable Long id,
+                                                  @PageableDefault(size = 20) Pageable pageable) {
+        return programService.byDirection(id, pageable);
     }
 }
