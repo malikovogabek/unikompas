@@ -25,7 +25,9 @@ const toNum = (v: string) => (v.trim() === '' ? null : Number(v.replace(',', '.'
 const THIS_YEAR = new Date().getFullYear()
 
 /** Edits the full passing-score history of a programme (PUT replaces it — TZ FR-8.4). */
-export function ScoresDialog({ program, onClose }: { program: Program; onClose: () => void }) {
+type ScoresDialogProps = { program: Program; onClose: () => void }
+
+export function ScoresDialog({ program, onClose }: ScoresDialogProps) {
   const { t } = useTranslation()
   const qc = useQueryClient()
   const api = useApiErrorMessage()

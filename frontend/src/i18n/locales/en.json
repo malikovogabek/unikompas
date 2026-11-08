@@ -579,7 +579,10 @@
     "remove": "Remove",
     "region": "Region",
     "rating": "Rating",
-    "latest": "Latest scores (grant / paid)"
+    "latest": "Latest scores (grant / paid)",
+    "stale": "One of the programmes no longer exists",
+    "staleText": "A programme in your comparison was removed from the catalog. Clear the list and pick again.",
+    "clear": "Clear comparison"
   },
   "favorites": {
     "title": "Saved programmes",

@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { adminKeys, fetchStats } from '@/api/admin'
-import { RankedBars } from '@/components/domain/RankedBars'
 import { Card } from '@/components/ui/Card'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { QueryState } from '@/components/ui/QueryState'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useRefLabel } from '@/hooks/useRefLabel'
 import { formatInteger } from '@/lib/format'
+import { RankedBars } from './RankedBars'
 
 export function AdminOverviewPage() {
   const { t } = useTranslation()

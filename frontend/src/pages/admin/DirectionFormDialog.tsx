@@ -8,13 +8,13 @@ import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { Select } from '@/components/ui/Select'
-import { Skeleton } from '@/components/ui/Skeleton'
 import { TextArea } from '@/components/ui/TextArea'
 import { TextField } from '@/components/ui/TextField'
 import { useApiErrorMessage } from '@/hooks/useApiErrorMessage'
 import { useFields, useSubjects } from '@/hooks/useReference'
 import { useRefLabel } from '@/hooks/useRefLabel'
 import type { DirectionDetails } from '@/types/api'
+import { DialogBody } from './DialogBody'
 import { useAdminFieldError } from './useAdminForm'
 
 const RIASEC = ['r', 'i', 'a', 's', 'e', 'c'] as const
@@ -47,9 +47,9 @@ function toForm(d?: DirectionDetails): Form {
   }
 }
 
-type Props = { id: number | 'new'; onClose: () => void }
+type DirectionFormDialogProps = { id: number | 'new'; onClose: () => void }
 
-export function DirectionFormDialog({ id, onClose }: Props) {
+export function DirectionFormDialog({ id, onClose }: DirectionFormDialogProps) {
   const { t } = useTranslation()
   const fields = useFields()
   const subjects = useSubjects()
@@ -57,7 +57,17 @@ export function DirectionFormDialog({ id, onClose }: Props) {
   const ready = fields.isSuccess && subjects.isSuccess && (id === 'new' || existing.isSuccess)
   return (
     <Modal open title={id === 'new' ? t('admin.form.createTitle') : t('admin.form.editTitle')} onClose={onClose} wide>
-      {ready ? <DirectionForm id={id} initial={toForm(existing.data)} onClose={onClose} /> : <Skeleton className="h-80" />}
+      <DialogBody
+        ready={ready}
+        error={fields.error ?? subjects.error ?? existing.error}
+        onRetry={() => {
+          void fields.refetch()
+          void subjects.refetch()
+          void existing.refetch()
+        }}
+      >
+        {() => <DirectionForm id={id} initial={toForm(existing.data)} onClose={onClose} />}
+      </DialogBody>
     </Modal>
   )
 }

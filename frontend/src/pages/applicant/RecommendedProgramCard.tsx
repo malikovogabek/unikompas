@@ -6,14 +6,16 @@ import { formatPercent, formatScore, formatSum } from '@/lib/format'
 import { cn } from '@/lib/cn'
 import { COMPARE_MAX, useCompareStore } from '@/store/compareStore'
 import type { RecommendedProgram } from '@/types/api'
-import { CategoryBadge } from './CategoryBadge'
-import { ChanceBar } from './ChanceBar'
-import { FavoriteButton } from './FavoriteButton'
-import { MatchRing } from './MatchRing'
-import { ReasonList } from './ReasonList'
-import { UniversityMonogram } from './UniversityMonogram'
+import { CategoryBadge } from '@/components/domain/CategoryBadge'
+import { ChanceBar } from '@/components/domain/ChanceBar'
+import { FavoriteButton } from '@/components/domain/FavoriteButton'
+import { MatchRing } from '@/components/domain/MatchRing'
+import { ReasonList } from '@/components/domain/ReasonList'
+import { UniversityMonogram } from '@/components/domain/UniversityMonogram'
 
-export function RecommendedProgramCard({ item }: { item: RecommendedProgram }) {
+type RecommendedProgramCardProps = { item: RecommendedProgram }
+
+export function RecommendedProgramCard({ item }: RecommendedProgramCardProps) {
   const { t } = useTranslation()
   const compare = useCompareStore()
   const inCompare = compare.ids.includes(item.programId)

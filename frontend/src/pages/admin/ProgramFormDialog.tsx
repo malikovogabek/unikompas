@@ -8,10 +8,10 @@ import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { Select } from '@/components/ui/Select'
-import { Skeleton } from '@/components/ui/Skeleton'
 import { TextField } from '@/components/ui/TextField'
 import { useApiErrorMessage } from '@/hooks/useApiErrorMessage'
 import type { Program } from '@/types/api'
+import { DialogBody } from './DialogBody'
 import { useAdminFieldError } from './useAdminForm'
 import { useCatalogOptions } from './useCatalogOptions'
 
@@ -41,17 +41,21 @@ function toForm(p?: Program): Form {
   }
 }
 
-export function ProgramFormDialog({ program, onClose }: { program: Program | 'new'; onClose: () => void }) {
+type ProgramFormDialogProps = { program: Program | 'new'; onClose: () => void }
+
+export function ProgramFormDialog({ program, onClose }: ProgramFormDialogProps) {
   const { t } = useTranslation()
   const options = useCatalogOptions()
   return (
     <Modal open title={program === 'new' ? t('admin.form.createTitle') : t('admin.form.editTitle')} onClose={onClose} wide>
-      {options.ready ? <ProgramForm program={program} onClose={onClose} /> : <Skeleton className="h-80" />}
+      <DialogBody ready={options.ready} error={options.error} onRetry={options.retry}>
+        {() => <ProgramForm program={program} onClose={onClose} />}
+      </DialogBody>
     </Modal>
   )
 }
 
-function ProgramForm({ program, onClose }: { program: Program | 'new'; onClose: () => void }) {
+function ProgramForm({ program, onClose }: ProgramFormDialogProps) {
   const { t } = useTranslation()
   const qc = useQueryClient()
   const api = useApiErrorMessage()

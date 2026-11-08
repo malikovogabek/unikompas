@@ -5,18 +5,23 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { applicantKeys, fetchLatestRecommendation, fetchLatestTest, fetchProfile } from '@/api/applicant'
 import { MatchRing } from '@/components/domain/MatchRing'
+import { Alert } from '@/components/ui/Alert'
+import { Button } from '@/components/ui/Button'
 import { ButtonLink } from '@/components/ui/ButtonLink'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { useApiErrorMessage } from '@/hooks/useApiErrorMessage'
 import { cn } from '@/lib/cn'
 import { useAuthStore } from '@/store/authStore'
 
 export function DashboardPage() {
   const { t } = useTranslation()
   const user = useAuthStore((s) => s.user)
+  const apiError = useApiErrorMessage()
   const profile = useQuery({ queryKey: applicantKeys.profile, queryFn: fetchProfile })
   const test = useQuery({ queryKey: applicantKeys.latestTest, queryFn: fetchLatestTest })
   const rec = useQuery({ queryKey: applicantKeys.latestRecommendation, queryFn: fetchLatestRecommendation })
   const loading = profile.isPending || test.isPending || rec.isPending
+  const failed = [profile, test, rec].find((q) => q.isError)
 
   const steps = [
     { icon: ClipboardList, to: '/profile', done: profile.data?.complete === true, title: t('dashboard.step1'), doneText: t('dashboard.step1Done') },
@@ -29,7 +34,14 @@ export function DashboardPage() {
       <h1 className="text-3xl font-extrabold">{t('dashboard.welcome', { name: user?.fullName ?? '' })}</h1>
       <p className="mt-2 text-muted">{t('dashboard.lead')}</p>
 
-      {loading ? (
+      {failed ? (
+        <div className="mt-8 flex flex-col items-start gap-3">
+          <Alert tone="error">{apiError.message(failed.error)}</Alert>
+          <Button variant="secondary" size="sm" onClick={() => [profile, test, rec].forEach((q) => q.isError && void q.refetch())}>
+            {t('common.retry')}
+          </Button>
+        </div>
+      ) : loading ? (
         <Skeleton className="mt-8 h-40 rounded-lg" />
       ) : (
         <ol className="mt-8 grid gap-4 md:grid-cols-3">

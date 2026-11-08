@@ -5,9 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { applicantKeys, fetchLatestRecommendation, fetchProfile, generateRecommendation } from '@/api/applicant'
 import { toApiError } from '@/api/client'
-import { CompareTray } from '@/components/domain/CompareTray'
 import { MatchRing } from '@/components/domain/MatchRing'
-import { RecommendedProgramCard } from '@/components/domain/RecommendedProgramCard'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { ButtonLink } from '@/components/ui/ButtonLink'
@@ -19,6 +17,8 @@ import { CATEGORY_COUNT_CLASS } from '@/lib/category'
 import { cn } from '@/lib/cn'
 import { formatDate, formatInteger, formatScore } from '@/lib/format'
 import type { Category, Recommendation } from '@/types/api'
+import { CompareTray } from './CompareTray'
+import { RecommendedProgramCard } from './RecommendedProgramCard'
 
 const CATEGORIES: Category[] = ['SAFE', 'TARGET', 'REACH']
 

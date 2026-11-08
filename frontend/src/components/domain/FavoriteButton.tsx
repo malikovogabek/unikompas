@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { useFavorites } from '@/hooks/useFavorites'
 import { cn } from '@/lib/cn'
 
-export function FavoriteButton({ programId }: { programId: number }) {
+type FavoriteButtonProps = { programId: number }
+
+export function FavoriteButton({ programId }: FavoriteButtonProps) {
   const { t } = useTranslation()
   const fav = useFavorites()
   if (!fav.enabled) {

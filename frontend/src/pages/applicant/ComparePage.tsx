@@ -4,6 +4,8 @@ import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router'
 import { applicantKeys, fetchCompare } from '@/api/applicant'
+import { toApiError } from '@/api/client'
+import { Button } from '@/components/ui/Button'
 import { UniversityMonogram } from '@/components/domain/UniversityMonogram'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { QueryState } from '@/components/ui/QueryState'
@@ -19,6 +21,7 @@ export function ComparePage() {
   const [params, setParams] = useSearchParams()
   const storeIds = useCompareStore((s) => s.ids)
   const removeFromStore = useCompareStore((s) => s.remove)
+  const clear = useCompareStore((s) => s.clear)
   const fromUrl = (params.get('ids') ?? '').split(',').map(Number).filter((n) => Number.isInteger(n) && n > 0)
   const ids = [...new Set(fromUrl.length > 0 ? fromUrl : storeIds)].slice(0, COMPARE_MAX)
   const query = useQuery({ queryKey: applicantKeys.compare(ids), queryFn: () => fetchCompare(ids), enabled: ids.length >= 2 })
@@ -36,16 +39,38 @@ export function ComparePage() {
         {ids.length < 2 ? (
           <EmptyState icon={<GitCompareArrows className="size-6" strokeWidth={1.75} />} title={t('compare.empty')} text={t('compare.emptyText')} />
         ) : (
-          <QueryState query={query} skeleton={<Skeleton className="h-96 rounded-lg" />}>
-            {(programs) => <CompareTable programs={programs} onRemove={remove} />}
-          </QueryState>
+          // A deleted programme makes the whole request 404; offer a way out instead of a dead retry.
+          toApiError(query.error)?.error === 'NOT_FOUND' ? (
+            <EmptyState
+              icon={<GitCompareArrows className="size-6" strokeWidth={1.75} />}
+              title={t('compare.stale')}
+              text={t('compare.staleText')}
+              action={
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    clear()
+                    setParams({}, { replace: true })
+                  }}
+                >
+                  {t('compare.clear')}
+                </Button>
+              }
+            />
+          ) : (
+            <QueryState query={query} skeleton={<Skeleton className="h-96 rounded-lg" />}>
+              {(programs) => <CompareTable programs={programs} onRemove={remove} />}
+            </QueryState>
+          )
         )}
       </div>
     </div>
   )
 }
 
-function CompareTable({ programs, onRemove }: { programs: Program[]; onRemove: (id: number) => void }) {
+type CompareTableProps = { programs: Program[]; onRemove: (id: number) => void }
+
+function CompareTable({ programs, onRemove }: CompareTableProps) {
   const { t } = useTranslation()
   const refLabel = useRefLabel()
   const rows: { label: string; cell: (p: Program) => ReactNode }[] = [

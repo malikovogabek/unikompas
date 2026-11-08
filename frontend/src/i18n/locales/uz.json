@@ -579,7 +579,10 @@
     "remove": "Olib tashlash",
     "region": "Hudud",
     "rating": "Reyting",
-    "latest": "Oxirgi ballar (grant / kontrakt)"
+    "latest": "Oxirgi ballar (grant / kontrakt)",
+    "stale": "Dasturlardan biri endi mavjud emas",
+    "staleText": "Taqqoslashdagi dasturlardan biri katalogdan o‘chirilgan. Ro‘yxatni tozalab, qaytadan tanlang.",
+    "clear": "Taqqoslashni tozalash"
   },
   "favorites": {
     "title": "Saralanganlar",

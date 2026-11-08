@@ -14,7 +14,18 @@ import { Skeleton } from '@/components/ui/Skeleton'
 export function FavoritesPage() {
   const { t } = useTranslation()
   const [page, setPage] = useState(0)
-  const query = useQuery({ queryKey: applicantKeys.favorites(page), queryFn: () => fetchFavorites(page), placeholderData: keepPreviousData })
+  const query = useQuery({
+    queryKey: applicantKeys.favorites(page),
+    // Removing the last item of a later page leaves it empty: serve the last real page instead.
+    // Pagination reads the page number from the response, so it stays consistent.
+    queryFn: async () => {
+      const result = await fetchFavorites(page)
+      return result.content.length === 0 && result.totalPages > 0 && page >= result.totalPages
+        ? fetchFavorites(result.totalPages - 1)
+        : result
+    },
+    placeholderData: keepPreviousData,
+  })
   return (
     <div>
       <h1 className="text-3xl font-extrabold">{t('favorites.title')}</h1>

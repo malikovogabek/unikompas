@@ -3,7 +3,9 @@ import { Badge } from '@/components/ui/Badge'
 import { CATEGORY_TONE } from '@/lib/category'
 import type { Category } from '@/types/api'
 
-export function CategoryBadge({ category }: { category: Category }) {
+type CategoryBadgeProps = { category: Category }
+
+export function CategoryBadge({ category }: CategoryBadgeProps) {
   const { t } = useTranslation()
   return (
     <Badge tone={CATEGORY_TONE[category]} className="uppercase tracking-wide">

@@ -8,13 +8,13 @@ import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { Select } from '@/components/ui/Select'
-import { Skeleton } from '@/components/ui/Skeleton'
 import { TextArea } from '@/components/ui/TextArea'
 import { TextField } from '@/components/ui/TextField'
 import { useApiErrorMessage } from '@/hooks/useApiErrorMessage'
 import { useRegions } from '@/hooks/useReference'
 import { useRefLabel } from '@/hooks/useRefLabel'
 import type { UniversityDetails, UniversityType } from '@/types/api'
+import { DialogBody } from './DialogBody'
 import { useAdminFieldError } from './useAdminForm'
 
 const url = z.string().trim().max(300, 'validation.maxLength').refine((v) => v === '' || /^https?:\/\/\S+$/.test(v), 'validation.Pattern')
@@ -53,17 +53,26 @@ function toForm(u?: UniversityDetails): Form {
   }
 }
 
-type Props = { id: number | 'new'; onClose: () => void }
+type UniversityFormDialogProps = { id: number | 'new'; onClose: () => void }
 
 /** Create (id = 'new') or edit a university. The form mounts after the record and regions load. */
-export function UniversityFormDialog({ id, onClose }: Props) {
+export function UniversityFormDialog({ id, onClose }: UniversityFormDialogProps) {
   const { t } = useTranslation()
   const regions = useRegions()
   const existing = useQuery({ queryKey: ['admin', 'university', id], queryFn: () => fetchUniversityForEdit(id as number), enabled: id !== 'new' })
   const ready = regions.isSuccess && (id === 'new' || existing.isSuccess)
   return (
     <Modal open title={id === 'new' ? t('admin.form.createTitle') : t('admin.form.editTitle')} onClose={onClose} wide>
-      {ready ? <UniversityForm id={id} initial={toForm(existing.data)} onClose={onClose} /> : <Skeleton className="h-80" />}
+      <DialogBody
+        ready={ready}
+        error={regions.error ?? existing.error}
+        onRetry={() => {
+          void regions.refetch()
+          void existing.refetch()
+        }}
+      >
+        {() => <UniversityForm id={id} initial={toForm(existing.data)} onClose={onClose} />}
+      </DialogBody>
     </Modal>
   )
 }

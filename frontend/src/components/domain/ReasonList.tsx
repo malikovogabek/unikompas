@@ -4,7 +4,9 @@ import { formatInteger, formatScore, formatSum } from '@/lib/format'
 import type { Reason } from '@/types/api'
 
 /** Renders backend reason codes in the current language, formatting numeric params (TZ §6.6). */
-export function ReasonList({ reasons }: { reasons: Reason[] }) {
+type ReasonListProps = { reasons: Reason[] }
+
+export function ReasonList({ reasons }: ReasonListProps) {
   const { t } = useTranslation()
   return (
     <ul className="space-y-1.5 text-sm">
