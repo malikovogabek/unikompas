@@ -1,11 +1,14 @@
 import { currentLanguage, type Language } from '@/i18n'
 
-const LOCALES: Record<Language, string> = { uz: 'uz-Latn-UZ', ru: 'ru-RU', en: 'en-GB' }
+// Browsers ship incomplete CLDR data for Uzbek (Chrome prints "16,000,000" and "155.4").
+// Uzbek conventions match Russian ones — space grouping, decimal comma — so numbers use ru-RU.
+const NUMBER_LOCALES: Record<Language, string> = { uz: 'ru-RU', ru: 'ru-RU', en: 'en-GB' }
+const DATE_LOCALES: Record<Language, string> = { uz: 'uz-Latn-UZ', ru: 'ru-RU', en: 'en-GB' }
 
 const SUM: Record<Language, string> = { uz: 'so‘m', ru: 'сум', en: 'UZS' }
 
 function locale(lang: Language = currentLanguage()): string {
-  return LOCALES[lang]
+  return NUMBER_LOCALES[lang]
 }
 
 /** 14500000 → "14 500 000 so‘m" (thin-space grouping per locale). */
@@ -24,5 +27,5 @@ export function formatPercent(unit: number, lang: Language = currentLanguage()):
 }
 
 export function formatDate(iso: string, lang: Language = currentLanguage()): string {
-  return new Intl.DateTimeFormat(locale(lang), { dateStyle: 'medium' }).format(new Date(iso))
+  return new Intl.DateTimeFormat(DATE_LOCALES[lang], { dateStyle: 'medium' }).format(new Date(iso))
 }

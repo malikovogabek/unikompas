@@ -3,6 +3,7 @@ import { formatPercent, formatScore, formatSum } from './format'
 describe('format', () => {
   it('formats money with the localized currency label', () => {
     expect(formatSum(14_500_000, 'uz')).toMatch(/^14\s500\s000 so‘m$/)
+    expect(formatScore(153.2, 'uz')).toBe('153,2')
     expect(formatSum(14_500_000, 'ru')).toMatch(/^14\s500\s000 сум$/)
     expect(formatSum(14_500_000, 'en')).toBe('14,500,000 UZS')
   })
