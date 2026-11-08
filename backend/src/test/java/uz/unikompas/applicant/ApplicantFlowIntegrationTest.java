@@ -116,7 +116,8 @@ class ApplicantFlowIntegrationTest {
                 .andExpect(jsonPath("$.scores.r").value(0.5))
                 .andExpect(jsonPath("$.hollandCode").value("RIA"));
         mvc.perform(get("/api/v1/career-test/results").header("Authorization", token))
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.totalElements").value(1));
     }
 
     private static String answers(List<Integer> ids, int value) {
@@ -153,8 +154,8 @@ class ApplicantFlowIntegrationTest {
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.totalMatches").value(total));
         mvc.perform(get("/api/v1/recommendations").header("Authorization", token))
-                .andExpect(jsonPath("$[0].id").value(id))
-                .andExpect(jsonPath("$[0].totalMatches").value(total));
+                .andExpect(jsonPath("$.content[0].id").value(id))
+                .andExpect(jsonPath("$.content[0].totalMatches").value(total));
         mvc.perform(get("/api/v1/recommendations/" + id).header("Authorization", register()))
                 .andExpect(status().isNotFound());
     }
@@ -166,11 +167,12 @@ class ApplicantFlowIntegrationTest {
         mvc.perform(put("/api/v1/favorites/1").header("Authorization", token)).andExpect(status().isNoContent());
         mvc.perform(put("/api/v1/favorites/2").header("Authorization", token)).andExpect(status().isNoContent());
         mvc.perform(get("/api/v1/favorites").header("Authorization", token))
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.totalElements").value(2));
         mvc.perform(delete("/api/v1/favorites/1").header("Authorization", token)).andExpect(status().isNoContent());
         mvc.perform(delete("/api/v1/favorites/1").header("Authorization", token)).andExpect(status().isNoContent());
         mvc.perform(get("/api/v1/favorites").header("Authorization", token))
-                .andExpect(jsonPath("$[*].id", everyItem(is(2))));
+                .andExpect(jsonPath("$.content[*].id", everyItem(is(2))));
         mvc.perform(put("/api/v1/favorites/99999").header("Authorization", token)).andExpect(status().isNotFound());
     }
 }
