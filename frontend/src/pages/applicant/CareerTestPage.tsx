@@ -12,17 +12,18 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { useApiErrorMessage } from '@/hooks/useApiErrorMessage'
 import { currentLanguage } from '@/i18n'
 import { cn } from '@/lib/cn'
+import { testDraftKey } from '@/lib/storageKeys'
+import { useAuthStore } from '@/store/authStore'
 import type { CareerQuestion } from '@/types/api'
 
 const PER_STEP = 6
-const DRAFT_KEY = 'unikompas.testDraft'
 const SCALE = [1, 2, 3, 4, 5] as const
 
 type Answers = Record<number, number>
 
-function loadDraft(): Answers {
+function loadDraft(key: string): Answers {
   try {
-    return JSON.parse(localStorage.getItem(DRAFT_KEY) ?? '{}') as Answers
+    return JSON.parse(localStorage.getItem(key) ?? '{}') as Answers
   } catch {
     return {}
   }
@@ -43,7 +44,9 @@ function TestRunner({ questions }: { questions: CareerQuestion[] }) {
   const navigate = useNavigate()
   const apiError = useApiErrorMessage()
   const lang = currentLanguage()
-  const [answers, setAnswers] = useState<Answers>(loadDraft)
+  const userId = useAuthStore((s) => s.user?.id ?? 0)
+  const draftKey = testDraftKey(userId)
+  const [answers, setAnswers] = useState<Answers>(() => loadDraft(draftKey))
   const totalSteps = Math.ceil(questions.length / PER_STEP)
   const firstOpen = Math.floor(questions.findIndex((q) => answers[q.id] === undefined) / PER_STEP)
   const [step, setStep] = useState(firstOpen >= 0 ? firstOpen : totalSteps - 1)
@@ -51,17 +54,17 @@ function TestRunner({ questions }: { questions: CareerQuestion[] }) {
   // Draft survives reloads (FR-4: the test can be resumed).
   useEffect(() => {
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(answers))
+      localStorage.setItem(draftKey, JSON.stringify(answers))
     } catch {
       // Storage unavailable: the test still works, just without resume.
     }
-  }, [answers])
+  }, [answers, draftKey])
 
   const submit = useMutation({
     mutationFn: () => submitTest(questions.map((q) => ({ questionId: q.id, value: answers[q.id]! }))),
     onSuccess: (result) => {
       try {
-        localStorage.removeItem(DRAFT_KEY)
+        localStorage.removeItem(draftKey)
       } catch {
         // ignore
       }

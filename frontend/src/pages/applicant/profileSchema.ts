@@ -15,9 +15,14 @@ export const profileSchema = z
     preferredLanguage: z.enum(['', 'UZ', 'RU', 'EN']),
     preferredStudyForm: z.enum(['', 'FULL_TIME', 'PART_TIME', 'EVENING', 'DISTANCE']),
     financing: z.enum(['GRANT_ONLY', 'CONTRACT_OK']),
-    maxContractFee: z.string().trim().refine((v) => v === '' || /^\d{1,12}$/.test(v.replace(/\s/g, '')), 'validation.PositiveOrZero'),
+    // Validated below only when contract is an option: the input is hidden for GRANT_ONLY.
+    maxContractFee: z.string().trim(),
     willingToRelocate: z.boolean(),
     fieldIds: z.array(z.string()).max(5, 'validation.Max'),
+  })
+  .refine((v) => v.financing !== 'CONTRACT_OK' || v.maxContractFee === '' || /^\d{1,12}$/.test(v.maxContractFee.replace(/\s/g, '')), {
+    path: ['maxContractFee'],
+    message: 'validation.PositiveOrZero',
   })
   .refine((v) => !v.firstSubjectId || v.firstSubjectId !== v.secondSubjectId, {
     path: ['secondSubjectId'],
