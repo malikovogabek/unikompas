@@ -138,7 +138,9 @@
     "CONFLICT": "Ma’lumot mavjud ma’lumotlar bilan ziddiyatga kirdi",
     "INTERNAL_ERROR": "Serverda xatolik yuz berdi. Birozdan so‘ng urinib ko‘ring",
     "NETWORK": "Server bilan aloqa yo‘q. Internetni tekshiring",
-    "UNKNOWN": "Kutilmagan xatolik yuz berdi"
+    "UNKNOWN": "Kutilmagan xatolik yuz berdi",
+    "NEW_VERSION": "Ilovaning yangi versiyasi chiqdi",
+    "NEW_VERSION_TEXT": "Sahifani yangilang — yangi versiya yuklanadi."
   },
   "home": {
     "title": "O‘zingizga mos yo‘nalish va OTMni toping",

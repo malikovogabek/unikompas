@@ -7,7 +7,7 @@
 | Tizimning to‘liq nomi | Abituriyentlarga ta’lim yo‘nalishi va OTMni tavsiya etuvchi axborot tizimi |
 | Qisqa nomi (brend) | **UniKompas** |
 | Hujjat turi | Texnik topshiriq (GOST 34.602-89 tuzilmasi asosida, soddalashtirilgan) |
-| Versiya | 1.0 |
+| Versiya | 1.1 (amalga oshirish natijalari bilan yangilangan) |
 | Sana | 2026-yil 8-noyabr |
 | Bajaruvchi (talaba) | Malikov Og‘abek Sherzod o‘g‘li, [guruh], [fakultet] |
 | Ilmiy rahbar | [F.I.Sh., ilmiy darajasi] |
@@ -556,6 +556,7 @@ erDiagram
 | 26 | GET | `/favorites` | APPLICANT | Saralangan dasturlar |
 | 27 | PUT | `/favorites/{programId}` | APPLICANT | Dasturni saralanganlarga qo‘shadi (idempotent) |
 | 28 | DELETE | `/favorites/{programId}` | APPLICANT | Dasturni saralanganlardan o‘chiradi |
+| 28a | GET | `/favorites/ids` | APPLICANT | Barcha saralangan dasturlar id’lari (UI’dagi “yurakcha” holati uchun) |
 | **Admin** |||||
 | 29–32 | GET/POST/PUT/DELETE | `/admin/universities[/{id}]` | ADMIN | OTM CRUD |
 | 33–36 | GET/POST/PUT/DELETE | `/admin/directions[/{id}]` | ADMIN | Yo‘nalish CRUD |
@@ -776,6 +777,8 @@ Har bir bosqich oxirida loyiha **ishlaydigan holatda** bo‘ladi va kichik, mazm
 | Frontend | Utilitalar, kalkulyator, asosiy komponentlar | Vitest |
 | Qo‘lda (manual) | Foydalanuvchi ssenariylari (4.3-bo‘lim) | Test-case jadvali |
 | Foydalanuvchilar bilan | Tavsiya sifati, SUS | So‘rovnoma (6.8-bo‘lim) |
+
+> Natijalar: [`docs/TESTING.md`](TESTING.md) — 106 ta avtomatik test, 90% qamrov, unumdorlik va a11y o‘lchovlari.
 
 ### 13.2. Qabul qilish mezonlari
 
