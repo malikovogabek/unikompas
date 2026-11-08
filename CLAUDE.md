@@ -17,10 +17,10 @@ Kod yozishdan oldin uni o‘qing. Biror qoida bilan kelishmasangiz, avval shu fa
 
 | Qism | Stek |
 |---|---|
-| Frontend | React 19, TypeScript (strict), Vite, Tailwind CSS 4, React Router 7, TanStack Query 5, Zustand, React Hook Form + Zod, Axios, Recharts, lucide-react, **react-i18next** (uz/ru/en) |
+| Frontend | React 19, TypeScript 7 (strict, `noUncheckedIndexedAccess`), Vite 8, Tailwind CSS 4, React Router 8, TanStack Query 5, Zustand 5, React Hook Form + Zod 4, Axios, Recharts, lucide-react, **react-i18next** (uz/ru/en), oxlint |
 | Backend | Java 21, Spring Boot 4.1, Spring Web MVC, Spring Security + OAuth2 Resource Server (JWT HS256, Nimbus), Spring Data JPA (Hibernate 7), Bean Validation, Flyway, springdoc-openapi 3, Lombok (cheklangan) |
 | Ma’lumotlar bazasi | PostgreSQL 17 (lokal) |
-| Testlar | JUnit 5, Mockito, MockMvc; Vitest |
+| Testlar | JUnit 5, Mockito, MockMvc; Vitest + Testing Library (jsdom) |
 
 ## 3. Monorepo tuzilmasi
 
@@ -80,7 +80,8 @@ Ichki qatlam papkalari (`controller/`, `service/` …) **yaratilmaydi**.
 ```
 frontend/
 ├── index.html
-├── package.json, vite.config.ts, tsconfig*.json, .env.example
+├── package.json, vite.config.ts, .env.example
+├── tsconfig.app.json         # ilova kodi (testlarsiz), tsconfig.test.json — testlar (node + vitest turlari)
 ├── public/                  # favicon.svg (girih-yulduz logotip)
 └── src/
     ├── main.tsx             # providerlar: QueryClient, Router
@@ -137,7 +138,7 @@ Foydali buyruqlar:
 |---|---|
 | `./mvnw test` | Backend testlari |
 | `./mvnw verify` | Yig‘ish va testlar |
-| `npm run lint` | ESLint |
+| `npm run lint` | oxlint (Rust, ESLint’ga mos qoidalar) |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run test` | Vitest |
 | `npm run build` | Production build |
@@ -250,7 +251,9 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda), `@RequiredArg
 7. Har bir ma’lumot ko‘rsatiladigan joyda **3 holat** bo‘lishi shart: yuklanish (Skeleton), xato (qayta urinish tugmasi bilan), bo‘sh (EmptyState).
 8. Nomlash: komponentlar `PascalCase.tsx`, hook’lar `useCamelCase.ts`, qolgan fayllar `camelCase.ts`.
 9. Importlarda `@/` aliasi (`src/`) ishlatiladi.
-10. Rang va o‘lchamlar faqat dizayn tokenlari orqali beriladi. Hex qiymatlar komponent ichida yozilmaydi.
+10. Rang va o‘lchamlar faqat dizayn tokenlari orqali beriladi (`bg-surface`, `text-muted`, `border-line`, `bg-primary-soft` …, `src/styles/index.css`). Hex qiymatlar komponent ichida yozilmaydi. Mavzu `<html data-theme>` atributi orqali almashadi, `dark:` varianti shunga bog‘langan.
+12. Komponent fayllari faqat komponent eksport qiladi (Fast Refresh uchun). Yordamchi funksiya va konstantalar alohida `.ts` faylda turadi (masalan, `buttonStyles.ts`).
+13. Backend xatolari `useApiErrorMessage()` orqali ko‘rsatiladi: `errors.<CODE>` va `validation.<constraint>`. `locales.test.ts` uchala tildagi kalitlar bir xilligini va backend `ErrorCode` enum’idagi har bir kodning tarjimasi borligini tekshiradi.
 11. **Lokalizatsiya (i18n):**
     - JSX ichida qattiq yozilgan matn bo‘lmaydi. Hamma matn `const { t } = useTranslation()` → `t('catalog.filters.region')` orqali olinadi.
     - Kalitlar `bo‘lim.kichikBo‘lim.kalit` (camelCase) formatida yoziladi. Umumiy so‘zlar `common.*` da, xato kodlari `errors.<CODE>` da saqlanadi.
@@ -275,11 +278,11 @@ Dizayn mavzudan kelib chiqadi: **Registon madrasalari** — O‘zbekistondagi ta
 | `--color-lapis-700` | `#1B3488` | — | |
 | `--color-primary` | `#2447B8` (lapis-600) | `#6F8CF0` | Asosiy tugmalar, havolalar, faol holat |
 | `--color-primary-soft` | `#E8EDFB` | `#1A2550` | Tanlangan element foni |
-| `--color-turquoise` | `#0E9F9A` | `#2CC9C2` | “Ishonchli”, muvaffaqiyat, progress |
+| `--color-turquoise` | `#0B8C87` | `#2CC9C2` | “Ishonchli”, muvaffaqiyat, progress (oq fonda AA kontrast) |
 | `--color-turquoise-soft` | `#E2F5F4` | `#0F2E2E` | |
 | `--color-gold` | `#D99A1E` | `#F0B94A` | Moslik foizi, reyting yulduzlari, urg‘ular |
 | `--color-gold-soft` | `#FBF1DC` | `#3A2C10` | |
-| `--color-terracotta` | `#C0533A` | `#E27A5F` | “Orzu” toifasi, ogohlantirish, xato |
+| `--color-terracotta` | `#B8492F` | `#E27A5F` | “Orzu” toifasi, ogohlantirish, xato (oq fonda AA kontrast) |
 | `--color-terracotta-soft` | `#F9E7E2` | `#3A1C15` | |
 | `--color-bg` | `#F4F6FB` (chinni) | `#0A0F1F` | Sahifa foni |
 | `--color-surface` | `#FFFFFF` | `#121A30` | Kartalar |
@@ -380,7 +383,7 @@ Batafsil: TZ 12-bo‘lim. Joriy holat shu yerda belgilanadi.
 - [x] **2.** Katalog API va demo ma’lumotlar
 - [x] **3.** Profil, RIASEC testi, tavsiya dvigateli, saralanganlar va unit testlar
 - [x] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
-- [ ] **5.** Frontend asosi: dizayn tizimi, UI kit, layout, i18n (uz/ru/en), auth sahifalari
+- [x] **5.** Frontend asosi: dizayn tizimi, UI kit, layout, i18n (uz/ru/en), auth sahifalari
 - [ ] **6.** Frontend: bosh sahifa, katalog, dastur sahifasi, ball kalkulyatori
 - [ ] **7.** Frontend: abituriyent kabineti (profil, test, tavsiyalar, taqqoslash, saralanganlar) va admin panel
 - [ ] **8.** Testlash va topshirish: integratsion va frontend testlar, e2e, a11y, README, `v1.0.0` — **loyiha tayyor**
