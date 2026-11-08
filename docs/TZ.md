@@ -9,7 +9,7 @@
 | Hujjat turi | Texnik topshiriq (GOST 34.602-89 tuzilmasi asosida, soddalashtirilgan) |
 | Versiya | 1.0 |
 | Sana | 2026-yil 8-noyabr |
-| Bajaruvchi (talaba) | [F.I.Sh.], [guruh], [fakultet] |
+| Bajaruvchi (talaba) | Malikov Og‘abek Sherzod o‘g‘li, [guruh], [fakultet] |
 | Ilmiy rahbar | [F.I.Sh., ilmiy darajasi] |
 | Ish turi | Bitiruv malakaviy ishi (BMI) |
 
@@ -227,6 +227,19 @@ Ustuvorlik **MoSCoW** usulida belgilangan: **M** — albatta bo‘lishi kerak (M
 | FR-8.6 | Tavsiya algoritmi vaznlarini sozlash (w₁…w₄) | S |
 | FR-8.7 | Statistika paneli: foydalanuvchilar soni, testlar soni, eng ko‘p tavsiya qilingan yo‘nalish va OTMlar | S |
 | FR-8.8 | Foydalanuvchilar ro‘yxatini ko‘rish | C |
+
+### M9. Lokalizatsiya (ko‘p tillilik)
+
+| ID | Talab | Ustuvorlik |
+|---|---|---|
+| FR-9.1 | Interfeys 3 tilda ishlaydi: **o‘zbek (lotin, standart)**, **rus**, **ingliz** | M |
+| FR-9.2 | Til sarlavhadagi (header) tanlagich orqali sahifani qayta yuklamasdan almashtiriladi, tanlov brauzerda saqlanadi | M |
+| FR-9.3 | Birinchi kirishda til brauzer sozlamasidan aniqlanadi, aniqlanmasa o‘zbek tili tanlanadi | S |
+| FR-9.4 | Backend xatolarni **kod** bilan qaytaradi (`VALIDATION_ERROR`, `EMAIL_TAKEN`, …), frontend ularni tanlangan tilga tarjima qiladi | M |
+| FR-9.5 | Sana, raqam va pul summalari (so‘m) tanlangan til qoidalari bo‘yicha formatlanadi (`Intl`) | S |
+| FR-9.6 | RIASEC test savollari va tip tavsiflari 3 tilda beriladi | S |
+
+> Katalog ma’lumotlari (OTM va yo‘nalish nomlari, tavsiflar) birinchi versiyada o‘zbek tilida saqlanadi. Ularni ko‘p tilli qilish 14.3-bo‘limda rejalashtirilgan.
 
 ---
 
@@ -574,7 +587,7 @@ erDiagram
 | NFR-2 | Xavfsizlik | Parollar BCrypt (strength 10) bilan xeshlanadi. JWT (HS256, amal qilish muddati 24 soat). Rolga asoslangan kirish. CORS faqat frontend manziliga ruxsat beradi |
 | NFR-3 | Xavfsizlik | Barcha kiruvchi DTO’lar Bean Validation orqali tekshiriladi. SQL so‘rovlar faqat JPA yoki parametrli so‘rovlar orqali bajariladi (SQL-injection’dan himoya) |
 | NFR-4 | Ishonchlilik | Ma’lumotlar bazasi sxemasi Flyway migratsiyalari orqali versiyalanadi |
-| NFR-5 | Qulaylik | Interfeys o‘zbek tilida (lotin). Moslashuvchan dizayn: 360 px dan 1920 px gacha |
+| NFR-5 | Qulaylik | Interfeys uch tilda: o‘zbek (lotin), rus va ingliz (M9). Moslashuvchan dizayn: 360 px dan 1920 px gacha |
 | NFR-6 | Foydalanish imkoniyati | WCAG 2.1 AA: kontrast ≥ 4.5:1, klaviatura bilan boshqarish, `aria` atributlari |
 | NFR-7 | Kuzatuvchanlik | Server loglari (SLF4J), xatolar yagona formatda |
 | NFR-8 | Qo‘llab-quvvatlanuvchanlik | Kod CLAUDE.md qoidalariga mos. Tavsiya algoritmi uchun unit testlar (≥ 80% qamrov) |
@@ -596,7 +609,9 @@ erDiagram
 | Mijoz holati | Zustand | Auth holati uchun yengil yechim |
 | Formalar | React Hook Form + Zod | Validatsiya, tiplar bilan integratsiya |
 | Grafiklar | Recharts | RIASEC radar, o‘tish ballari dinamikasi |
+| Ikonkalar | lucide-react | Yagona chiziqli uslub |
 | HTTP | Axios | Interceptorlar (JWT, xatolar) |
+| Lokalizatsiya | react-i18next + i18next-browser-languagedetector | Sanoat standarti, lazy tarjimalar, pluralizatsiya |
 | Backend | **Java 21 (LTS), Spring Boot 4.0** | Sanoat standarti, ishonchli ekotizim |
 | Xavfsizlik | Spring Security + JWT (jjwt) | Stateless autentifikatsiya |
 | ORM | Spring Data JPA (Hibernate) | |
@@ -668,19 +683,71 @@ To‘liq dizayn tokenlari **CLAUDE.md → Dizayn tizimi** bo‘limida keltirilga
 
 ## 12. Ishlarni bajarish bosqichlari
 
-| # | Bosqich | Natija (deliverable) | Asosiy commitlar |
-|---|---|---|---|
-| **0** | Hujjatlash va loyihalash | TZ, CLAUDE.md, README, git repozitoriy | `docs: …`, `chore: …` |
-| **1** | Backend asosi | Spring Boot loyihasi, PostgreSQL ulanishi, Flyway V1 sxema, global xatolar, Swagger | `feat(backend): bootstrap …` |
-| **2** | Autentifikatsiya | Ro‘yxatdan o‘tish, kirish, JWT, rollar, admin seed | `feat(auth): …` |
-| **3** | Katalog API | Hudud, fan, soha, OTM, yo‘nalish, dastur, o‘tish ballari, demo seed | `feat(catalog): …` |
-| **4** | Profil va kasbiy test | Profil API, ball kalkulyatori, RIASEC savollari va hisoblash | `feat(profile): …`, `feat(career-test): …` |
-| **5** | Tavsiya dvigateli | Algoritm, tushuntirishlar, saqlash, unit testlar | `feat(recommendation): …`, `test(recommendation): …` |
-| **6** | Frontend asosi | Vite + TS, dizayn tokenlari, UI komponentlar, layout, marshrutlar, API klient | `feat(frontend): …` |
-| **7** | Frontend: auth va katalog | Login/Register, OTM va yo‘nalish sahifalari, dastur sahifasi, kalkulyator | `feat(ui): …` |
-| **8** | Frontend: abituriyent oqimi | Profil, test, natija (radar), tavsiyalar, taqqoslash, saralanganlar | `feat(ui): …` |
-| **9** | Admin panel | CRUD, CSV import, vaznlar, statistika (backend + frontend) | `feat(admin): …` |
-| **10** | Sifat va topshirish | Testlar, a11y, real ma’lumotlarni import qilish, README skrinshotlari, demo | `test: …`, `docs: …` |
+**0-bosqich (bajarildi):** TZ, CLAUDE.md, README, git repozitoriy (`github.com/malikovogabek/unikompas`).
+
+Loyiha **8 ta bosqichga** bo‘lingan. Har bir bosqich alohida branchda bajariladi, oxirida **kod review** qilinadi, so‘ng `main` ga merge va GitHub’ga push qilinadi.
+
+#### 1-bosqich — Backend asosi va autentifikatsiya
+- Spring Boot loyihasi (Maven Wrapper), `application.yml` / `application-local.yml` profillari.
+- PostgreSQL ulanishi, **Flyway V1** — butun sxema (7-bo‘lim).
+- `GlobalExceptionHandler`, `ApiError` (xato kodlari bilan, FR-9.4), `PageResponse`.
+- Swagger UI (springdoc), CORS.
+- Spring Security + JWT: `POST /auth/register`, `POST /auth/login`, `GET /auth/me`. Rollar, admin seed.
+- **Natija:** backend ishga tushadi, Swagger’da auth ishlaydi. *FR-1.x*
+
+#### 2-bosqich — Katalog API va demo ma’lumotlar
+- Ma’lumotnomalar: hududlar, fanlar, sohalar.
+- OTMlar, yo‘nalishlar, dasturlar, o‘tish ballari: filtrlar, qidiruv, sahifalash, taqqoslash.
+- Ball kalkulyatori (`POST /score/calculate`).
+- Flyway seed: 14 hudud, fanlar, sohalar, 15–20 OTM, 30–40 yo‘nalish, ~100 dastur, 3 yillik ballar.
+- **Natija:** katalog Swagger orqali to‘liq ko‘riladi. *FR-3.x, FR-5.x*
+
+#### 3-bosqich — Profil, RIASEC testi va tavsiya dvigateli
+- Abituriyent profili API.
+- 36 ta RIASEC savoli (uz/ru/en), `RiasecScorer`, natijalar tarixi.
+- `RecommendationEngine`: filtrlash → `I, C, P, R` → yakuniy ball → toifalash → tushuntirishlar (6-bo‘lim). Natijani saqlash.
+- Saralanganlar API.
+- Algoritm uchun **unit testlar**.
+- **Natija:** ilovaning “miyasi” tayyor. *FR-2.x, FR-4.x, FR-6.x, FR-7.1*
+
+#### 4-bosqich — Admin API
+- OTM, yo‘nalish va dastur CRUD, o‘tish ballarini kiritish.
+- CSV import (xatolar hisoboti bilan).
+- Algoritm vaznlarini sozlash, statistika, foydalanuvchilar ro‘yxati.
+- **Natija:** backend to‘liq tayyor. *FR-8.x*
+
+#### 5-bosqich — Frontend asosi, dizayn tizimi va lokalizatsiya
+- Vite + React + TypeScript, ESLint, `@/` alias, Vite proxy.
+- “Registon” dizayn tokenlari (light/dark), shriftlar, logotip, girih naqshi.
+- UI kit: Button, Input, Select, Card, Badge, Modal, Skeleton, EmptyState, Tabs, Toast.
+- Layout (Header, Footer), marshrutlar, `ProtectedRoute`.
+- **i18n**: uz/ru/en, til tanlagich, backend xato kodlarini tarjima qilish.
+- Axios klient, auth store, **Login/Register sahifalari**.
+- **Natija:** foydalanuvchi 3 tilda ro‘yxatdan o‘tib, tizimga kira oladi. *FR-1.x, FR-9.x*
+
+#### 6-bosqich — Frontend: ommaviy sahifalar
+- Bosh sahifa (hero, “qanday ishlaydi”, statistika, CTA).
+- OTMlar katalogi va OTM sahifasi.
+- Yo‘nalishlar katalogi va yo‘nalish sahifasi.
+- Dastur sahifasi: o‘tish ballari grafigi.
+- Ball kalkulyatori.
+- **Natija:** mehmon katalogdan to‘liq foydalana oladi. *FR-3.x, FR-5.x*
+
+#### 7-bosqich — Frontend: abituriyent kabineti va admin panel
+- Dashboard, bosqichma-bosqich profil formasi.
+- RIASEC testi, natija sahifasi (radar diagramma).
+- Tavsiyalar: Top yo‘nalishlar, MatchRing, Ishonchli/Maqbul/Orzu, sabablar.
+- Taqqoslash, saralanganlar.
+- Admin panel: statistika, CRUD jadvallar, CSV import, vaznlar.
+- **Natija:** barcha funksiyalar UI’da ishlaydi. *FR-2, 4, 6, 7, 8*
+
+#### 8-bosqich — Testlash, sifat va topshirish (loyiha tayyor)
+- Backend: integratsion testlar (MockMvc + Security), algoritm qamrovi ≥ 80%.
+- Frontend: Vitest (utilitalar, kalkulyator, asosiy komponentlar), `typecheck`, `lint`, `build`.
+- Qo‘lda end-to-end ssenariylar (13-bo‘lim), a11y va responsive tekshiruvi, 3 tilni tekshirish.
+- Unumdorlik o‘lchovi (NFR-1).
+- README: skrinshotlar, ishga tushirish yo‘riqnomasi, arxitektura. Release `v1.0.0`.
+- **Natija:** loyiha himoyaga va portfolio’ga tayyor.
 
 Har bir bosqich oxirida loyiha **ishlaydigan holatda** bo‘ladi va kichik, mazmunli commitlar bilan yakunlanadi.
 
@@ -728,7 +795,7 @@ Har bir bosqich oxirida loyiha **ishlaydigan holatda** bo‘ladi va kichik, mazm
 
 - Collaborative filtering (o‘xshash abituriyentlar tanlovi) va ML modellari.
 - Telegram-bot integratsiyasi.
-- Rus va ingliz tillaridagi interfeys (i18n).
+- Katalog ma’lumotlarini (OTM va yo‘nalish tavsiflari) ko‘p tilli qilish.
 - Magistratura yo‘nalishlari.
 - Docker va bulutga joylash (deploy), CI/CD.
 
