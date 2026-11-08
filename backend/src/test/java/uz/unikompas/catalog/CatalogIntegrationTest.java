@@ -68,8 +68,9 @@ class CatalogIntegrationTest {
                 .andExpect(jsonPath("$.programCount", greaterThan(0)));
         mvc.perform(get("/api/v1/universities/1/programs"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].scoreHistory", hasSize(3)))
-                .andExpect(jsonPath("$[0].latestScores.year").value(2026));
+                .andExpect(jsonPath("$.content[0].scoreHistory", hasSize(3)))
+                .andExpect(jsonPath("$.content[0].latestScores.year").value(2026))
+                .andExpect(jsonPath("$.size").value(20));
         mvc.perform(get("/api/v1/universities/9999")).andExpect(status().isNotFound());
         mvc.perform(get("/api/v1/universities/9999/programs")).andExpect(status().isNotFound());
     }
@@ -98,8 +99,8 @@ class CatalogIntegrationTest {
         mvc.perform(get("/api/v1/universities").param("search", "WIUT"))
                 .andExpect(jsonPath("$.content[0].shortName").value("WIUT"));
         mvc.perform(get("/api/v1/universities/7/programs"))
-                .andExpect(jsonPath("$[*].grantQuota", everyItem(is(0))))
-                .andExpect(jsonPath("$[0].latestScores.grantScore").doesNotExist());
+                .andExpect(jsonPath("$.content[*].grantQuota", everyItem(is(0))))
+                .andExpect(jsonPath("$.content[0].latestScores.grantScore").doesNotExist());
     }
 
     @Test
@@ -129,6 +130,46 @@ class CatalogIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.fieldErrors.mandatoryCorrect").value("Max"))
                 .andExpect(jsonPath("$.fieldErrors.secondSubjectCorrect").value("NotNull"));
+    }
+
+    @Test
+    void shouldPaginateWithoutDuplicates_whenSortKeysTie() throws Exception {
+        java.util.Set<Integer> seen = new java.util.HashSet<>();
+        int total = 0;
+        for (int page = 0; page < 8; page++) {
+            String body = mvc.perform(get("/api/v1/universities").param("size", "3").param("page", String.valueOf(page)))
+                    .andReturn().getResponse().getContentAsString();
+            java.util.List<Integer> ids = com.jayway.jsonpath.JsonPath.read(body, "$.content[*].id");
+            total = com.jayway.jsonpath.JsonPath.read(body, "$.totalElements");
+            ids.forEach(id -> org.assertj.core.api.Assertions.assertThat(seen.add(id)).as("duplicate id " + id).isTrue());
+        }
+        org.assertj.core.api.Assertions.assertThat(seen).hasSize(total);
+    }
+
+    @Test
+    void shouldTreatLikeWildcardsLiterally() throws Exception {
+        mvc.perform(get("/api/v1/universities").param("search", "%"))
+                .andExpect(jsonPath("$.totalElements").value(0));
+        mvc.perform(get("/api/v1/directions").param("search", "_"))
+                .andExpect(jsonPath("$.totalElements").value(0));
+    }
+
+    @Test
+    void shouldIgnoreStaleTokenOnPublicEndpoints() throws Exception {
+        mvc.perform(get("/api/v1/universities").header("Authorization", "Bearer expired.or.invalid"))
+                .andExpect(status().isOk());
+        mvc.perform(get("/api/v1/regions").header("Authorization", "Bearer expired.or.invalid"))
+                .andExpect(status().isOk());
+        // ...but still enforces it on protected ones.
+        mvc.perform(get("/api/v1/auth/me").header("Authorization", "Bearer expired.or.invalid"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldRejectEmptyIdInCompare() throws Exception {
+        mvc.perform(get("/api/v1/programs/compare").param("ids", "1,,2"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
     }
 
     @Test
