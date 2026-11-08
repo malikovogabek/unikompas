@@ -108,7 +108,11 @@ Loyiha tuzilmasi, kod qoidalari va **“Registon”** dizayn tizimi (Registon ko
 
 ## Jonli demo
 
-Bepul deploy: Vercel + Render + Neon. Yo‘riqnoma: [`docs/DEPLOY.md`](docs/DEPLOY.md).
+🌐 **https://unikompas.vercel.app** — demo abituriyent: `abituriyent@unikompas.uz` / `Demo123!`
+
+API va Swagger: https://unikompas-api.onrender.com/swagger-ui.html
+
+Bepul deploy: Vercel + Render (Frankfurt) + Neon (Frankfurt). Yo‘riqnoma: [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
 > Backend bepul tarifda ishlaydi: 15 daqiqa faol bo‘lmasa uxlab qoladi, shuning uchun birinchi so‘rov ~1 daqiqa kutishi mumkin.
 
