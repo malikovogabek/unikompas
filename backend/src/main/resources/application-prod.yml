@@ -1,0 +1,30 @@
+# Production profile (Render + Neon). Every secret comes from environment variables:
+#   DB_URL (jdbc:postgresql://<host>/<db>?sslmode=require), DB_USERNAME, DB_PASSWORD,
+#   JWT_SECRET (Base64, >= 256 bit), ADMIN_EMAIL, ADMIN_PASSWORD, CORS_ORIGINS,
+#   optional: DEMO_DATA=true (loads the demo catalog), DEMO_USERS=true + DEMO_PASSWORD.
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+
+spring:
+  datasource:
+    hikari:
+      # Small pool for a free instance; Neon suspends idle compute, so connections are validated
+      # and recycled well before the server side drops them.
+      maximum-pool-size: 5
+      minimum-idle: 0
+      idle-timeout: 120000
+      max-lifetime: 240000
+      keepalive-time: 0
+      connection-timeout: 20000
+  flyway:
+    locations: ${FLYWAY_LOCATIONS:classpath:db/migration}
+
+unikompas:
+  seed:
+    demo-users: ${DEMO_USERS:false}
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: WARN
