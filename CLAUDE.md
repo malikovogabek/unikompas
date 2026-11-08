@@ -64,7 +64,8 @@ backend/
     │   └── resources/
     │       ├── application.yml
     │       ├── application-local.yml        # gitignore’da emas, faqat lokal standartlar
-    │       └── db/migration/                # V1__init_schema.sql, V2__seed_reference.sql, ...
+    │       ├── db/migration/                # versiyalangan sxema + ma’lumotnomalar (barcha muhitlar)
+    │       └── db/demo/                     # R__demo_catalog.sql — faqat local/test profillarda
     └── test/
         ├── java/uz/unikompas/support/       # @IntegrationTest (toza DB + MockMvc)
         └── resources/application-test.yml   # unikompas_test bazasi
@@ -214,6 +215,9 @@ Har bir controller klassiga `@Tag(name = "…", description = "…")` qo‘yilad
 - **Qo‘llanilgan migratsiya hech qachon tahrirlanmaydi.** O‘zgartirish kerak bo‘lsa, yangi migratsiya yoziladi.
 - Pul summalari `BIGINT` (so‘m), ballar `NUMERIC(5,1)`, vaqt `TIMESTAMPTZ` turida saqlanadi.
 - N+1 muammosidan qochish uchun ro‘yxatlarda `@EntityGraph` yoki `JOIN FETCH` ishlatiladi.
+- **Demo ma’lumotlar** faqat `db/demo/` dagi repeatable migratsiyada saqlanadi (`R__*.sql`, katalogni tozalab qayta yozadi). U `local` va `test` profillarida `spring.flyway.locations` orqali ulanadi va production’ga hech qachon tushmaydi.
+- Ixtiyoriy filtrlar `Specification` orqali yoziladi. Parametr bo‘lmasa `Specification.unrestricted()` qaytariladi (Spring Data 4 `null` qabul qilmaydi).
+- Har bir repozitoriy alohida faylda yoziladi: Spring Data ichki (nested) interfeyslarni topmaydi.
 
 ### 6.6. Lombok
 
@@ -364,7 +368,7 @@ Batafsil: TZ 12-bo‘lim. Joriy holat shu yerda belgilanadi.
 
 - [x] **0.** Hujjatlash: TZ, CLAUDE.md, README, GitHub repozitoriy
 - [x] **1.** Backend asosi va autentifikatsiya: Spring Boot, PostgreSQL, Flyway V1, xatolar, Swagger, JWT
-- [ ] **2.** Katalog API va demo ma’lumotlar
+- [x] **2.** Katalog API va demo ma’lumotlar
 - [ ] **3.** Profil, RIASEC testi, tavsiya dvigateli, saralanganlar va unit testlar
 - [ ] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
 - [ ] **5.** Frontend asosi: dizayn tizimi, UI kit, layout, i18n (uz/ru/en), auth sahifalari

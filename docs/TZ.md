@@ -175,7 +175,7 @@ Ustuvorlik **MoSCoW** usulida belgilangan: **M** — albatta bo‘lishi kerak (M
 | FR-3.1 | To‘g‘ri javoblar soni bo‘yicha balni hisoblaydi: majburiy fanlar (3×10 savol × 1,1), 1-fan (30 × 3,1), 2-fan (30 × 2,1). Maksimal bal 189 | M |
 | FR-3.2 | Kalkulyator mehmonlar uchun ham ochiq | S |
 
-> Koeffitsiyentlar amaldagi qabul qoidalariga muvofiq **sozlanadigan konstanta** sifatida saqlanadi. Qoidalar o‘zgarsa, kodni o‘zgartirmasdan yangilash mumkin.
+> Koeffitsiyentlar amaldagi qabul qoidalariga muvofiq **bitta joyda** (`ScoreCalculator`) konstanta sifatida saqlanadi. Qoidalar o‘zgarsa, faqat shu klass yangilanadi.
 
 ### M4. Kasbiy qiziqishlar testi (RIASEC)
 
@@ -482,6 +482,8 @@ erDiagram
 - 36 ta RIASEC savoli (o‘zbek tilida).
 - **Demo ma’lumotlar:** 15–20 ta OTM, 30–40 ta yo‘nalish, 80–120 ta dastur, 3 yillik o‘tish ballari.
 
+> Demo katalog alohida `db/demo/R__demo_catalog.sql` faylida turadi va faqat `local`/`test` muhitlarida yuklanadi. OTM nomlari haqiqiy. Reyting, kvota, narx, klassifikator kodlari va ballar formula asosida generatsiya qilingan.
+>
 > ⚠️ Demo o‘tish ballari **namunaviy** hisoblanadi. Himoyadan oldin admin panel orqali CSV yordamida rasmiy manbadan (uzbmb.uz) olingan haqiqiy ma’lumotlar import qilinadi.
 
 ---
