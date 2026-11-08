@@ -206,6 +206,7 @@ Har bir controller klassiga `@Tag(name = "…", description = "…")` qo‘yilad
 
 - Prefiks: `/api/v1`. Ochiq endpointlar: `GET` katalog, `/auth/register|login`, `/score/calculate`.
 - **Katalog prefikslari** (`/universities/**`, `/directions/**`, `/programs/**`) GET uchun **to‘liq ochiq**. Shaxsiy ma’lumot qaytaradigan endpointlar ular ostida yozilmaydi, o‘z prefikslarida (`/profile`, `/recommendations`, `/favorites`, `/admin`) bo‘ladi. Ochiq so‘rovlarda `Authorization` sarlavhasi e’tiborga olinmaydi (eskirgan token 401 bermaydi).
+- Istisno: o‘zgarmas kichik to‘plamlar (ma’lumotnomalar, 36 ta test savoli, 2–4 dasturni taqqoslash) oddiy massiv sifatida qaytariladi. Foydalanuvchi bilan o‘sib boradigan ro‘yxatlar (tarix, saralanganlar) albatta sahifalanadi.
 - Sahifalashda tartib doim yagona bo‘lishi kerak: `Pageables.withIdTiebreaker` (`id` qo‘shiladi) yoki so‘rovda `ORDER BY ..., id`. Ichki ro‘yxatlar (`/{id}/programs`) ham sahifalanadi.
 - Qidiruv faqat `Specs.containsIgnoreCase` orqali bajariladi (`%` va `_` escape qilinadi).
 - Status kodlari: `200` o‘qish/yangilash, `201` yaratish, `204` o‘chirish, `400` validatsiya, `401` autentifikatsiya yo‘q, `403` ruxsat yo‘q, `404` topilmadi, `409` konflikt.
@@ -219,6 +220,8 @@ Har bir controller klassiga `@Tag(name = "…", description = "…")` qo‘yilad
 - Pul summalari `BIGINT` (so‘m), ballar `NUMERIC(5,1)`, vaqt `TIMESTAMPTZ` turida saqlanadi.
 - N+1 muammosidan qochish uchun ro‘yxatlarda `@EntityGraph` yoki `JOIN FETCH` ishlatiladi.
 - **Demo ma’lumotlar** faqat `db/demo/` dagi repeatable migratsiyada saqlanadi (`R__*.sql`, katalogni tozalab qayta yozadi). U `local` va `test` profillarida `spring.flyway.locations` orqali ulanadi va production’ga hech qachon tushmaydi.
+- Idempotent qo‘shish (masalan, saralanganlar) `INSERT ... ON CONFLICT DO NOTHING` orqali bajariladi: "tekshir-keyin-yoz" usuli parallel so‘rovlarda 500 xato beradi.
+- Ko‘p qatorli `saveAll` qilinadigan jadvallar `SEQUENCE` (pooled, allocationSize = 50) va JDBC batch ishlatadi.
 - Ixtiyoriy filtrlar `Specification` orqali yoziladi. Parametr bo‘lmasa `Specification.unrestricted()` qaytariladi (Spring Data 4 `null` qabul qilmaydi).
 - Har bir repozitoriy alohida faylda yoziladi: Spring Data ichki (nested) interfeyslarni topmaydi.
 
@@ -232,7 +235,7 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda), `@RequiredArg
 - Unit testlar `*Test.java`, integratsion testlar `*IntegrationTest.java` deb nomlanadi va `@IntegrationTest` annotatsiyasi bilan belgilanadi. Integratsion testlar lokal `unikompas_test` bazasida ishlaydi va har bir kontekst uchun `flyway clean + migrate` bajariladi.
 - Joriy foydalanuvchi controllerda `@AuthenticationPrincipal Jwt jwt` → `CurrentUser.from(jwt)` orqali olinadi.
 - JSONB ustunlar Java’da `String` sifatida saqlanadi (`@Column(columnDefinition = "jsonb")` + `@ColumnTransformer(write = "?::jsonb")`) va Spring’ning `tools.jackson.databind.json.JsonMapper` (Jackson 3) orqali serializatsiya qilinadi.
-- `RecommendationEngine` sof (Spring/JPA’ga bog‘liq bo‘lmagan) klass: kirish — `ApplicantInput` va `ProgramCandidate` recordlari. Algoritmdagi har bir o‘zgarish unit test va TZ §6 bilan birga commit qilinadi.
+- `RecommendationEngine` sof klass: Spring annotatsiyalari, JPA va HTTP’ga bog‘liq emas. Bean sifatida `RecommendationConfig` orqali ro‘yxatdan o‘tkaziladi. Kirish — `ApplicantInput` va `ProgramCandidate` recordlari. Algoritmdagi har bir o‘zgarish unit test va TZ §6 bilan birga commit qilinadi.
 - Test nomlari tavsifiy bo‘ladi: `shouldReturnHighChance_whenScoreAboveForecast()`.
 
 ## 7. Frontend qoidalari

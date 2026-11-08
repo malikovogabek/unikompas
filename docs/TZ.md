@@ -282,15 +282,16 @@ I = ( (ũ · d̃) / (‖ũ‖ · ‖d̃‖) + 1 ) / 2
 
 > **Asoslash.** RIASEC vektorlarining barcha komponentlari musbat. Shu sababli oddiy kosinus o‘xshashlik deyarli har doim 0,7–0,95 oralig‘ida chiqadi va yo‘nalishlarni yomon ajratadi. Markazlashtirish profillarning **shaklini** (qaysi tiplar ustun ekanini) solishtiradi. Masalan, `IRC` abituriyent uchun IT yo‘nalishida `I ≈ 0,97`, pedagogikada `I < 0,5` chiqadi. Agar vektor tekis bo‘lsa (barcha javoblar bir xil), `I = 0,5` (neytral) olinadi.
 
-Test topshirilmagan bo‘lsa (sovuq start), `I` qiziqish sohalari bo‘yicha hisoblanadi: yo‘nalish sohasi tanlangan sohalar orasida bo‘lsa `I = 1`, aks holda `I = 0,3`. Soha tanlanmagan bo‘lsa `I = 0,5`.
+Test topshirilmagan bo‘lsa yoki natija vektori tekis bo‘lsa (barcha javoblar bir xil, ya’ni signal yo‘q), sovuq start qo‘llanadi: `I` qiziqish sohalari bo‘yicha hisoblanadi: yo‘nalish sohasi tanlangan sohalar orasida bo‘lsa `I = 1`, aks holda `I = 0,3`. Soha tanlanmagan bo‘lsa `I = 0,5`.
 
 #### b) Kirish ehtimoli — `C`
 
-1. **O‘tish balini prognozlash.** Oxirgi `n ≤ 3` yil ballari bo‘yicha o‘rtacha yillik o‘zgarish (trend):
+1. **O‘tish balini prognozlash.** Trend **kalendar yillar** bo‘yicha hisoblanadi: ma’lum bo‘lgan ballar orasidan oxirgi 3 kalendar yil ichidagilari olinadi. Ma’lumot e’lon qilinmagan yillar trendni buzmasligi uchun shunday qilinadi:
    ```
-   Δ = clamp( (P_last − P_first) / (n − 1), −10, +10 )
-   P̂ = P_last + Δ          (n = 1 bo‘lsa, P̂ = P_last)
+   Δ = clamp( (P_last − P_first) / (year_last − year_first), −10, +10 )   — yillik o‘zgarish
+   P̂ = P_last + Δ · (year_target − year_last)                            — maqsadli yil uchun
    ```
+   `year_target` — katalogdagi eng so‘nggi e’lon qilingan yildan keyingi yil. Bitta yil ma’lum bo‘lsa, `Δ = 0`. Oxirgi ma’lum bal maqsadli yildan 3 yildan ko‘proq oldin bo‘lsa, tarix eskirgan deb hisoblanadi va dastur baholanmaydi.
 2. **Ehtimolni baholash** (logistik funksiya, `k = 4` — tarqoqlik koeffitsiyenti):
    ```
    p = 1 / (1 + e^(−(S − P̂) / k))
