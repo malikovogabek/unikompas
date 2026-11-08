@@ -18,11 +18,17 @@ public record UniKompasProperties(Jwt jwt, Cors cors, Admin admin, Seed seed) {
     public record Cors(List<String> allowedOrigins) {
     }
 
-    /** Bootstrap administrator account; skipped when e-mail or password is blank. */
+    /**
+     * Bootstrap administrator account; skipped when e-mail or password is blank.
+     * The configured password is the source of truth and is re-applied on startup.
+     */
     public record Admin(String email, String password) {
     }
 
-    /** @param demoUsers create a demo applicant account (local profile only) */
-    public record Seed(boolean demoUsers) {
+    /**
+     * @param demoUsers    create a demo applicant account (local profile only)
+     * @param demoPassword password for that account, kept in configuration, not code
+     */
+    public record Seed(boolean demoUsers, String demoPassword) {
     }
 }

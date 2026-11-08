@@ -40,3 +40,4 @@ unikompas:
     password: ${ADMIN_PASSWORD:}
   seed:
     demo-users: false
+    demo-password: ${DEMO_PASSWORD:}
