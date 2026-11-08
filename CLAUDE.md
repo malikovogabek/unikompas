@@ -231,6 +231,8 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda), `@RequiredArg
 - Tavsiya algoritmi (`recommendation/`), `RiasecScorer` va `ScoreCalculator` uchun unit testlar majburiy.
 - Unit testlar `*Test.java`, integratsion testlar `*IntegrationTest.java` deb nomlanadi va `@IntegrationTest` annotatsiyasi bilan belgilanadi. Integratsion testlar lokal `unikompas_test` bazasida ishlaydi va har bir kontekst uchun `flyway clean + migrate` bajariladi.
 - Joriy foydalanuvchi controllerda `@AuthenticationPrincipal Jwt jwt` → `CurrentUser.from(jwt)` orqali olinadi.
+- JSONB ustunlar Java’da `String` sifatida saqlanadi (`@Column(columnDefinition = "jsonb")` + `@ColumnTransformer(write = "?::jsonb")`) va Spring’ning `tools.jackson.databind.json.JsonMapper` (Jackson 3) orqali serializatsiya qilinadi.
+- `RecommendationEngine` sof (Spring/JPA’ga bog‘liq bo‘lmagan) klass: kirish — `ApplicantInput` va `ProgramCandidate` recordlari. Algoritmdagi har bir o‘zgarish unit test va TZ §6 bilan birga commit qilinadi.
 - Test nomlari tavsifiy bo‘ladi: `shouldReturnHighChance_whenScoreAboveForecast()`.
 
 ## 7. Frontend qoidalari
@@ -372,7 +374,7 @@ Batafsil: TZ 12-bo‘lim. Joriy holat shu yerda belgilanadi.
 - [x] **0.** Hujjatlash: TZ, CLAUDE.md, README, GitHub repozitoriy
 - [x] **1.** Backend asosi va autentifikatsiya: Spring Boot, PostgreSQL, Flyway V1, xatolar, Swagger, JWT
 - [x] **2.** Katalog API va demo ma’lumotlar
-- [ ] **3.** Profil, RIASEC testi, tavsiya dvigateli, saralanganlar va unit testlar
+- [x] **3.** Profil, RIASEC testi, tavsiya dvigateli, saralanganlar va unit testlar
 - [ ] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
 - [ ] **5.** Frontend asosi: dizayn tizimi, UI kit, layout, i18n (uz/ru/en), auth sahifalari
 - [ ] **6.** Frontend: bosh sahifa, katalog, dastur sahifasi, ball kalkulyatori
