@@ -19,6 +19,7 @@
     <properties>
         <java.version>21</java.version>
         <springdoc.version>3.2.0</springdoc.version>
+        <jacoco.version>0.8.16</jacoco.version>
     </properties>
 
     <dependencies>
@@ -108,6 +109,50 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <!-- Test coverage (NFR-8): report in target/site/jacoco; `verify` fails if the
+                 recommendation algorithm drops below 80% line coverage. -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals><goal>prepare-agent</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals><goal>report</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>check-algorithm</id>
+                        <phase>verify</phase>
+                        <goals><goal>check</goal></goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>CLASS</element>
+                                    <includes>
+                                        <include>uz.unikompas.recommendation.RecommendationEngine</include>
+                                        <include>uz.unikompas.recommendation.ChanceEstimator</include>
+                                        <include>uz.unikompas.careertest.RiasecScorer</include>
+                                        <include>uz.unikompas.careertest.Riasec</include>
+                                        <include>uz.unikompas.profile.ScoreCalculator</include>
+                                    </includes>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
