@@ -3,6 +3,7 @@ spring:
     url: ${TEST_DB_URL:jdbc:postgresql://localhost:5432/unikompas_test}
   flyway:
     clean-disabled: false
+    locations: classpath:db/migration,classpath:db/demo
 
 unikompas:
   jwt:
