@@ -30,6 +30,12 @@ public class FavoriteService {
                 page.getTotalPages());
     }
 
+    /** All saved programme ids — small, used by the UI for heart toggles. */
+    @Transactional(readOnly = true)
+    public List<Long> ids(Long userId) {
+        return favorites.findProgramIdsByUserId(userId);
+    }
+
     /** Idempotent: adding an existing favorite is a no-op. */
     @Transactional
     public void add(Long userId, Long programId) {

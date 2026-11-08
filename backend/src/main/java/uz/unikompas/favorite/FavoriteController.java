@@ -1,5 +1,7 @@
 package uz.unikompas.favorite;
 
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -43,6 +45,15 @@ public class FavoriteController {
     public PageResponse<ProgramResponse> list(@AuthenticationPrincipal Jwt jwt,
                                               @PageableDefault(size = 20) Pageable pageable) {
         return service.list(CurrentUser.from(jwt).id(), pageable);
+    }
+
+    /** Ids of all saved programmes (for "saved" indicators across the UI). */
+    @Operation(summary = "Saralangan dastur id’lari",
+            description = "Barcha saralangan dasturlar id’lari. UI’dagi “yurakcha” holatini ko‘rsatish uchun.")
+    @ApiResponse(responseCode = "200", description = "Id’lar ro‘yxati")
+    @GetMapping("/ids")
+    public List<Long> ids(@AuthenticationPrincipal Jwt jwt) {
+        return service.ids(CurrentUser.from(jwt).id());
     }
 
     /** Saves a program; repeating the call has no effect. */

@@ -63,6 +63,10 @@ export async function fetchFavorites(page: number, size = 20): Promise<PageRespo
   return (await api.get<PageResponse<Program>>('/favorites', { params: { page, size } })).data
 }
 
+export async function fetchFavoriteIds(): Promise<number[]> {
+  return (await api.get<number[]>('/favorites/ids')).data
+}
+
 export async function addFavorite(programId: number): Promise<void> {
   await api.put(`/favorites/${programId}`)
 }
