@@ -18,7 +18,7 @@ Kod yozishdan oldin uni o‘qing. Biror qoida bilan kelishmasangiz, avval shu fa
 | Qism | Stek |
 |---|---|
 | Frontend | React 19, TypeScript (strict), Vite, Tailwind CSS 4, React Router 7, TanStack Query 5, Zustand, React Hook Form + Zod, Axios, Recharts, lucide-react, **react-i18next** (uz/ru/en) |
-| Backend | Java 21, Spring Boot 4.0, Spring Web, Spring Security + JWT (jjwt), Spring Data JPA, Bean Validation, Flyway, springdoc-openapi, Lombok (cheklangan) |
+| Backend | Java 21, Spring Boot 4.1, Spring Web MVC, Spring Security + OAuth2 Resource Server (JWT HS256, Nimbus), Spring Data JPA (Hibernate 7), Bean Validation, Flyway, springdoc-openapi 3, Lombok (cheklangan) |
 | Ma’lumotlar bazasi | PostgreSQL 17 (lokal) |
 | Testlar | JUnit 5, Mockito, MockMvc; Vitest |
 
@@ -46,12 +46,12 @@ backend/
     │   ├── java/uz/unikompas/
     │   │   ├── UniKompasApplication.java
     │   │   ├── common/
-    │   │   │   ├── config/          # SecurityConfig, OpenApiConfig, CorsConfig
+    │   │   │   ├── config/          # UniKompasProperties, OpenApiConfig
     │   │   │   ├── exception/       # GlobalExceptionHandler, ApiError, NotFoundException, ...
     │   │   │   └── dto/             # PageResponse<T> va umumiy DTO’lar
-    │   │   ├── security/            # JwtService, JwtAuthFilter, CurrentUser
+    │   │   ├── security/            # SecurityConfig (CORS, JWT encoder/decoder), JwtService, CurrentUser
     │   │   ├── auth/                # AuthController, AuthService, dto/
-    │   │   ├── user/                # User, Role, UserRepository
+    │   │   ├── user/                # User, Role, UserRepository, AccountInitializer (admin/demo seed)
     │   │   ├── reference/           # Region, Subject, Field + controller (ma’lumotnomalar)
     │   │   ├── university/          # University, UniversityRepository, UniversityService, UniversityController, dto/
     │   │   ├── direction/
@@ -65,7 +65,9 @@ backend/
     │       ├── application.yml
     │       ├── application-local.yml        # gitignore’da emas, faqat lokal standartlar
     │       └── db/migration/                # V1__init_schema.sql, V2__seed_reference.sql, ...
-    └── test/java/uz/unikompas/...
+    └── test/
+        ├── java/uz/unikompas/support/       # @IntegrationTest (toza DB + MockMvc)
+        └── resources/application-test.yml   # unikompas_test bazasi
 ```
 
 **Har bir feature paketi ichida** (oddiy va bir xil):
@@ -114,7 +116,8 @@ Talablar: **JDK 21+**, **Node.js 20+**, **PostgreSQL 17**.
 > `export PATH="$HOME/.local/bin:$PATH"` — node, npm, gh, psql, pg_ctl.
 > PostgreSQL klasteri: `~/.local/var/pg17`, port 5432.
 > Ishga tushirish: `pg_ctl -D ~/.local/var/pg17 -l ~/.local/var/pg17.log -o "-k /tmp" start`.
-> DB: `unikompas`, user/parol: `unikompas` / `unikompas` (faqat lokal muhit uchun).
+> DB: `unikompas` va `unikompas_test`, user/parol: `unikompas` / `unikompas` (faqat lokal muhit uchun).
+> Maven alohida o‘rnatilmaydi: `./mvnw` o‘zi yuklab oladi. JDK 25 o‘rnatilgan, loyiha Java 21 darajasida kompilyatsiya qilinadi.
 
 ```bash
 # 1. Ma’lumotlar bazasi (boshqa kompyuterda)
@@ -219,6 +222,8 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda) va `@RequiredA
 ### 6.7. Testlar
 
 - Tavsiya algoritmi (`recommendation/`), `RiasecScorer` va `ScoreCalculator` uchun unit testlar majburiy.
+- Unit testlar `*Test.java`, integratsion testlar `*IntegrationTest.java` deb nomlanadi va `@IntegrationTest` annotatsiyasi bilan belgilanadi. Integratsion testlar lokal `unikompas_test` bazasida ishlaydi va har bir kontekst uchun `flyway clean + migrate` bajariladi.
+- Joriy foydalanuvchi controllerda `@AuthenticationPrincipal Jwt jwt` → `CurrentUser.from(jwt)` orqali olinadi.
 - Test nomlari tavsifiy bo‘ladi: `shouldReturnHighChance_whenScoreAboveForecast()`.
 
 ## 7. Frontend qoidalari
@@ -358,7 +363,7 @@ Remote: `https://github.com/malikovogabek/unikompas`.
 Batafsil: TZ 12-bo‘lim. Joriy holat shu yerda belgilanadi.
 
 - [x] **0.** Hujjatlash: TZ, CLAUDE.md, README, GitHub repozitoriy
-- [ ] **1.** Backend asosi va autentifikatsiya: Spring Boot, PostgreSQL, Flyway V1, xatolar, Swagger, JWT
+- [x] **1.** Backend asosi va autentifikatsiya: Spring Boot, PostgreSQL, Flyway V1, xatolar, Swagger, JWT
 - [ ] **2.** Katalog API va demo ma’lumotlar
 - [ ] **3.** Profil, RIASEC testi, tavsiya dvigateli, saralanganlar va unit testlar
 - [ ] **4.** Admin API: CRUD, CSV import, vaznlar, statistika
