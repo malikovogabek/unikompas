@@ -39,6 +39,10 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     @Query(FETCH + " where p.id = :id")
     Optional<Program> findDetailedById(Long id);
 
+    /** Candidate programs for the recommendation engine: hard filter 1 (subject pair) done in SQL. */
+    @Query(FETCH + " where d.firstSubject.id = :firstSubjectId and d.secondSubject.id = :secondSubjectId")
+    List<Program> findForSubjectPair(Long firstSubjectId, Long secondSubjectId);
+
     long countByUniversityId(Long universityId);
 
     long countByDirectionId(Long directionId);
