@@ -1,12 +1,12 @@
 package uz.unikompas.recommendation;
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import uz.unikompas.common.dto.PageResponse;
 import uz.unikompas.recommendation.dto.RecommendationResponse;
 import uz.unikompas.recommendation.dto.RecommendationSummaryResponse;
 import uz.unikompas.security.CurrentUser;
@@ -61,12 +62,14 @@ public class RecommendationController {
         return service.latest(CurrentUser.from(jwt).id());
     }
 
-    /** Up to 20 past recommendations with match counts per category. */
+    /** Past recommendations, newest first, with match counts per category. */
     @Operation(summary = "Tavsiyalar tarixi",
-            description = "Oxirgi 20 ta tavsiya: sana va har bir toifadagi mos dasturlar soni.")
+            description = "Sahifalangan ro‘yxat (yangidan eskiga): sana va har bir toifadagi mos dasturlar soni.")
+    @ApiResponse(responseCode = "200", description = "Sahifalangan tarix (standart 10 ta)")
     @GetMapping
-    public List<RecommendationSummaryResponse> history(@AuthenticationPrincipal Jwt jwt) {
-        return service.history(CurrentUser.from(jwt).id());
+    public PageResponse<RecommendationSummaryResponse> history(@AuthenticationPrincipal Jwt jwt,
+                                                               @PageableDefault(size = 10) Pageable pageable) {
+        return service.history(CurrentUser.from(jwt).id(), pageable);
     }
 
     /** A specific recommendation; only its owner can read it. */

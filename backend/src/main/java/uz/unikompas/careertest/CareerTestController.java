@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uz.unikompas.careertest.dto.QuestionResponse;
+import uz.unikompas.common.dto.PageResponse;
 import uz.unikompas.careertest.dto.SubmitTestRequest;
 import uz.unikompas.careertest.dto.TestResultResponse;
 import uz.unikompas.security.CurrentUser;
@@ -39,7 +42,8 @@ public class CareerTestController {
     /** Returns the 36 questionnaire items in display order with uz/ru/en texts. */
     @Operation(summary = "Test savollari",
             description = "36 ta savol (6 tip × 6), ko‘rsatish tartibida, uch tildagi matni bilan. "
-                    + "Savolning RIASEC tipi ataylab qaytarilmaydi.")
+                    + "Savolning RIASEC tipi ataylab qaytarilmaydi. Belgilangan kichik to‘plam, sahifalanmaydi.")
+    @ApiResponse(responseCode = "200", description = "36 ta savol")
     @GetMapping("/questions")
     public List<QuestionResponse> questions() {
         return service.questions();
@@ -69,10 +73,12 @@ public class CareerTestController {
         return service.latest(CurrentUser.from(jwt).id());
     }
 
-    /** Up to 20 most recent results. */
-    @Operation(summary = "Test natijalari tarixi", description = "Oxirgi 20 ta natija, yangidan eskiga.")
+    /** Past results, newest first. */
+    @Operation(summary = "Test natijalari tarixi", description = "Sahifalangan ro‘yxat, yangidan eskiga.")
+    @ApiResponse(responseCode = "200", description = "Sahifalangan tarix (standart 10 ta)")
     @GetMapping("/results")
-    public List<TestResultResponse> history(@AuthenticationPrincipal Jwt jwt) {
-        return service.history(CurrentUser.from(jwt).id());
+    public PageResponse<TestResultResponse> history(@AuthenticationPrincipal Jwt jwt,
+                                                    @PageableDefault(size = 10) Pageable pageable) {
+        return service.history(CurrentUser.from(jwt).id(), pageable);
     }
 }

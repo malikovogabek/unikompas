@@ -6,11 +6,14 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.unikompas.careertest.dto.QuestionResponse;
 import uz.unikompas.careertest.dto.SubmitTestRequest;
 import uz.unikompas.careertest.dto.TestResultResponse;
+import uz.unikompas.common.dto.PageResponse;
+import uz.unikompas.common.dto.Pageables;
 import uz.unikompas.common.exception.FieldValidationException;
 import uz.unikompas.common.exception.NotFoundException;
 
@@ -56,9 +59,9 @@ public class CareerTestService {
     }
 
     @Transactional(readOnly = true)
-    public List<TestResultResponse> history(Long userId) {
-        return attempts.findTop20ByUserIdOrderByCreatedAtDescIdDesc(userId).stream()
-                .map(TestResultResponse::from).toList();
+    public PageResponse<TestResultResponse> history(Long userId, Pageable pageable) {
+        return PageResponse.from(attempts.findByUserIdOrderByCreatedAtDescIdDesc(userId, Pageables.unsorted(pageable))
+                .map(TestResultResponse::from));
     }
 
     /** Latest attempt, used by the recommendation engine (absent → cold start). */

@@ -1,12 +1,12 @@
 package uz.unikompas.favorite;
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import uz.unikompas.common.dto.PageResponse;
 import uz.unikompas.program.dto.ProgramResponse;
 import uz.unikompas.security.CurrentUser;
 
@@ -35,10 +36,13 @@ public class FavoriteController {
     private final FavoriteService service;
 
     /** Saved programs, most recently added first. */
-    @Operation(summary = "Saralangan dasturlar", description = "Oxirgi qo‘shilganidan boshlab, o‘tish ballari bilan.")
+    @Operation(summary = "Saralangan dasturlar",
+            description = "Sahifalangan ro‘yxat, oxirgi qo‘shilganidan boshlab, o‘tish ballari bilan.")
+    @ApiResponse(responseCode = "200", description = "Sahifalangan ro‘yxat (standart 20 ta)")
     @GetMapping
-    public List<ProgramResponse> list(@AuthenticationPrincipal Jwt jwt) {
-        return service.list(CurrentUser.from(jwt).id());
+    public PageResponse<ProgramResponse> list(@AuthenticationPrincipal Jwt jwt,
+                                              @PageableDefault(size = 20) Pageable pageable) {
+        return service.list(CurrentUser.from(jwt).id(), pageable);
     }
 
     /** Saves a program; repeating the call has no effect. */

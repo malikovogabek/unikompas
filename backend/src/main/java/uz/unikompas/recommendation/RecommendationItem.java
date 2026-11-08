@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,8 +29,11 @@ import org.hibernate.annotations.ColumnTransformer;
 @NoArgsConstructor
 public class RecommendationItem {
 
+    /** Pooled sequence (V6: INCREMENT BY 50) so saveAll is sent as JDBC batches. */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recommendation_items_seq")
+    @SequenceGenerator(name = "recommendation_items_seq", sequenceName = "recommendation_items_id_seq",
+            allocationSize = 50)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
