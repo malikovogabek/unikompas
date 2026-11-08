@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/Badge'
 import { useRefLabel } from '@/hooks/useRefLabel'
+import { formatInteger } from '@/lib/format'
 import type { University } from '@/types/api'
 import { UniversityMonogram } from './UniversityMonogram'
 
@@ -32,7 +33,7 @@ export function UniversityCard({ university: u }: { university: University }) {
         )}
         <span className="ml-auto inline-flex items-center gap-1 text-sm font-semibold text-text" title={t('catalog.universities.rating')}>
           <Star className="size-4 fill-gold text-gold" aria-hidden="true" />
-          <span className="tabular">{u.rating}</span>
+          <span className="tabular">{formatInteger(u.rating)}</span>
           <span className="sr-only">{t('catalog.universities.rating')}</span>
         </span>
       </div>

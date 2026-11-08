@@ -21,6 +21,11 @@ export function formatScore(score: number, lang: Language = currentLanguage()): 
   return new Intl.NumberFormat(locale(lang), { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(score)
 }
 
+/** Whole numbers with locale grouping: 1250 → "1 250" (uz/ru) or "1,250" (en). */
+export function formatInteger(n: number, lang: Language = currentLanguage()): string {
+  return new Intl.NumberFormat(locale(lang), { maximumFractionDigits: 0 }).format(n)
+}
+
 /** 0..1 → "87%". */
 export function formatPercent(unit: number, lang: Language = currentLanguage()): string {
   return new Intl.NumberFormat(locale(lang), { style: 'percent', maximumFractionDigits: 0 }).format(unit)

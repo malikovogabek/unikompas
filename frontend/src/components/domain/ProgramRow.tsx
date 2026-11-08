@@ -16,6 +16,7 @@ export function ProgramRow({ program: p, titleFrom }: ProgramRowProps) {
   const { t } = useTranslation()
   const title = titleFrom === 'direction' ? p.direction.name : p.university.name
   const latest = p.latestScores
+  const hasGrant = p.scoreHistory.some((s) => s.grantScore !== null)
   return (
     <Link
       to={`/programs/${p.id}`}
@@ -40,7 +41,8 @@ export function ProgramRow({ program: p, titleFrom }: ProgramRowProps) {
 
       <div className="flex items-center gap-3">
         <Sparkline
-          values={p.scoreHistory.map((s) => s.grantScore ?? s.contractScore)}
+          // One consistent series: grant if the programme ever had grant scores, otherwise contract.
+          values={p.scoreHistory.map((s) => (hasGrant ? s.grantScore : s.contractScore))}
           label={t('catalog.program.history')}
         />
         <ChevronRight className="size-5 text-muted group-hover:text-primary" aria-hidden="true" />

@@ -7,6 +7,7 @@ import { MatchRing } from '@/components/domain/MatchRing'
 import { Badge } from '@/components/ui/Badge'
 import { ButtonLink } from '@/components/ui/ButtonLink'
 import { useRegions } from '@/hooks/useReference'
+import { formatInteger } from '@/lib/format'
 import { homePathFor } from '@/lib/routes'
 import { selectIsAuthenticated, useAuthStore } from '@/store/authStore'
 
@@ -59,8 +60,8 @@ export function HomePage() {
                 <MatchRing percent={91} label={t('home.sampleMatch')} />
                 <div>
                   <Badge tone="turquoise">{t('home.sampleSafe')}</Badge>
-                  <p className="mt-2 font-display leading-snug font-bold text-text">Kompyuter ilmlari va dasturlash texnologiyalari</p>
-                  <p className="mt-0.5 text-sm text-muted">TATU · Toshkent</p>
+                  <p className="mt-2 font-display leading-snug font-bold text-text">{t('home.sampleDirection')}</p>
+                  <p className="mt-0.5 text-sm text-muted">{t('home.sampleUniversity')}</p>
                 </div>
               </div>
               <ul className="mt-5 space-y-2 text-sm">
@@ -103,7 +104,7 @@ export function HomePage() {
         <div className="mx-auto grid max-w-[1200px] grid-cols-3 gap-4 px-4 py-10">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
-              <p className="tabular font-display text-4xl font-extrabold text-primary md:text-5xl">{s.value ?? '—'}</p>
+              <p className="tabular font-display text-4xl font-extrabold text-primary md:text-5xl">{s.value !== undefined ? formatInteger(s.value) : '—'}</p>
               <p className="mt-1 text-sm text-muted md:text-base">{s.label}</p>
             </div>
           ))}

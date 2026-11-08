@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { ArrowLeft, BedDouble, CalendarDays, ExternalLink, MapPin, Star } from 'lucide-react'
+import { ArrowLeft, BookOpen, BedDouble, CalendarDays, ExternalLink, MapPin, Star } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
@@ -8,16 +8,21 @@ import { ProgramRow } from '@/components/domain/ProgramRow'
 import { UniversityMonogram } from '@/components/domain/UniversityMonogram'
 import { Badge } from '@/components/ui/Badge'
 import { Card } from '@/components/ui/Card'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { Pagination } from '@/components/ui/Pagination'
 import { QueryState } from '@/components/ui/QueryState'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useRefLabel } from '@/hooks/useRefLabel'
+import { formatInteger } from '@/lib/format'
 
 export function UniversityDetailPage() {
   const { t } = useTranslation()
   const refLabel = useRefLabel()
   const id = Number(useParams().id)
-  const [page, setPage] = useState(0)
+  // Page is tied to the entity: navigating to another :id starts from page 0.
+  const [paging, setPaging] = useState({ id, page: 0 })
+  const page = paging.id === id ? paging.page : 0
+  const setPage = (next: number) => setPaging({ id, page: next })
   const university = useQuery({ queryKey: universityKeys.detail(id), queryFn: () => fetchUniversity(id) })
   const programs = useQuery({
     queryKey: universityKeys.programs(id, page),
@@ -61,7 +66,7 @@ export function UniversityDetailPage() {
                 <Fact label={t('catalog.universities.rating')}>
                   <span className="inline-flex items-center gap-1 font-semibold">
                     <Star className="size-4 fill-gold text-gold" aria-hidden="true" />
-                    <span className="tabular">{u.rating} / 100</span>
+                    <span className="tabular">{formatInteger(u.rating)} / 100</span>
                   </span>
                 </Fact>
                 <Fact label={t('catalog.universities.dormitory')}>
@@ -79,7 +84,7 @@ export function UniversityDetailPage() {
                   </Fact>
                 )}
                 <Fact label={t('catalog.universities.programs')}>
-                  <span className="tabular font-semibold">{u.programCount}</span>
+                  <span className="tabular font-semibold">{formatInteger(u.programCount)}</span>
                 </Fact>
               </dl>
               {u.website && (
@@ -104,6 +109,9 @@ export function UniversityDetailPage() {
         <div className="mt-4">
           <QueryState query={programs} skeleton={<Skeleton className="h-64 rounded-lg" />}>
             {(p) => (
+              p.content.length === 0 ? (
+                <EmptyState icon={<BookOpen className="size-6" strokeWidth={1.75} />} title={t('catalog.program.emptyList')} />
+              ) : (
               <>
                 <div className="flex flex-col gap-3">
                   {p.content.map((program) => (
@@ -112,6 +120,7 @@ export function UniversityDetailPage() {
                 </div>
                 <Pagination page={p.page} totalPages={p.totalPages} onChange={setPage} />
               </>
+              )
             )}
           </QueryState>
         </div>

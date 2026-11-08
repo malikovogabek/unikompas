@@ -17,7 +17,7 @@
     "next": "Next",
     "notFound": "Not found",
     "errorLoading": "Could not load data",
-    "results": "{{count}} results",
+    "results": "{{value}} results",
     "years": "{{count}} years",
     "yes": "Yes",
     "no": "No",
@@ -153,7 +153,9 @@
     "sampleReason2": "Above the forecast grant score",
     "sampleSafe": "Safe",
     "ctaTitle": "Choose the right direction for your future",
-    "ctaText": "Signing up is free and takes a minute."
+    "ctaText": "Signing up is free and takes a minute.",
+    "sampleDirection": "Computer Science and Programming Technologies",
+    "sampleUniversity": "TUIT · Tashkent"
   },
   "dashboard": {
     "welcome": "Hi, {{name}}!",
@@ -308,7 +310,8 @@
       "noHistory": "No passing scores yet",
       "open": "Details",
       "university": "University",
-      "direction": "Programme"
+      "direction": "Programme",
+      "emptyList": "No programmes yet"
     }
   },
   "calculator": {

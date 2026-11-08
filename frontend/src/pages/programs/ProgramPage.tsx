@@ -11,7 +11,7 @@ import { Alert } from '@/components/ui/Alert'
 import { Card } from '@/components/ui/Card'
 import { QueryState } from '@/components/ui/QueryState'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { formatScore, formatSum } from '@/lib/format'
+import { formatInteger, formatScore, formatSum } from '@/lib/format'
 
 export function ProgramPage() {
   const { t } = useTranslation()
@@ -53,7 +53,7 @@ export function ProgramPage() {
               <Fact
                 icon={<Users className="size-4" />}
                 label={`${t('catalog.program.grantQuota')} / ${t('catalog.program.contractQuota')}`}
-                value={`${p.grantQuota} / ${p.contractQuota}`}
+                value={`${formatInteger(p.grantQuota)} / ${formatInteger(p.contractQuota)}`}
               />
               <Fact icon={<Coins className="size-4" />} label={t('catalog.program.fee')} value={formatSum(p.contractFee)} />
             </div>

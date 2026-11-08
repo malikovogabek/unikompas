@@ -17,7 +17,7 @@
     "next": "Keyingi",
     "notFound": "Topilmadi",
     "errorLoading": "Ma’lumotlarni yuklab bo‘lmadi",
-    "results": "{{count}} ta natija",
+    "results": "{{value}} ta natija",
     "years": "{{count}} yil",
     "yes": "Ha",
     "no": "Yo‘q",
@@ -153,7 +153,9 @@
     "sampleReason2": "Prognoz qilingan grant balidan yuqori",
     "sampleSafe": "Ishonchli",
     "ctaTitle": "Kelajagingiz uchun to‘g‘ri yo‘nalishni tanlang",
-    "ctaText": "Ro‘yxatdan o‘tish bepul va bir daqiqa vaqt oladi."
+    "ctaText": "Ro‘yxatdan o‘tish bepul va bir daqiqa vaqt oladi.",
+    "sampleDirection": "Kompyuter ilmlari va dasturlash texnologiyalari",
+    "sampleUniversity": "TATU · Toshkent"
   },
   "dashboard": {
     "welcome": "Salom, {{name}}!",
@@ -308,7 +310,8 @@
       "noHistory": "O‘tish ballari hali kiritilmagan",
       "open": "Batafsil",
       "university": "OTM",
-      "direction": "Yo‘nalish"
+      "direction": "Yo‘nalish",
+      "emptyList": "Hozircha dasturlar yo‘q"
     }
   },
   "calculator": {

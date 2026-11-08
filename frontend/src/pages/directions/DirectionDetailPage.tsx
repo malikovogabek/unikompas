@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Building2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
@@ -9,6 +9,7 @@ import { ProgramRow } from '@/components/domain/ProgramRow'
 import { RiasecRadar } from '@/components/domain/RiasecRadar'
 import { SubjectPair } from '@/components/domain/SubjectPair'
 import { Card } from '@/components/ui/Card'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { Pagination } from '@/components/ui/Pagination'
 import { QueryState } from '@/components/ui/QueryState'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -18,7 +19,10 @@ export function DirectionDetailPage() {
   const { t } = useTranslation()
   const refLabel = useRefLabel()
   const id = Number(useParams().id)
-  const [page, setPage] = useState(0)
+  // Page is tied to the entity: navigating to another :id starts from page 0.
+  const [paging, setPaging] = useState({ id, page: 0 })
+  const page = paging.id === id ? paging.page : 0
+  const setPage = (next: number) => setPaging({ id, page: next })
   const direction = useQuery({ queryKey: directionKeys.detail(id), queryFn: () => fetchDirection(id) })
   const programs = useQuery({
     queryKey: directionKeys.programs(id, page),
@@ -91,6 +95,9 @@ export function DirectionDetailPage() {
         <div className="mt-4">
           <QueryState query={programs} skeleton={<Skeleton className="h-64 rounded-lg" />}>
             {(p) => (
+              p.content.length === 0 ? (
+                <EmptyState icon={<Building2 className="size-6" strokeWidth={1.75} />} title={t('catalog.program.emptyList')} />
+              ) : (
               <>
                 <div className="flex flex-col gap-3">
                   {p.content.map((program) => (
@@ -99,6 +106,7 @@ export function DirectionDetailPage() {
                 </div>
                 <Pagination page={p.page} totalPages={p.totalPages} onChange={setPage} />
               </>
+              )
             )}
           </QueryState>
         </div>
