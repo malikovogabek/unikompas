@@ -17,6 +17,9 @@ class ScoreCalculatorTest {
         ScoreCalculationResponse r = calculator.calculate(new ScoreCalculationRequest(30, 30, 30));
         assertThat(r.total()).isEqualByComparingTo("189.0");
         assertThat(r.maxTotal()).isEqualByComparingTo("189");
+        assertThat(r.mandatoryMax()).isEqualByComparingTo("33.0");
+        assertThat(r.firstSubjectMax()).isEqualByComparingTo("93.0");
+        assertThat(r.secondSubjectMax()).isEqualByComparingTo("63.0");
     }
 
     @Test

@@ -28,7 +28,9 @@ public class ScoreCalculator {
         BigDecimal mandatory = weighted(req.mandatoryCorrect(), MANDATORY_WEIGHT);
         BigDecimal first = weighted(req.firstSubjectCorrect(), FIRST_SUBJECT_WEIGHT);
         BigDecimal second = weighted(req.secondSubjectCorrect(), SECOND_SUBJECT_WEIGHT);
-        return new ScoreCalculationResponse(mandatory, first, second, mandatory.add(first).add(second), MAX_TOTAL);
+        return new ScoreCalculationResponse(mandatory, first, second,
+                weighted(QUESTIONS_PER_BLOCK, MANDATORY_WEIGHT), weighted(QUESTIONS_PER_BLOCK, FIRST_SUBJECT_WEIGHT),
+                weighted(QUESTIONS_PER_BLOCK, SECOND_SUBJECT_WEIGHT), mandatory.add(first).add(second), MAX_TOTAL);
     }
 
     private static BigDecimal weighted(int correct, BigDecimal weight) {

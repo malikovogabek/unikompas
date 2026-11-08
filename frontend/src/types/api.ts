@@ -115,6 +115,9 @@ export type ScoreCalculationResponse = {
   mandatoryScore: number
   firstSubjectScore: number
   secondSubjectScore: number
+  mandatoryMax: number
+  firstSubjectMax: number
+  secondSubjectMax: number
   total: number
   maxTotal: number
 }
