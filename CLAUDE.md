@@ -254,6 +254,8 @@ Faqat `@Getter`, `@Setter`, `@NoArgsConstructor` (entity’larda), `@RequiredArg
 10. Rang va o‘lchamlar faqat dizayn tokenlari orqali beriladi (`bg-surface`, `text-muted`, `border-line`, `bg-primary-soft` …, `src/styles/index.css`). Hex qiymatlar komponent ichida yozilmaydi. Mavzu `<html data-theme>` atributi orqali almashadi, `dark:` varianti shunga bog‘langan.
 12. Komponent fayllari faqat komponent eksport qiladi (Fast Refresh uchun). Yordamchi funksiya va konstantalar alohida `.ts` faylda turadi (masalan, `buttonStyles.ts`).
 13. Backend xatolari `useApiErrorMessage()` orqali ko‘rsatiladi: `errors.<CODE>` va `validation.<constraint>`. `locales.test.ts` uchala tildagi kalitlar bir xilligini va backend `ErrorCode` enum’idagi har bir kodning tarjimasi borligini tekshiradi.
+14. **Sessiya va kesh:** sessiya o‘zgarganda (chiqish, muddat tugashi, boshqa foydalanuvchi kirishi) `queryClient` keshi to‘liq tozalanadi (`lib/queryClient.ts`). Shuning uchun foydalanuvchiga tegishli query kalitlariga user id qo‘shish shart emas. Backend ma’lumotlari tilga bog‘liq emas (frontend kodlarni tarjima qiladi), shuning uchun kalitlarga til qo‘shilmaydi.
+15. Rolga qarab bosh sahifa faqat `homePathFor(role)` (`lib/routes.ts`) orqali aniqlanadi.
 11. **Lokalizatsiya (i18n):**
     - JSX ichida qattiq yozilgan matn bo‘lmaydi. Hamma matn `const { t } = useTranslation()` → `t('catalog.filters.region')` orqali olinadi.
     - Kalitlar `bo‘lim.kichikBo‘lim.kalit` (camelCase) formatida yoziladi. Umumiy so‘zlar `common.*` da, xato kodlari `errors.<CODE>` da saqlanadi.
