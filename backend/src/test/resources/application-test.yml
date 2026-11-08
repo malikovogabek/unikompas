@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: ${TEST_DB_URL:jdbc:postgresql://localhost:5432/unikompas_test}
+  flyway:
+    clean-disabled: false
+
+unikompas:
+  jwt:
+    secret: dGVzdC1vbmx5LXNlY3JldC1rZXktZm9yLXVuaWtvbXBhcy10ZXN0cw==
+  admin:
+    email: admin@test.uz
+    password: Admin123!

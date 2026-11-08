@@ -39,7 +39,7 @@ hisobga olib, mos yo‘nalishlar va OTMlarni **Ishonchli / Maqbul / Orzu** toifa
 
 | Frontend | Backend |
 |---|---|
-| React 19, TypeScript, Vite, Tailwind CSS, TanStack Query, React Router, Zustand, Recharts | Java 21, Spring Boot 4, Spring Security (JWT), Spring Data JPA, PostgreSQL, Flyway, Swagger (springdoc) |
+| React 19, TypeScript, Vite, Tailwind CSS, TanStack Query, React Router, Zustand, Recharts | Java 21, Spring Boot 4.1, Spring Security (JWT), Spring Data JPA, PostgreSQL, Flyway, Swagger (springdoc) |
 
 ## Ishga tushirish
 

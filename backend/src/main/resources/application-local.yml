@@ -1,0 +1,14 @@
+# Local development defaults. NOT for production — secrets here are public by design.
+unikompas:
+  jwt:
+    secret: dW5pa29tcGFzLWxvY2FsLWRldi1vbmx5LXNlY3JldC1rZXktMjAyNg==
+  admin:
+    email: admin@unikompas.uz
+    password: Admin123!
+  seed:
+    demo-users: true
+    demo-password: Demo123!
+
+logging:
+  level:
+    uz.unikompas: DEBUG

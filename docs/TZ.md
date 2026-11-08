@@ -612,8 +612,8 @@ erDiagram
 | Ikonkalar | lucide-react | Yagona chiziqli uslub |
 | HTTP | Axios | Interceptorlar (JWT, xatolar) |
 | Lokalizatsiya | react-i18next + i18next-browser-languagedetector | Sanoat standarti, lazy tarjimalar, pluralizatsiya |
-| Backend | **Java 21 (LTS), Spring Boot 4.0** | Sanoat standarti, ishonchli ekotizim |
-| Xavfsizlik | Spring Security + JWT (jjwt) | Stateless autentifikatsiya |
+| Backend | **Java 21 (LTS), Spring Boot 4.1** | Sanoat standarti, ishonchli ekotizim |
+| Xavfsizlik | Spring Security + OAuth2 Resource Server (JWT, Nimbus) | Stateless autentifikatsiya, qo‘shimcha kutubxonasiz standart yechim |
 | ORM | Spring Data JPA (Hibernate) | |
 | Ma’lumotlar bazasi | **PostgreSQL 17** | JSONB, ishonchlilik |
 | Migratsiyalar | Flyway | Sxemani versiyalash |
