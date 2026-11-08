@@ -17,4 +17,6 @@ public interface DirectionRepository extends JpaRepository<Direction, Long>, Jpa
 
     @EntityGraph(attributePaths = {"field", "firstSubject", "secondSubject"})
     Optional<Direction> findDetailedById(Long id);
+
+    Optional<Direction> findByCode(String code);
 }
