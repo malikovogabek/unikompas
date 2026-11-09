@@ -51,12 +51,12 @@ Lokal sinov (prod profili, 512 MB sharoitiga yaqin): ilova 5 soniyada ishga tush
 | Backend (Render, Frankfurt) | https://unikompas-api.onrender.com (`srv-dboc1cu417fc73fr16a0`) |
 | Baza (Neon, Frankfurt) | `unikompas` loyihasi, PostgreSQL 17 |
 
-Xizmatlar CLI va API orqali yaratilgan, GitHub ilovalari ulanmagan. Shuning uchun `git push` dan keyin avtomatik deploy **bo‘lmaydi**. Yangilash uchun quyidagi buyruqlarni bajaring:
+**Avtomatik deploy yoqilgan (2026-11-09):** `main` ga push qilinganda `backend/` o‘zgarsa Render, `frontend/` o‘zgarsa Vercel o‘zi qayta deploy qiladi. Ikkala xizmatda ham GitHub ilovasi o‘rnatilgan.
+
+Qo‘lda deploy qilish kerak bo‘lsa:
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
-render deploys create srv-dboc1cu417fc73fr16a0 --confirm   # backend (main branch'dan qayta build)
+render deploys create srv-dboc1cu417fc73fr16a0 --confirm   # backend
 cd frontend && vercel deploy --prod --yes                   # frontend
 ```
-
-Avtomatik deploy yoqish uchun Render va Vercel dashboard’larida repozitoriyni GitHub orqali ulash kifoya: **Settings → Git / Build & Deploy → Connect repository**.
