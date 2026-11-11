@@ -13,7 +13,7 @@
 ![React](https://img.shields.io/badge/React-19-2447b8?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-7-2447b8?logo=typescript&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-0e1b45?logo=postgresql&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-106_passing-0b8c87)
+![Tests](https://img.shields.io/badge/tests-117_passing-0b8c87)
 ![Coverage](https://img.shields.io/badge/coverage-90%25-0b8c87)
 
 [O‘zbekcha](#loyiha-haqida) · [English summary](#english-summary)
@@ -47,7 +47,7 @@ hisobga olib, mos yo‘nalishlar va OTM dasturlarini **Ishonchli / Maqbul / Orzu
 | Profil: fanlar, bal, hudud, til, byudjet, sohalar | O‘tish ballari muharriri |
 | RIASEC kasbiy testi va radar natijasi | CSV import (qatorlar bo‘yicha xatolar hisoboti bilan) |
 | Tushuntiriladigan tavsiyalar + grant/kontrakt ehtimoli | Algoritm vaznlarini sozlash |
-| Taqqoslash (2–4 dastur), saralanganlar | Foydalanuvchilar ro‘yxati |
+| Taqqoslash (2–4 dastur), saralanganlar | Foydalanuvchilar ro‘yxati, oxirgi faollik va kirishlar soni |
 
 **Interfeys 3 tilda (o‘zbek, rus, ingliz), yorug‘ va qorong‘i temada ishlaydi va mobil qurilmalarga moslashadi.**
 
@@ -145,8 +145,8 @@ cd frontend && npm install && npm run dev
 
 | Ko‘rsatkich | Natija |
 |---|---|
-| Backend testlari | **73** (unit + MockMvc integratsion, haqiqiy PostgreSQL bilan) |
-| Frontend testlari | **33** (Vitest + Testing Library, axe-core a11y) |
+| Backend testlari | **77** (unit + MockMvc integratsion, haqiqiy PostgreSQL bilan) |
+| Frontend testlari | **40** (Vitest + Testing Library, axe-core a11y) |
 | Test qamrovi (JaCoCo) | butun backend **90%** satr; tavsiya dvigateli **99%** satr (80% chegara build’da tekshiriladi) |
 | API kechikishi (lokal, p95) | katalog ≤ 8 ms · tavsiya generatsiyasi 34 ms |
 | Masshtablanish | 5 000 ta dastur **4 ms** da baholanadi (talab: < 1 s) |
@@ -169,7 +169,7 @@ UniKompas is a full-stack thesis project: a **hybrid, explainable recommender** 
 - groups the results into Safe / Target / Reach bands with machine-readable reasons, which the UI renders in Uzbek, Russian or English.
 
 Stack: Spring Boot 4.1 + PostgreSQL, React 19 + TypeScript. Engineering highlights:
-- 106 automated tests and a JaCoCo coverage gate;
+- 117 automated tests and a JaCoCo coverage gate;
 - uniform error codes translated on the client;
 - race-free idempotent writes and N+1-free catalog queries;
 - route-level code splitting;
