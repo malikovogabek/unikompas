@@ -59,7 +59,7 @@ public class SecurityConfig {
     private static final String[] PUBLIC_POST = {
             "/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/score/calculate"};
     private static final String[] PUBLIC_GET = {
-            "/api/v1/regions", "/api/v1/subjects", "/api/v1/fields",
+            "/api/v1/health", "/api/v1/regions", "/api/v1/subjects", "/api/v1/fields",
             "/api/v1/universities/**", "/api/v1/directions/**", "/api/v1/programs/**"};
     private static final String[] PUBLIC_ANY = {"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/error"};
 

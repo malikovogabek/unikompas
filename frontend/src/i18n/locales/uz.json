@@ -591,5 +591,9 @@
     "lead": "Saqlab qo‘ygan dasturlaringiz.",
     "empty": "Saralangan dastur yo‘q",
     "emptyText": "Tavsiyalar yoki katalogdan dasturlarni saqlang."
+  },
+  "server": {
+    "waking": "Server ishga tushmoqda…",
+    "wakingText": "Bepul serverda bir muddat faollik bo‘lmasa, birinchi so‘rov 1–2 daqiqa olishi mumkin. Sahifani yopmang — so‘rovingiz avtomatik bajariladi."
   }
 }

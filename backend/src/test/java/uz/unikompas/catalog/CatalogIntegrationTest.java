@@ -173,6 +173,13 @@ class CatalogIntegrationTest {
     }
 
     @Test
+    void shouldExposeDatabaseFreeHealthEndpoint() throws Exception {
+        mvc.perform(get("/api/v1/health"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"));
+    }
+
+    @Test
     void shouldKeepWriteMethodsProtected() throws Exception {
         mvc.perform(post("/api/v1/universities").contentType(MediaType.APPLICATION_JSON).content("{}"))
                 .andExpect(status().isUnauthorized());

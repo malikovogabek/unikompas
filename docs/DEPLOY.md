@@ -60,3 +60,13 @@ export PATH="$HOME/.local/bin:$PATH"
 render deploys create srv-dboc1cu417fc73fr16a0 --confirm   # backend
 cd frontend && vercel deploy --prod --yes                   # frontend
 ```
+
+## Sovuq start (cold start) va uni bartaraf etish (2026-11-11)
+
+Render loglari bo‘yicha bepul serverda backend uyg‘onganda **88–100 soniyada** ishga tushadi. Ilgari frontend javobni 15 soniya kutar edi, shuning uchun foydalanuvchi “Server bilan aloqa yo‘q” xatosini ko‘rib, tugmani 2–3 marta bosishga majbur bo‘lardi.
+
+Bu muammo uch qatlamda hal qilindi:
+
+1. **Keep-alive.** `.github/workflows/keep-alive.yml` har 10 daqiqada `GET /api/v1/health` ga so‘rov yuboradi, shuning uchun server uxlamaydi. Endpoint bazaga murojaat qilmaydi, shuning uchun Neon’ning bepul hisoblash soatlari sarflanmaydi. Render health check ham shu endpointdan foydalanadi.
+2. **Frontend.** Sahifa ochilishi bilan server uyg‘otiladi (`warmUpServer`). So‘rovlar 60 soniyagacha kutadi va tarmoq hamda 502/503/504 xatolarida 4 martagacha qayta uriniladi. 3 soniyadan uzoq kutishda “Server ishga tushmoqda…” xabari chiqadi.
+3. **Eslatma.** GitHub repozitoriyda 60 kun hech qanday faollik bo‘lmasa, rejalashtirilgan workflow’larni o‘chirib qo‘yadi. Bunday holda uni **Actions → keep-alive → Enable** orqali qayta yoqish kerak.

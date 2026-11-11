@@ -2,6 +2,7 @@ import { Outlet } from 'react-router'
 import { Footer } from './Footer'
 import { Header } from './Header'
 import { NavigationProgress } from './NavigationProgress'
+import { WakeBanner } from './WakeBanner'
 
 export function AppLayout() {
   return (
@@ -12,6 +13,7 @@ export function AppLayout() {
         <Outlet />
       </main>
       <Footer />
+      <WakeBanner />
     </div>
   )
 }
