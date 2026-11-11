@@ -211,7 +211,9 @@
       "topUniversities": "Most recommended universities",
       "byRegion": "Applicants by region",
       "noData": "No data yet",
-      "top10Hint": "Times in a recommendation top 10"
+      "top10Hint": "Times in a recommendation top 10",
+      "active24h": "Active (24 h)",
+      "active7d": "Active (7 days)"
     },
     "table": {
       "actions": "Actions",
@@ -307,7 +309,13 @@
     "users": {
       "title": "Users",
       "APPLICANT": "Applicant",
-      "ADMIN": "Administrator"
+      "ADMIN": "Administrator",
+      "lastSeen": "Last seen",
+      "logins": "Sign-ins",
+      "never": "Never",
+      "sort": "Sort",
+      "sortCreated": "Newest sign-ups",
+      "sortSeen": "Recently active"
     }
   },
   "notFound": {
@@ -595,5 +603,29 @@
   "server": {
     "waking": "The server is starting…",
     "wakingText": "On the free server the first request after a pause can take 1–2 minutes. Keep this page open — your request will complete automatically."
+  },
+  "time": {
+    "justNow": "just now",
+    "yesterday": "yesterday",
+    "minutes_one": "{{count}} minute ago",
+    "minutes_few": "{{count}} minutes ago",
+    "minutes_many": "{{count}} minutes ago",
+    "minutes_other": "{{count}} minutes ago",
+    "hours_one": "{{count}} hour ago",
+    "hours_few": "{{count}} hours ago",
+    "hours_many": "{{count}} hours ago",
+    "hours_other": "{{count}} hours ago",
+    "days_one": "{{count}} day ago",
+    "days_few": "{{count}} days ago",
+    "days_many": "{{count}} days ago",
+    "days_other": "{{count}} days ago",
+    "months_one": "{{count}} month ago",
+    "months_few": "{{count}} months ago",
+    "months_many": "{{count}} months ago",
+    "months_other": "{{count}} months ago",
+    "years_one": "{{count}} year ago",
+    "years_few": "{{count}} years ago",
+    "years_many": "{{count}} years ago",
+    "years_other": "{{count}} years ago"
   }
 }

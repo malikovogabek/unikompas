@@ -1,4 +1,4 @@
-import { currentLanguage, type Language } from '@/i18n'
+import i18n, { currentLanguage, type Language } from '@/i18n'
 
 // Browsers ship incomplete CLDR data for Uzbek (Chrome prints "16,000,000" and "155.4").
 // Uzbek conventions match Russian ones — space grouping, decimal comma — so numbers use ru-RU.
@@ -32,6 +32,34 @@ export function formatPercent(unit: number, lang: Language = currentLanguage()):
   // Uzbek writes "87%" (no space); ru-RU rules would give "87 %".
   const loc = lang === 'uz' ? 'en-GB' : locale(lang)
   return new Intl.NumberFormat(loc, { style: 'percent', maximumFractionDigits: 0 }).format(unit)
+}
+
+/** Date and time, e.g. "11.11.2026, 19:37" (uz/ru) or "11 Nov 2026, 19:37" (en). */
+export function formatDateTime(iso: string, lang: Language = currentLanguage()): string {
+  return new Intl.DateTimeFormat(DATE_LOCALES[lang], { dateStyle: lang === 'uz' ? 'short' : 'medium', timeStyle: 'short' }).format(
+    new Date(iso),
+  )
+}
+
+/**
+ * Relative past time: "5 daqiqa oldin" / "5 минут назад" / "5 minutes ago".
+ * Built from our locale files with i18next plurals instead of Intl.RelativeTimeFormat, because
+ * browsers' Uzbek data is incomplete (Chrome prints "-5 min", "yesterday"). Anything under a
+ * minute — including a server clock slightly ahead of the browser — reads as "just now".
+ */
+export function formatRelative(iso: string, lang: Language = currentLanguage(), now: number = Date.now()): string {
+  const t = i18n.getFixedT(lang)
+  const seconds = (now - new Date(iso).getTime()) / 1000
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+  if (minutes < 1) return t('time.justNow')
+  if (hours < 1) return t('time.minutes', { count: minutes })
+  if (days < 1) return t('time.hours', { count: hours })
+  if (days === 1) return t('time.yesterday')
+  if (days < 30) return t('time.days', { count: days })
+  if (days < 365) return t('time.months', { count: Math.floor(days / 30) })
+  return t('time.years', { count: Math.floor(days / 365) })
 }
 
 export function formatDate(iso: string, lang: Language = currentLanguage()): string {

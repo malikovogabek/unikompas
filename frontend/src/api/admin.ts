@@ -24,7 +24,7 @@ export const adminKeys = {
   programs: (universityId: number | undefined, directionId: number | undefined, page: number) =>
     ['admin', 'programs', universityId, directionId, page] as const,
   weights: ['admin', 'weights'] as const,
-  users: (search: string, role: Role | '', page: number) => ['admin', 'users', search, role, page] as const,
+  users: (search: string, role: Role | '', sort: UserSort, page: number) => ['admin', 'users', search, role, sort, page] as const,
 }
 
 export const fetchStats = async () => (await api.get<Stats>('/admin/stats')).data
@@ -68,5 +68,11 @@ export async function importPassingScores(file: File): Promise<ImportReport> {
 export const fetchWeights = async () => (await api.get<Weights>('/admin/settings/recommendation-weights')).data
 export const saveWeights = async (w: Weights) => (await api.put<Weights>('/admin/settings/recommendation-weights', w)).data
 
-export const fetchUsers = async (search: string, role: Role | '', page: number) =>
-  (await api.get<PageResponse<User>>('/admin/users', { params: { search: search || undefined, role: role || undefined, page, size: 20 } })).data
+export type UserSort = 'createdAt' | 'lastSeenAt'
+
+export const fetchUsers = async (search: string, role: Role | '', sort: UserSort, page: number) =>
+  (
+    await api.get<PageResponse<User>>('/admin/users', {
+      params: { search: search || undefined, role: role || undefined, sort: `${sort},desc`, page, size: 20 },
+    })
+  ).data

@@ -211,7 +211,9 @@
       "topUniversities": "Чаще всего рекомендуемые вузы",
       "byRegion": "Абитуриенты по регионам",
       "noData": "Данных пока нет",
-      "top10Hint": "Сколько раз попадали в топ-10 рекомендаций"
+      "top10Hint": "Сколько раз попадали в топ-10 рекомендаций",
+      "active24h": "Активны (24 ч)",
+      "active7d": "Активны (7 дней)"
     },
     "table": {
       "actions": "Действия",
@@ -307,7 +309,13 @@
     "users": {
       "title": "Пользователи",
       "APPLICANT": "Абитуриент",
-      "ADMIN": "Администратор"
+      "ADMIN": "Администратор",
+      "lastSeen": "Последний вход",
+      "logins": "Входы",
+      "never": "Ещё не входил",
+      "sort": "Сортировка",
+      "sortCreated": "Новые регистрации",
+      "sortSeen": "Недавно входившие"
     }
   },
   "notFound": {
@@ -595,5 +603,29 @@
   "server": {
     "waking": "Сервер запускается…",
     "wakingText": "На бесплатном сервере после простоя первый запрос может занять 1–2 минуты. Не закрывайте страницу — запрос выполнится автоматически."
+  },
+  "time": {
+    "justNow": "только что",
+    "yesterday": "вчера",
+    "minutes_one": "{{count}} минуту назад",
+    "minutes_few": "{{count}} минуты назад",
+    "minutes_many": "{{count}} минут назад",
+    "minutes_other": "{{count}} минуты назад",
+    "hours_one": "{{count}} час назад",
+    "hours_few": "{{count}} часа назад",
+    "hours_many": "{{count}} часов назад",
+    "hours_other": "{{count}} часа назад",
+    "days_one": "{{count}} день назад",
+    "days_few": "{{count}} дня назад",
+    "days_many": "{{count}} дней назад",
+    "days_other": "{{count}} дня назад",
+    "months_one": "{{count}} месяц назад",
+    "months_few": "{{count}} месяца назад",
+    "months_many": "{{count}} месяцев назад",
+    "months_other": "{{count}} месяца назад",
+    "years_one": "{{count}} год назад",
+    "years_few": "{{count}} года назад",
+    "years_many": "{{count}} лет назад",
+    "years_other": "{{count}} года назад"
   }
 }
