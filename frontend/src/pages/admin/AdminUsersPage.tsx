@@ -11,6 +11,7 @@ import { Select } from '@/components/ui/Select'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { Table, Td, Th } from '@/components/ui/Table'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
+import { useNow } from '@/hooks/useNow'
 import { formatDate, formatDateTime, formatInteger, formatRelative } from '@/lib/format'
 import type { Role } from '@/types/api'
 
@@ -21,6 +22,7 @@ export function AdminUsersPage() {
   const [role, setRole] = useState<Role | ''>('')
   const [sort, setSort] = useState<UserSort>('lastSeenAt')
   const [page, setPage] = useState(0)
+  const now = useNow()
   const query = useQuery({ queryKey: adminKeys.users(debounced, role, sort, page), queryFn: () => fetchUsers(debounced, role, sort, page), placeholderData: keepPreviousData })
 
   return (
@@ -65,7 +67,7 @@ export function AdminUsersPage() {
                       <Td className="whitespace-nowrap">
                         {u.lastSeenAt ? (
                           <time dateTime={u.lastSeenAt} title={formatDateTime(u.lastSeenAt)} className="text-text">
-                            {formatRelative(u.lastSeenAt)}
+                            {formatRelative(u.lastSeenAt, undefined, now)}
                           </time>
                         ) : (
                           <span className="text-muted">{t('admin.users.never')}</span>

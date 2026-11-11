@@ -34,11 +34,24 @@ export function formatPercent(unit: number, lang: Language = currentLanguage()):
   return new Intl.NumberFormat(loc, { style: 'percent', maximumFractionDigits: 0 }).format(unit)
 }
 
-/** Date and time, e.g. "11.11.2026, 19:37" (uz/ru) or "11 Nov 2026, 19:37" (en). */
+function dateStyle(lang: Language): 'short' | 'medium' {
+  return lang === 'uz' ? 'short' : 'medium'
+}
+
+/** "08.11.2026" (uz), "8 нояб. 2026 г." (ru), "8 Nov 2026" (en). */
+export function formatDate(iso: string, lang: Language = currentLanguage()): string {
+  return new Intl.DateTimeFormat(DATE_LOCALES[lang], { dateStyle: dateStyle(lang) }).format(new Date(iso))
+}
+
+/** formatDate plus the time: "11.11.2026, 19:37" (uz), "11 нояб. 2026 г., 19:37" (ru), "11 Nov 2026, 19:37" (en). */
 export function formatDateTime(iso: string, lang: Language = currentLanguage()): string {
-  return new Intl.DateTimeFormat(DATE_LOCALES[lang], { dateStyle: lang === 'uz' ? 'short' : 'medium', timeStyle: 'short' }).format(
-    new Date(iso),
-  )
+  return new Intl.DateTimeFormat(DATE_LOCALES[lang], { dateStyle: dateStyle(lang), timeStyle: 'short' }).format(new Date(iso))
+}
+
+/** Whole calendar days between two instants in the browser's time zone (DST-safe). */
+function calendarDaysBetween(from: Date, to: Date): number {
+  const day = (d: Date) => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())
+  return Math.round((day(to) - day(from)) / 86_400_000)
 }
 
 /**
@@ -46,23 +59,18 @@ export function formatDateTime(iso: string, lang: Language = currentLanguage()):
  * Built from our locale files with i18next plurals instead of Intl.RelativeTimeFormat, because
  * browsers' Uzbek data is incomplete (Chrome prints "-5 min", "yesterday"). Anything under a
  * minute — including a server clock slightly ahead of the browser — reads as "just now".
+ * Past the first hour, days are counted by the calendar, so 23:50 seen at 00:30 is "yesterday".
  */
 export function formatRelative(iso: string, lang: Language = currentLanguage(), now: number = Date.now()): string {
   const t = i18n.getFixedT(lang)
-  const seconds = (now - new Date(iso).getTime()) / 1000
-  const minutes = Math.floor(seconds / 60)
-  const hours = Math.floor(minutes / 60)
-  const days = Math.floor(hours / 24)
+  const then = new Date(iso)
+  const minutes = Math.floor((now - then.getTime()) / 60_000)
   if (minutes < 1) return t('time.justNow')
-  if (hours < 1) return t('time.minutes', { count: minutes })
-  if (days < 1) return t('time.hours', { count: hours })
+  if (minutes < 60) return t('time.minutes', { count: minutes })
+  const days = calendarDaysBetween(then, new Date(now))
+  if (days === 0) return t('time.hours', { count: Math.floor(minutes / 60) })
   if (days === 1) return t('time.yesterday')
   if (days < 30) return t('time.days', { count: days })
   if (days < 365) return t('time.months', { count: Math.floor(days / 30) })
   return t('time.years', { count: Math.floor(days / 365) })
-}
-
-export function formatDate(iso: string, lang: Language = currentLanguage()): string {
-  const style = lang === 'uz' ? 'short' : 'medium'
-  return new Intl.DateTimeFormat(DATE_LOCALES[lang], { dateStyle: style }).format(new Date(iso))
 }
