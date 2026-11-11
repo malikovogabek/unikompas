@@ -45,6 +45,21 @@ public class User {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
+    /** Last activity in the app (sign-in or session restore); {@code null} = never since tracking began. */
+    private Instant lastSeenAt;
+
+    @Column(nullable = false)
+    private int loginCount;
+
+    /** Minimum gap between two activity stamps for the same user. */
+    public static final java.time.Duration SEEN_THROTTLE = java.time.Duration.ofMinutes(5);
+
+    /** Records the first sign-in of a brand-new account (before it is inserted). */
+    public void recordFirstLogin(Instant now) {
+        loginCount = 1;
+        lastSeenAt = now;
+    }
+
     /**
      * Single canonical e-mail form used by every write and lookup path.
      * Locale.ROOT avoids locale-specific casing (e.g. Turkish dotless i).

@@ -26,7 +26,7 @@ describe('ProtectedRoute', () => {
     useAuthStore.setState({
       token: 't',
       expiresAt: new Date(Date.now() + 60_000).toISOString(),
-      user: { id: 1, fullName: 'A', email: 'a@x.uz', role: 'ADMIN', createdAt: '' },
+      user: { id: 1, fullName: 'A', email: 'a@x.uz', role: 'ADMIN', createdAt: '', lastSeenAt: null, loginCount: 0 },
     })
     render(
       <MemoryRouter initialEntries={['/dashboard']}>

@@ -6,7 +6,7 @@ const session = (expiresInMs: number, token = 'tok'): AuthResponse => ({
   accessToken: token,
   tokenType: 'Bearer',
   expiresAt: new Date(Date.now() + expiresInMs).toISOString(),
-  user: { id: 1, fullName: 'Test', email: 't@x.uz', role: 'APPLICANT', createdAt: new Date().toISOString() },
+  user: { id: 1, fullName: 'Test', email: 't@x.uz', role: 'APPLICANT', createdAt: new Date().toISOString(), lastSeenAt: null, loginCount: 0 },
 })
 
 describe('auth store', () => {

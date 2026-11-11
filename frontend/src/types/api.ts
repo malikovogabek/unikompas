@@ -11,6 +11,9 @@ export type User = {
   email: string
   role: Role
   createdAt: string
+  /** Last activity (sign-in or return with a session); null if never recorded. */
+  lastSeenAt: string | null
+  loginCount: number
 }
 
 export type AuthResponse = {
@@ -223,6 +226,8 @@ export type Ranked = { id: number; code: string | null; name: string; count: num
 
 export type Stats = {
   applicants: number
+  activeLast24h: number
+  activeLast7d: number
   completeProfiles: number
   testAttempts: number
   applicantsWithTest: number

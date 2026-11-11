@@ -2,7 +2,7 @@ import { queryClient } from '@/lib/queryClient'
 import { useAuthStore } from '@/store/authStore'
 import { testDraftKey } from './storageKeys'
 
-const user = (id: number) => ({ id, fullName: 'U', email: `u${id}@x.uz`, role: 'APPLICANT' as const, createdAt: '' })
+const user = (id: number) => ({ id, fullName: 'U', email: `u${id}@x.uz`, role: 'APPLICANT' as const, createdAt: '', lastSeenAt: null, loginCount: 0 })
 
 describe('per-user drafts', () => {
   it('are removed when another user signs in', () => {

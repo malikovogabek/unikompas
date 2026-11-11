@@ -211,7 +211,9 @@
       "topUniversities": "Eng ko‘p tavsiya qilingan OTMlar",
       "byRegion": "Hududlar bo‘yicha abituriyentlar",
       "noData": "Hali ma’lumot yo‘q",
-      "top10Hint": "Tavsiyalarning top-10 taligida necha marta uchragan"
+      "top10Hint": "Tavsiyalarning top-10 taligida necha marta uchragan",
+      "active24h": "Faol (24 soat)",
+      "active7d": "Faol (7 kun)"
     },
     "table": {
       "actions": "Amallar",
@@ -307,7 +309,13 @@
     "users": {
       "title": "Foydalanuvchilar",
       "APPLICANT": "Abituriyent",
-      "ADMIN": "Administrator"
+      "ADMIN": "Administrator",
+      "lastSeen": "Oxirgi kirish",
+      "logins": "Kirishlar",
+      "never": "Hali kirmagan",
+      "sort": "Saralash",
+      "sortCreated": "Yangi ro‘yxatdan o‘tganlar",
+      "sortSeen": "Oxirgi kirganlar"
     }
   },
   "notFound": {
@@ -595,5 +603,29 @@
   "server": {
     "waking": "Server ishga tushmoqda…",
     "wakingText": "Bepul serverda bir muddat faollik bo‘lmasa, birinchi so‘rov 1–2 daqiqa olishi mumkin. Sahifani yopmang — so‘rovingiz avtomatik bajariladi."
+  },
+  "time": {
+    "justNow": "hozirgina",
+    "yesterday": "kecha",
+    "minutes_one": "{{count}} daqiqa oldin",
+    "minutes_few": "{{count}} daqiqa oldin",
+    "minutes_many": "{{count}} daqiqa oldin",
+    "minutes_other": "{{count}} daqiqa oldin",
+    "hours_one": "{{count}} soat oldin",
+    "hours_few": "{{count}} soat oldin",
+    "hours_many": "{{count}} soat oldin",
+    "hours_other": "{{count}} soat oldin",
+    "days_one": "{{count}} kun oldin",
+    "days_few": "{{count}} kun oldin",
+    "days_many": "{{count}} kun oldin",
+    "days_other": "{{count}} kun oldin",
+    "months_one": "{{count}} oy oldin",
+    "months_few": "{{count}} oy oldin",
+    "months_many": "{{count}} oy oldin",
+    "months_other": "{{count}} oy oldin",
+    "years_one": "{{count}} yil oldin",
+    "years_few": "{{count}} yil oldin",
+    "years_many": "{{count}} yil oldin",
+    "years_other": "{{count}} yil oldin"
   }
 }

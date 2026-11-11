@@ -22,13 +22,15 @@ export function AdminOverviewPage() {
           {(s) => {
             const tiles = [
               { label: t('admin.stats.applicants'), value: s.applicants },
+              { label: t('admin.stats.active24h'), value: s.activeLast24h },
+              { label: t('admin.stats.active7d'), value: s.activeLast7d },
               { label: t('admin.stats.completeProfiles'), value: s.completeProfiles },
               { label: t('admin.stats.withTest'), value: s.applicantsWithTest },
               { label: t('admin.stats.recommendations'), value: s.recommendations },
             ]
             return (
               <>
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
                   {tiles.map((tile) => (
                     <Card key={tile.label} className="p-5">
                       <p className="text-sm text-muted">{tile.label}</p>

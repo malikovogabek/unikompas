@@ -1,5 +1,7 @@
 package uz.unikompas.admin;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
@@ -25,8 +27,9 @@ public class AdminStatsService {
     private final EntityManager em;
 
     public StatsResponse stats() {
+        long[] activity = applicantActivity();
         return new StatsResponse(
-                count("select count(u) from User u where u.role = uz.unikompas.user.Role.APPLICANT"),
+                activity[0], activity[1], activity[2],
                 count("select count(p) from ApplicantProfile p where " + ApplicantProfile.COMPLETE_JPQL),
                 count("select count(t) from TestAttempt t"),
                 count("select count(distinct t.userId) from TestAttempt t"),
@@ -47,6 +50,20 @@ public class AdminStatsService {
                 ranked("""
                         select r.id, r.code, r.name, count(p) from ApplicantProfile p join p.region r
                          group by r.id, r.code, r.name order by count(p) desc, r.id""", false));
+    }
+
+    /** [applicants, active in 24 h, active in 7 days] in one query over one consistent "now". */
+    private long[] applicantActivity() {
+        Instant now = Instant.now();
+        Object[] row = em.createQuery("""
+                        select count(u),
+                               coalesce(sum(case when u.lastSeenAt >= :day then 1 else 0 end), 0),
+                               coalesce(sum(case when u.lastSeenAt >= :week then 1 else 0 end), 0)
+                          from User u where u.role = uz.unikompas.user.Role.APPLICANT""", Object[].class)
+                .setParameter("day", now.minus(Duration.ofHours(24)))
+                .setParameter("week", now.minus(Duration.ofDays(7)))
+                .getSingleResult();
+        return new long[] {((Number) row[0]).longValue(), ((Number) row[1]).longValue(), ((Number) row[2]).longValue()};
     }
 
     private long count(String jpql) {

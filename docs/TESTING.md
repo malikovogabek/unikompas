@@ -7,16 +7,16 @@ Hujjat TZ’ning 13-bo‘limida belgilangan sinovlarning natijalarini jamlaydi. 
 | To‘plam | Testlar | Nimani tekshiradi |
 |---|---|---|
 | `AuthControllerIntegrationTest` | 10 | Ro‘yxatdan o‘tish, kirish, JWT, e-pochta normalizatsiyasi, takroriy e-pochta (409), 72 baytlik parol chegarasi, 401/405/415 xatolari |
-| `CatalogIntegrationTest` | 15 | Ochiq katalog, filtrlar, sahifalash (takrorlarsiz), LIKE belgilarini ekranlash, eskirgan token, taqqoslash validatsiyasi |
+| `CatalogIntegrationTest` | 16 | Ochiq katalog, health endpoint, filtrlar, sahifalash (takrorlarsiz), LIKE belgilarini ekranlash, eskirgan token, taqqoslash validatsiyasi |
 | `ApplicantFlowIntegrationTest` | 7 | Profil → 36 savollik test → tavsiya → saralanganlar; tavsiya faqat egasiga ko‘rinadi |
-| `AdminIntegrationTest` | 8 | Rol himoyasi, CRUD va kaskadli o‘chirish, ballar tarixi (PUT), CSV import hisoboti, UTF-8 tekshiruvi, vaznlar, statistika |
+| `AdminIntegrationTest` | 9 | Rol himoyasi, CRUD va kaskadli o‘chirish, ballar tarixi (PUT), CSV import hisoboti, UTF-8 tekshiruvi, vaznlar, statistika, foydalanuvchi faolligi (parallel kirishlar yo‘qolmaydi) |
 | `RecommendationEngineTest` | 17 | Har bir qat’iy filtr, toifalar, kontrakt koeffitsiyenti, qiziqish o‘xshashligi, sovuq start, tekis vektor, sabablar, determinizm |
 | `ChanceEstimatorTest` | 7 | Kalendar yillar bo‘yicha trend, yillar orasidagi bo‘shliq, eskirgan tarix, logistik egri chiziq |
 | `RecommendationEngineScalabilityTest` | 1 | 5 000 ta dastur < 1 s (`@Tag("performance")`, `./mvnw test -Pperf` bilan alohida ishga tushiriladi) |
-| Boshqa unit testlar | 8 | `ScoreCalculator`, `RiasecScorer`, `Riasec`, `Specs` |
-| **Backend jami** | **73** | |
-| Frontend (Vitest) | 33 | i18n kalitlari mosligi va backend xato kodlari, formatlash, sessiya va kesh izolyatsiyasi, 401 interceptor, marshrut himoyasi, sahifalash, profil formasi, axe-core a11y |
-| **Jami** | **106** | Hammasi muvaffaqiyatli o‘tadi |
+| Boshqa unit testlar | 10 | `ScoreCalculator`, `RiasecScorer`, `Riasec`, `Specs`, `ActivityTracker` |
+| **Backend jami** | **77** | |
+| Frontend (Vitest) | 40 | i18n kalitlari mosligi va backend xato kodlari, formatlash (nisbiy vaqt, istalgan vaqt zonasida), sessiya va kesh izolyatsiyasi, 401 interceptor, marshrut himoyasi, sahifalash, profil formasi, axe-core a11y |
+| **Jami** | **117** | Hammasi muvaffaqiyatli o‘tadi |
 
 Integratsion testlar haqiqiy PostgreSQL bazasida (`unikompas_test`) ishlaydi. Har bir kontekst uchun `flyway clean + migrate` bajariladi.
 

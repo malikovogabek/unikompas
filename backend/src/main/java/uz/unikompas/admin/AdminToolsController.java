@@ -83,7 +83,8 @@ public class AdminToolsController {
 
     /** Dashboard aggregates. */
     @Operation(summary = "Statistika",
-            description = "Abituriyentlar, to‘liq profillar, testlar va tavsiyalar soni; katalog hajmi; tavsiyalarning "
+            description = "Abituriyentlar soni va ulardan oxirgi 24 soat / 7 kunda faol bo‘lganlar "
+                    + "(`activeLast24h`, `activeLast7d`), to‘liq profillar, testlar va tavsiyalar soni; katalog hajmi; tavsiyalarning "
                     + "top-10 talig‘ida eng ko‘p uchragan 5 ta yo‘nalish va OTM; hududlar bo‘yicha abituriyentlar.")
     @ApiResponse(responseCode = "200", description = "Statistika")
     @GetMapping("/stats")
@@ -92,7 +93,10 @@ public class AdminToolsController {
     }
 
     /** Paged user list with search and role filter. */
-    @Operation(summary = "Foydalanuvchilar", description = "E-pochta yoki F.I.Sh. bo‘yicha qidiruv, rol bo‘yicha filtr.")
+    @Operation(summary = "Foydalanuvchilar",
+            description = "E-pochta yoki F.I.Sh. bo‘yicha qidiruv, rol bo‘yicha filtr. Har bir foydalanuvchi uchun "
+                    + "oxirgi faollik vaqti (`lastSeenAt`) va kirishlar soni (`loginCount`). Saralash: "
+                    + "`sort=createdAt,desc` (standart) yoki `sort=lastSeenAt,desc` (hech kirmaganlar oxirida).")
     @ApiResponse(responseCode = "200", description = "Sahifalangan ro‘yxat")
     @GetMapping("/users")
     public PageResponse<UserResponse> users(@RequestParam(required = false) String search,
