@@ -227,6 +227,7 @@ Ustuvorlik **MoSCoW** usulida belgilangan: **M** — albatta bo‘lishi kerak (M
 | FR-8.6 | Tavsiya algoritmi vaznlarini sozlash (w₁…w₄) | S |
 | FR-8.7 | Statistika paneli: foydalanuvchilar soni, testlar soni, eng ko‘p tavsiya qilingan yo‘nalish va OTMlar | S |
 | FR-8.8 | Foydalanuvchilar ro‘yxatini ko‘rish | C |
+| FR-8.9 | Foydalanuvchi faolligi: oxirgi faollik vaqti va kirishlar soni ro‘yxatda ko‘rinadi (oxirgi faollik bo‘yicha saralash); statistikada oxirgi 24 soat va 7 kunda faol abituriyentlar soni. Faollik har qanday autentifikatsiyalangan so‘rovda, 5 daqiqada ko‘pi bilan bir marta yoziladi | C |
 
 ### M9. Lokalizatsiya (ko‘p tillilik)
 
@@ -565,8 +566,8 @@ erDiagram
 | 42 | POST | `/admin/import/passing-scores` | ADMIN | CSV import (multipart, ≤ 2 MB). Sarlavha: `university,direction_code,language,study_form,year,grant_score,contract_score`. Vergul yoki nuqtali vergul ajratuvchi, o‘nlik vergul ham qabul qilinadi. Hisobot: `created`, `updated`, `errors[{line, code, value}]` |
 | 43 | GET | `/admin/settings/recommendation-weights` | ADMIN | Algoritm vaznlari |
 | 44 | PUT | `/admin/settings/recommendation-weights` | ADMIN | Vaznlarni yangilaydi (yig‘indi = 1 tekshiriladi) |
-| 45 | GET | `/admin/stats` | ADMIN | Statistika paneli ma’lumotlari |
-| 46 | GET | `/admin/users` | ADMIN | Foydalanuvchilar ro‘yxati |
+| 45 | GET | `/admin/stats` | ADMIN | Statistika paneli ma’lumotlari (faol abituriyentlar: 24 soat / 7 kun) |
+| 46 | GET | `/admin/users` | ADMIN | Foydalanuvchilar ro‘yxati (oxirgi faollik, kirishlar soni; `sort=lastSeenAt,desc`) |
 
 ### 8.2. Asosiy so‘rov va javob namunasi
 
