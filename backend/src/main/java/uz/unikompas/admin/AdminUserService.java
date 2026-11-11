@@ -1,7 +1,9 @@
 package uz.unikompas.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +31,15 @@ public class AdminUserService {
                         Specs.containsIgnoreCase(cb, root.get("fullName"), search));
         Specification<User> byRole = role == null ? Specification.unrestricted()
                 : (root, q, cb) -> cb.equal(root.get("role"), role);
-        return PageResponse.from(users.findAll(Specification.allOf(text, byRole), Pageables.withIdTiebreaker(pageable))
+        return PageResponse.from(users.findAll(Specification.allOf(text, byRole),
+                        Pageables.withIdTiebreaker(nullsLast(pageable)))
                 .map(UserResponse::from));
+    }
+
+    /** Users who were never seen must not float to the top of a "last seen, newest first" list. */
+    private static Pageable nullsLast(Pageable pageable) {
+        Sort sort = Sort.by(pageable.getSort().stream()
+                .map(o -> o.getProperty().equals("lastSeenAt") ? o.nullsLast() : o).toList());
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
     }
 }

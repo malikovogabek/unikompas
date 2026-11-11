@@ -34,6 +34,9 @@ class AdminIntegrationTest {
     @Autowired
     MockMvc mvc;
 
+    @Autowired
+    uz.unikompas.user.UserRepository users;
+
     private String admin;
 
     @BeforeEach
@@ -225,6 +228,41 @@ class AdminIntegrationTest {
         mvc.perform(put(path).header("Authorization", admin).contentType(MediaType.APPLICATION_JSON).content("""
                         {"interest":0.35,"chance":0.35,"preference":0.15,"rating":0.15}"""))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldTrackSignInsAndShowActivityToAdmins() throws Exception {
+        String email = "activity-" + UUID.randomUUID() + "@x.uz";
+        mvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fullName\":\"Active User\",\"email\":\"%s\",\"password\":\"Parol2026\"}".formatted(email)))
+                .andExpect(jsonPath("$.user.loginCount").value(1))
+                .andExpect(jsonPath("$.user.lastSeenAt").isNotEmpty());
+        mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"%s\",\"password\":\"Parol2026\"}".formatted(email)))
+                .andExpect(jsonPath("$.user.loginCount").value(2));
+        // A failed attempt is not a sign-in.
+        mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"%s\",\"password\":\"WrongPass1\"}".formatted(email)))
+                .andExpect(status().isUnauthorized());
+
+        mvc.perform(get("/api/v1/admin/users").param("search", email).header("Authorization", admin))
+                .andExpect(jsonPath("$.content[0].loginCount").value(2))
+                .andExpect(jsonPath("$.content[0].lastSeenAt").isNotEmpty());
+
+        // Sorting by last activity keeps never-seen users at the end.
+        users.saveAndFlush(new uz.unikompas.user.User("Never Seen", "never-" + UUID.randomUUID() + "@x.uz", "h",
+                uz.unikompas.user.Role.APPLICANT));
+        String body = mvc.perform(get("/api/v1/admin/users").param("role", "APPLICANT").param("size", "100")
+                        .param("sort", "lastSeenAt,desc").header("Authorization", admin))
+                .andReturn().getResponse().getContentAsString();
+        java.util.List<String> seen = JsonPath.read(body, "$.content[*].lastSeenAt");
+        int firstNull = seen.indexOf(null);
+        org.assertj.core.api.Assertions.assertThat(firstNull).isPositive();
+        org.assertj.core.api.Assertions.assertThat(seen.subList(firstNull, seen.size())).containsOnlyNulls();
+
+        mvc.perform(get("/api/v1/admin/stats").header("Authorization", admin))
+                .andExpect(jsonPath("$.activeLast24h", greaterThan(0)))
+                .andExpect(jsonPath("$.activeLast7d", greaterThan(0)));
     }
 
     @Test

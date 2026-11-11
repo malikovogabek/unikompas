@@ -1,5 +1,6 @@
 package uz.unikompas.auth;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -47,15 +48,17 @@ public class AuthService {
         try {
             // saveAndFlush surfaces the unique-index violation here if a concurrent
             // request registered the same e-mail between the check and the insert.
-            User user = users.saveAndFlush(new User(req.fullName(), email,
-                    passwordEncoder.encode(req.password()), Role.APPLICANT));
+            User created = new User(req.fullName(), email, passwordEncoder.encode(req.password()), Role.APPLICANT);
+            created.recordLogin(Instant.now());
+            User user = users.saveAndFlush(created);
             return toAuthResponse(user);
         } catch (DataIntegrityViolationException e) {
             throw emailTaken();
         }
     }
 
-    @Transactional(readOnly = true)
+    /** Not read-only: a successful sign-in updates the user's activity (lastSeenAt, loginCount). */
+    @Transactional
     public AuthResponse login(LoginRequest req) {
         User user = users.findByEmail(User.normalizeEmail(req.email())).orElse(null);
         // Always run BCrypt (against a dummy hash for unknown e-mails) and return the same
@@ -65,13 +68,19 @@ public class AuthService {
         if (user == null || !matches) {
             throw new ApiException(ErrorCode.INVALID_CREDENTIALS, "Invalid e-mail or password");
         }
+        user.recordLogin(Instant.now());
         return toAuthResponse(user);
     }
 
-    @Transactional(readOnly = true)
+    /**
+     * Current user. Called by the client whenever the app opens with a stored session, so it also
+     * records activity (throttled — see {@link User#recordSeen}).
+     */
+    @Transactional
     public UserResponse me(Long userId) {
-        return users.findById(userId).map(UserResponse::from)
-                .orElseThrow(() -> new NotFoundException("User", userId));
+        User user = users.findById(userId).orElseThrow(() -> new NotFoundException("User", userId));
+        user.recordSeen(Instant.now());
+        return UserResponse.from(user);
     }
 
     private AuthResponse toAuthResponse(User user) {

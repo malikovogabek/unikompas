@@ -92,7 +92,10 @@ public class AdminToolsController {
     }
 
     /** Paged user list with search and role filter. */
-    @Operation(summary = "Foydalanuvchilar", description = "E-pochta yoki F.I.Sh. bo‘yicha qidiruv, rol bo‘yicha filtr.")
+    @Operation(summary = "Foydalanuvchilar",
+            description = "E-pochta yoki F.I.Sh. bo‘yicha qidiruv, rol bo‘yicha filtr. Har bir foydalanuvchi uchun "
+                    + "oxirgi faollik vaqti (`lastSeenAt`) va kirishlar soni (`loginCount`). Saralash: "
+                    + "`sort=createdAt,desc` (standart) yoki `sort=lastSeenAt,desc` (hech kirmaganlar oxirida).")
     @ApiResponse(responseCode = "200", description = "Sahifalangan ro‘yxat")
     @GetMapping("/users")
     public PageResponse<UserResponse> users(@RequestParam(required = false) String search,

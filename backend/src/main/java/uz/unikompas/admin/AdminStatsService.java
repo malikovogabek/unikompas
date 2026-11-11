@@ -1,5 +1,7 @@
 package uz.unikompas.admin;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
@@ -27,6 +29,8 @@ public class AdminStatsService {
     public StatsResponse stats() {
         return new StatsResponse(
                 count("select count(u) from User u where u.role = uz.unikompas.user.Role.APPLICANT"),
+                activeSince(Duration.ofHours(24)),
+                activeSince(Duration.ofDays(7)),
                 count("select count(p) from ApplicantProfile p where " + ApplicantProfile.COMPLETE_JPQL),
                 count("select count(t) from TestAttempt t"),
                 count("select count(distinct t.userId) from TestAttempt t"),
@@ -47,6 +51,15 @@ public class AdminStatsService {
                 ranked("""
                         select r.id, r.code, r.name, count(p) from ApplicantProfile p join p.region r
                          group by r.id, r.code, r.name order by count(p) desc, r.id""", false));
+    }
+
+    /** Applicants active (signed in or returned with a session) within the given period. */
+    private long activeSince(Duration period) {
+        return em.createQuery("""
+                        select count(u) from User u
+                         where u.role = uz.unikompas.user.Role.APPLICANT and u.lastSeenAt >= :since""", Long.class)
+                .setParameter("since", Instant.now().minus(period))
+                .getSingleResult();
     }
 
     private long count(String jpql) {

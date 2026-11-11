@@ -45,6 +45,33 @@ public class User {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
+    /** Last activity in the app (sign-in or session restore); {@code null} = never since tracking began. */
+    private Instant lastSeenAt;
+
+    @Column(nullable = false)
+    private int loginCount;
+
+    /** Minimum gap between two "seen" writes caused by session restores. */
+    public static final java.time.Duration SEEN_THROTTLE = java.time.Duration.ofMinutes(5);
+
+    /** Records an explicit sign-in (login or registration). */
+    public void recordLogin(Instant now) {
+        loginCount++;
+        lastSeenAt = now;
+    }
+
+    /**
+     * Records activity from a restored session; returns {@code true} if the timestamp changed.
+     * Throttled so frequent page loads do not turn every request into a database write.
+     */
+    public boolean recordSeen(Instant now) {
+        if (lastSeenAt != null && lastSeenAt.plus(SEEN_THROTTLE).isAfter(now)) {
+            return false;
+        }
+        lastSeenAt = now;
+        return true;
+    }
+
     /**
      * Single canonical e-mail form used by every write and lookup path.
      * Locale.ROOT avoids locale-specific casing (e.g. Turkish dotless i).
