@@ -591,5 +591,9 @@
     "lead": "Programmes you have saved.",
     "empty": "Nothing saved yet",
     "emptyText": "Save programmes from recommendations or the catalog."
+  },
+  "server": {
+    "waking": "The server is starting…",
+    "wakingText": "On the free server the first request after a pause can take 1–2 minutes. Keep this page open — your request will complete automatically."
   }
 }
