@@ -49,7 +49,7 @@ public class AuthService {
             // saveAndFlush surfaces the unique-index violation here if a concurrent
             // request registered the same e-mail between the check and the insert.
             User created = new User(req.fullName(), email, passwordEncoder.encode(req.password()), Role.APPLICANT);
-            created.recordLogin(Instant.now());
+            created.recordFirstLogin(Instant.now());
             User user = users.saveAndFlush(created);
             return toAuthResponse(user);
         } catch (DataIntegrityViolationException e) {
@@ -68,19 +68,16 @@ public class AuthService {
         if (user == null || !matches) {
             throw new ApiException(ErrorCode.INVALID_CREDENTIALS, "Invalid e-mail or password");
         }
-        user.recordLogin(Instant.now());
-        return toAuthResponse(user);
+        users.recordLogin(user.getId(), Instant.now());
+        User fresh = users.findById(user.getId()).orElseThrow();
+        return toAuthResponse(fresh);
     }
 
-    /**
-     * Current user. Called by the client whenever the app opens with a stored session, so it also
-     * records activity (throttled — see {@link User#recordSeen}).
-     */
-    @Transactional
+    /** Current user (activity is stamped for every authenticated request by ActivityTrackingFilter). */
+    @Transactional(readOnly = true)
     public UserResponse me(Long userId) {
-        User user = users.findById(userId).orElseThrow(() -> new NotFoundException("User", userId));
-        user.recordSeen(Instant.now());
-        return UserResponse.from(user);
+        return users.findById(userId).map(UserResponse::from)
+                .orElseThrow(() -> new NotFoundException("User", userId));
     }
 
     private AuthResponse toAuthResponse(User user) {

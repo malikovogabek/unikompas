@@ -240,14 +240,42 @@ class AdminIntegrationTest {
         mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"email\":\"%s\",\"password\":\"Parol2026\"}".formatted(email)))
                 .andExpect(jsonPath("$.user.loginCount").value(2));
+        // Concurrent sign-ins are counted atomically: none is lost.
+        java.util.concurrent.ExecutorService pool = java.util.concurrent.Executors.newFixedThreadPool(4);
+        try {
+            java.util.List<java.util.concurrent.Future<?>> logins = new java.util.ArrayList<>();
+            for (int i = 0; i < 4; i++) {
+                logins.add(pool.submit(() -> mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                                .content("{\"email\":\"%s\",\"password\":\"Parol2026\"}".formatted(email)))
+                        .andExpect(status().isOk())));
+            }
+            for (java.util.concurrent.Future<?> f : logins) {
+                f.get();
+            }
+        } finally {
+            pool.shutdown();
+        }
         // A failed attempt is not a sign-in.
         mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"email\":\"%s\",\"password\":\"WrongPass1\"}".formatted(email)))
                 .andExpect(status().isUnauthorized());
 
         mvc.perform(get("/api/v1/admin/users").param("search", email).header("Authorization", admin))
-                .andExpect(jsonPath("$.content[0].loginCount").value(2))
+                .andExpect(jsonPath("$.content[0].loginCount").value(6))
                 .andExpect(jsonPath("$.content[0].lastSeenAt").isNotEmpty());
+
+        // Any authenticated request (not only /auth/me) stamps activity, without touching other columns.
+        String token = JsonPath.read(mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"%s\",\"password\":\"Parol2026\"}".formatted(email)))
+                .andReturn().getResponse().getContentAsString(), "$.accessToken");
+        uz.unikompas.user.User stale = users.findByEmail(email).orElseThrow();
+        String hashBefore = stale.getPasswordHash();
+        org.springframework.test.util.ReflectionTestUtils.setField(stale, "lastSeenAt", null);
+        users.saveAndFlush(stale);
+        mvc.perform(get("/api/v1/favorites").header("Authorization", "Bearer " + token)).andExpect(status().isOk());
+        uz.unikompas.user.User after = users.findByEmail(email).orElseThrow();
+        org.assertj.core.api.Assertions.assertThat(after.getLastSeenAt()).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(after.getPasswordHash()).isEqualTo(hashBefore);
 
         // Sorting by last activity keeps never-seen users at the end.
         users.saveAndFlush(new uz.unikompas.user.User("Never Seen", "never-" + UUID.randomUUID() + "@x.uz", "h",

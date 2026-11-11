@@ -51,25 +51,13 @@ public class User {
     @Column(nullable = false)
     private int loginCount;
 
-    /** Minimum gap between two "seen" writes caused by session restores. */
+    /** Minimum gap between two activity stamps for the same user. */
     public static final java.time.Duration SEEN_THROTTLE = java.time.Duration.ofMinutes(5);
 
-    /** Records an explicit sign-in (login or registration). */
-    public void recordLogin(Instant now) {
-        loginCount++;
+    /** Records the first sign-in of a brand-new account (before it is inserted). */
+    public void recordFirstLogin(Instant now) {
+        loginCount = 1;
         lastSeenAt = now;
-    }
-
-    /**
-     * Records activity from a restored session; returns {@code true} if the timestamp changed.
-     * Throttled so frequent page loads do not turn every request into a database write.
-     */
-    public boolean recordSeen(Instant now) {
-        if (lastSeenAt != null && lastSeenAt.plus(SEEN_THROTTLE).isAfter(now)) {
-            return false;
-        }
-        lastSeenAt = now;
-        return true;
     }
 
     /**

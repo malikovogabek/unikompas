@@ -83,7 +83,8 @@ public class AdminToolsController {
 
     /** Dashboard aggregates. */
     @Operation(summary = "Statistika",
-            description = "Abituriyentlar, to‘liq profillar, testlar va tavsiyalar soni; katalog hajmi; tavsiyalarning "
+            description = "Abituriyentlar soni va ulardan oxirgi 24 soat / 7 kunda faol bo‘lganlar "
+                    + "(`activeLast24h`, `activeLast7d`), to‘liq profillar, testlar va tavsiyalar soni; katalog hajmi; tavsiyalarning "
                     + "top-10 talig‘ida eng ko‘p uchragan 5 ta yo‘nalish va OTM; hududlar bo‘yicha abituriyentlar.")
     @ApiResponse(responseCode = "200", description = "Statistika")
     @GetMapping("/stats")
